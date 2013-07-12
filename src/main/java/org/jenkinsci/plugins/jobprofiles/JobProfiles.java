@@ -109,6 +109,7 @@ public class JobProfiles extends Builder {
         public boolean isApplicable(Class<? extends AbstractProject> aClass) {
             // Indicates that this builder can be used with all kinds of project types 
             return true;
+        }
 
         /**
          * This human readable name is used in the configuration screen.
