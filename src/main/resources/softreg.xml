@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<assets>
+  <asset>
+    <id>235</id>
+    <groupId>net.oneandone</groupId>
+    <artifactId>sushi</artifactId>
+    <trunk>https://github.com/mlhartme/sushi</trunk>
+    <category>foo</category>
+  </asset>
+  <asset>
+    <id>545</id>
+    <groupId>net.oneandone.maven.plugins</groupId>
+    <artifactId>prerelease</artifactId>
+    <trunk>https://github.com/mlhartme/maven-prerelease-plugin</trunk>
+    <category>bar</category>
+  </asset>
+</assets>
