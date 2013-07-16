@@ -1,33 +1,35 @@
 package org.jenkinsci.plugins.jobprofiles;
 
 
-import net.oneandone.sushi.fs.NodeInstantiationException;
-import net.oneandone.sushi.fs.World;
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+import com.thoughtworks.xstream.annotations.XStreamImplicit;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 
+import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
+@ToString
+@NoArgsConstructor
+@XStreamAlias("assets")
 public class XmlSoftwareIndex implements SoftwareIndex {
 
-    public XmlSoftwareIndex(String database) throws NodeInstantiationException {
-        World world;
+    @XStreamImplicit
+    public List<SoftwareAsset> asset = new ArrayList<SoftwareAsset>();
 
-        world = new World();
-
-        world.validNode(database);
-
-    }
-
-    private List<SoftwareAsset> softwareAssetList;
 
     public List<SoftwareAsset> getAssets() {
-        return softwareAssetList;
+        return asset;
     }
 
     public SoftwareAsset getAsset(Integer Id) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;
     }
 
     public SoftwareAsset getAsset(String Name) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return null;
     }
+
 }

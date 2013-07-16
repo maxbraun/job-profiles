@@ -1,0 +1,11 @@
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout"
+         xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+  <f:section title="Job Profile Setup">
+
+    <f:entry title="Software Index">
+      <f:textbox name="softwareIndexFile" value="${instance.softwareIndexFile}"
+                 checkUrl="'${rootURL}/descriptorByName/org.jenkinsci.plugins.jobprofiles.JobSetupConfig/checkSoftwareIndexFile?value='+this.value"/>
+    </f:entry>
+
+  </f:section>
+</j:jelly>
