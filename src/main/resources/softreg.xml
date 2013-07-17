@@ -2,16 +2,14 @@
 <assets>
   <asset>
     <id>235</id>
-    <groupId>net.oneandone</groupId>
-    <artifactId>sushi</artifactId>
-    <trunk>https://github.com/mlhartme/sushi</trunk>
-    <category>foo</category>
+    <name>sushi</name>
+    <scm>git@github.com:mlhartme/sushi.git</scm>
+    <category>Library</category>
   </asset>
   <asset>
     <id>545</id>
-    <groupId>net.oneandone.maven.plugins</groupId>
-    <artifactId>prerelease</artifactId>
-    <trunk>https://github.com/mlhartme/maven-prerelease-plugin</trunk>
-    <category>bar</category>
+    <name>prerelease</name>
+    <scm>git@github.com:mlhartme/maven-prerelease-plugin.git</scm>
+    <category>Maven Plugins</category>
   </asset>
 </assets>
