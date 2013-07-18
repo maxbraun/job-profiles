@@ -3,13 +3,13 @@
   <asset>
     <id>235</id>
     <name>sushi</name>
-    <scm>git@github.com:mlhartme/sushi.git</scm>
+    <scm>https://github.com/mlhartme/sushi.git</scm>
     <category>Library</category>
   </asset>
   <asset>
     <id>545</id>
     <name>prerelease</name>
-    <scm>git@github.com:mlhartme/maven-prerelease-plugin.git</scm>
+    <scm>https://github.com/mlhartme/maven-prerelease-plugin.git</scm>
     <category>Maven Plugins</category>
   </asset>
 </assets>
