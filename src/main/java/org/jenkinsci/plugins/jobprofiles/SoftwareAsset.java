@@ -7,9 +7,7 @@ public interface SoftwareAsset extends Serializable {
 
     public String getName();
 
-    public String getArtifactId();
-
-    public String getGroupId();
-
     public String getCategory();
+
+    public String getScm();
 }

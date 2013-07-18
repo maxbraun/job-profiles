@@ -8,7 +8,7 @@ import org.junit.Test;
 @Slf4j
 public class XmlSoftwareIndexTest {
     @Test
-    public void testGetAssets() throws Exception {
+    public void getAssets() throws Exception {
         World world;
         SoftwareIndex foo;
 

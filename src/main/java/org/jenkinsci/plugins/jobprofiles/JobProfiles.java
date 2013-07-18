@@ -10,7 +10,9 @@ import hudson.tasks.Builder;
 import net.oneandone.sushi.fs.CreateInputStreamException;
 import net.oneandone.sushi.fs.FileNotFoundException;
 import net.oneandone.sushi.fs.NodeInstantiationException;
+import net.oneandone.sushi.fs.World;
 import net.sf.json.JSONObject;
+import org.apache.maven.project.MavenProject;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.StaplerRequest;
 
@@ -28,18 +30,26 @@ public class JobProfiles extends Builder {
     public boolean perform(AbstractBuild build, Launcher launcher, BuildListener listener) throws FileNotFoundException, NodeInstantiationException, CreateInputStreamException {
         PrintStream log = listener.getLogger();
         SoftwareIndex index;
+        String pom;
+        MavenProject mp;
+
         log.println("Going to parse" + JobSetupConfig.get().getSoftwareIndexFile());
         index = Parser.parse(JobSetupConfig.get().getSoftwareIndexFile());
         log.println("Parsed.");
+        log.println(index.toString());
+
         for (SoftwareAsset asset : index.getAssets()) {
             log.println("Creating Job for " + asset.getName());
+            pom = new ScmGit().getPom(asset.getScm());
+            if (!pom.isEmpty()) {
+                mp = MavenProcessor.MavenProcessor(pom, new World(), listener, build);
+            }
+
+
         }
         return true;
     }
 
-    // Overridden for better type safety.
-    // If your plugin doesn't really define any property on Descriptor,
-    // you don't have to do this.
     @Override
     public DescriptorImpl getDescriptor() {
         return (DescriptorImpl) super.getDescriptor();
