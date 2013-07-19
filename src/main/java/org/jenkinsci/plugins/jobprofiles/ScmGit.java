@@ -2,6 +2,8 @@ package org.jenkinsci.plugins.jobprofiles;
 
 
 import lombok.extern.slf4j.Slf4j;
+import net.oneandone.sushi.fs.DeleteException;
+import net.oneandone.sushi.fs.NodeNotFoundException;
 import net.oneandone.sushi.fs.World;
 import net.oneandone.sushi.fs.file.FileNode;
 import org.eclipse.jgit.api.Git;
@@ -22,7 +24,7 @@ public class ScmGit implements Scm {
         try {
             localPath = world.getTemp().createTempDirectory();
         } catch (IOException e) {
-            ScmGit.log.error("Could not create temp directory.");
+            log.error("Could not create temp directory.");
             return "";
         }
         log.debug("Using " + localPath.toString());
@@ -38,6 +40,14 @@ public class ScmGit implements Scm {
         } catch (IOException e) {
             log.error("An error occured {}", e.getMessage());
             return "";
+        } finally {
+            try {
+                localPath.deleteTree();
+            } catch (DeleteException e) {
+                log.error("Cannot delete Tempdir. {}", e.getMessage());
+            } catch (NodeNotFoundException e) {
+                log.error("Cannot delete Tempdir. {}", e.getMessage());
+            }
         }
     }
 }
