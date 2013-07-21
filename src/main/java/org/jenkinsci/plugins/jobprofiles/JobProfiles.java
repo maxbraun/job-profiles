@@ -40,7 +40,7 @@ public class JobProfiles extends Builder {
 
         for (SoftwareAsset asset : index.getAssets()) {
             log.println("Creating Job for " + asset.getName());
-            pom = new ScmGit().getPom(asset.getScm());
+            pom = new ScmGit(asset.getScm()).getPom();
             if (!pom.isEmpty()) {
                 mp = MavenProcessor.MavenProcessor(pom, new World(), listener, build);
             }

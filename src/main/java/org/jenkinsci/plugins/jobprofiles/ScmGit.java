@@ -13,17 +13,22 @@ import java.io.IOException;
 @Slf4j
 public class ScmGit implements Scm {
 
-    public String getPom(String scm) {
-        World world;
-        FileNode localPath;
+    final String scm;
+
+    public ScmGit(final String scm) {
+        this.scm = scm;
+    }
+
+    public String getPom() {
+        final World world;
+        final FileNode localPath;
         Git git;
 
         world = new World();
         try {
             localPath = world.getTemp().createTempDirectory();
         } catch (IOException e) {
-            ScmGit.log.error("Could not create temp directory.");
-            return "";
+            throw new JobProfileException("Could not create temp directory.", e.getCause());
         }
         log.debug("Using " + localPath.toString());
 
@@ -33,11 +38,9 @@ public class ScmGit implements Scm {
                     .call();
             return localPath.findOne("pom.xml").readString();
         } catch (GitAPIException e) {
-            log.error("An error occured {}", e.getMessage());
-            return "";
+            throw new JobProfileException("Cannot checkout repository ", e.getCause());
         } catch (IOException e) {
-            log.error("An error occured {}", e.getMessage());
-            return "";
+            throw new JobProfileException("Cannot find pom.xml", e.getCause());
         }
     }
 }
