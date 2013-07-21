@@ -2,6 +2,8 @@ package org.jenkinsci.plugins.jobprofiles;
 
 
 import lombok.extern.slf4j.Slf4j;
+import net.oneandone.sushi.fs.DeleteException;
+import net.oneandone.sushi.fs.NodeNotFoundException;
 import net.oneandone.sushi.fs.World;
 import net.oneandone.sushi.fs.file.FileNode;
 import org.eclipse.jgit.api.Git;
@@ -13,22 +15,17 @@ import java.io.IOException;
 @Slf4j
 public class ScmGit implements Scm {
 
-    final String scm;
-
-    public ScmGit(final String scm) {
-        this.scm = scm;
-    }
-
-    public String getPom() {
-        final World world;
-        final FileNode localPath;
+    public String getPom(String scm) {
+        World world;
+        FileNode localPath;
         Git git;
 
         world = new World();
         try {
             localPath = world.getTemp().createTempDirectory();
         } catch (IOException e) {
-            throw new JobProfileException("Could not create temp directory.", e.getCause());
+            log.error("Could not create temp directory.");
+            return "";
         }
         log.debug("Using " + localPath.toString());
 
@@ -38,9 +35,19 @@ public class ScmGit implements Scm {
                     .call();
             return localPath.findOne("pom.xml").readString();
         } catch (GitAPIException e) {
-            throw new JobProfileException("Cannot checkout repository ", e.getCause());
+            log.error("An error occured {}", e.getMessage());
+            return "";
         } catch (IOException e) {
-            throw new JobProfileException("Cannot find pom.xml", e.getCause());
+            log.error("An error occured {}", e.getMessage());
+            return "";
+        } finally {
+            try {
+                localPath.deleteTree();
+            } catch (DeleteException e) {
+                log.error("Cannot delete Tempdir. {}", e.getMessage());
+            } catch (NodeNotFoundException e) {
+                log.error("Cannot delete Tempdir. {}", e.getMessage());
+            }
         }
     }
 }

@@ -21,16 +21,20 @@ import org.kohsuke.stapler.StaplerRequest;
 public class JobSetupConfig extends GlobalConfiguration {
 
     private static final String softwareIndexFileDefault = "svn:https://github.com/maxbraun/job-profiles/trunk/src/main/resources/softreg.xml";
+    private static final String profileRootDirDefault = "https://github.com/maxbraun/job-profiles-examles.git";
 
     private String softwareIndexFile;
+    private String profileRootDir;
 
     public JobSetupConfig() {
         softwareIndexFile = softwareIndexFileDefault;
+        profileRootDir = profileRootDirDefault;
     }
 
     @DataBoundConstructor
-    public JobSetupConfig(String softwareIndexFile) {
+    public JobSetupConfig(String softwareIndexFile, String profileRootDir) {
         this.softwareIndexFile = softwareIndexFile;
+        this.profileRootDir = profileRootDir;
     }
 
     @Override
@@ -50,7 +54,7 @@ public class JobSetupConfig extends GlobalConfiguration {
         return "Job Profiles";
     }
 
-    public FormValidation doCheckSoftwareIndexFile(@QueryParameter String value) {
+    public FormValidation doCheckValidUri(@QueryParameter String value) {
         World world;
 
         world = new World();
