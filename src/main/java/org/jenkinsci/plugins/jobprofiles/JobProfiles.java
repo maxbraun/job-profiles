@@ -12,9 +12,6 @@ import hudson.model.BuildableItem;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 import jenkins.model.Jenkins;
-import net.oneandone.sushi.fs.CreateInputStreamException;
-import net.oneandone.sushi.fs.FileNotFoundException;
-import net.oneandone.sushi.fs.NodeInstantiationException;
 import net.oneandone.sushi.fs.World;
 import net.sf.json.JSONObject;
 import org.apache.maven.project.MavenProject;
@@ -26,7 +23,7 @@ import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.jenkinsci.plugins.jobprofiles.JobSetupConfig.*;
+import static org.jenkinsci.plugins.jobprofiles.JobSetupConfig.get;
 
 
 public class JobProfiles extends Builder {
@@ -59,7 +56,7 @@ public class JobProfiles extends Builder {
         for (SoftwareAsset asset : index.getAssets()) {
             context = new HashMap<String, String>();
             log.println("Creating Job for " + asset.getName());
-            pom = new ScmGit().getPom(asset.getScm());
+            pom = new ScmFactory(asset.getScm()).get().getPom();
             writer = new StringWriter();
 
             assert !pom.isEmpty();

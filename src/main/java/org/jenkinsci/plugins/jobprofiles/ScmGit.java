@@ -14,8 +14,13 @@ import java.io.IOException;
 
 @Slf4j
 public class ScmGit implements Scm {
+    private final String scm;
 
-    public String getPom(String scm) {
+    public ScmGit(String scm) {
+        this.scm = scm;
+    }
+
+    public String getPom() {
         World world;
         FileNode localPath;
         Git git;
@@ -24,8 +29,7 @@ public class ScmGit implements Scm {
         try {
             localPath = world.getTemp().createTempDirectory();
         } catch (IOException e) {
-            log.error("Could not create temp directory.");
-            return "";
+            throw new JobProfileException("Could not create temp directory.", e.getCause());
         }
         log.debug("Using " + localPath.toString());
 
@@ -35,11 +39,9 @@ public class ScmGit implements Scm {
                     .call();
             return localPath.findOne("pom.xml").readString();
         } catch (GitAPIException e) {
-            log.error("An error occured {}", e.getMessage());
-            return "";
+            throw new JobProfileException(e.getMessage(), e.getCause());
         } catch (IOException e) {
-            log.error("An error occured {}", e.getMessage());
-            return "";
+            throw new JobProfileException(e.getMessage(), e.getCause());
         } finally {
             try {
                 localPath.deleteTree();
