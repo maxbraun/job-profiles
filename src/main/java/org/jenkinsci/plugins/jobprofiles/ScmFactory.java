@@ -2,6 +2,7 @@ package org.jenkinsci.plugins.jobprofiles;
 
 
 import lombok.extern.slf4j.Slf4j;
+
 @Slf4j
 public class ScmFactory {
 
@@ -14,7 +15,7 @@ public class ScmFactory {
             this.scm = new ScmGit(scm);
             return;
         }
-        this.scm = new ScmSVN(scm);
+        this.scm = new ScmSVN("svn:" + scm);
     }
 
     public Scm get() {

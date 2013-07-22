@@ -1,18 +1,20 @@
 package org.jenkinsci.plugins.jobprofiles;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import sun.jvm.hotspot.utilities.Assert;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
 public class ScmTest {
 
     private String svn;
     private String git;
 
     @Before
-    public void init() throws Exception{
+    public void init() throws Exception {
         svn = "https://pustefix.svn.sourceforge.net/svnroot/pustefix/trunk";
         git = "https://github.com/mlhartme/sushi.git";
     }
@@ -52,7 +54,7 @@ public class ScmTest {
 
         for (String gitUrl : gitURLs) {
             scm = new ScmFactory(gitUrl).get();
-            Assert.that(scm instanceof ScmGit,  "Wrong Type at " + gitUrl);
+            Assert.assertTrue(scm instanceof ScmGit);
         }
     }
 
@@ -60,7 +62,7 @@ public class ScmTest {
     public void getSVNFromScmFactory() throws Exception {
         Scm scm;
         scm = new ScmFactory(svn).get();
-        Assert.that(scm instanceof ScmSVN, "Wrong type at SVN");
+        Assert.assertTrue(scm instanceof ScmSVN);
     }
 
     @Test
@@ -73,21 +75,41 @@ public class ScmTest {
         Scm scm;
         scm = new ScmFactory(scmLocation).get();
 
-        Assert.that(scm.getPom().length() > 1, "cannot parse pom");
+        Assert.assertTrue(scm.getPom().length() > 1);
     }
 
     @Test(expected = JobProfileException.class)
-    public void WrongSVNUrl() throws Exception{
+    public void WrongSVNUrl() throws Exception {
         new ScmFactory(svn + "/").get().getPom();
     }
 
     @Test(expected = JobProfileException.class)
-    public void WrongGitUrl() throws  Exception{
+    public void WrongGitUrl() throws Exception {
         new ScmFactory("http:ajdlfjlsdjfö.git").get().getPom();
     }
 
     @Test(expected = JobProfileException.class)
     public void GitRepoWithoutPom() throws Exception {
         new ScmFactory("git@github.com:maxbraun/puppet-phantomjs.git").get().getPom();
+    }
+
+    @Test
+    public void GitProfile() throws Exception {
+        getProfile("https://github.com/maxbraun/job-profiles-examles.git", "git-maven");
+    }
+
+    @Test
+    public void SvnProfile() throws Exception {
+        getProfile("https://github.com/maxbraun/job-profiles-examles/trunk", "git-maven");
+    }
+
+    private void getProfile(String scmUrl, String profileName) throws Exception {
+        Scm scm;
+        scm = new ScmFactory(scmUrl).get();
+        Map<String, String> profile;
+
+        profile = scm.getProfile(profileName);
+
+        Assert.assertTrue(profile.size() >= 1);
     }
 }

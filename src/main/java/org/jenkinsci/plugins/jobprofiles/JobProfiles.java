@@ -46,6 +46,7 @@ public class JobProfiles extends Builder {
         Configuration conf;
         InputStream src;
         BuildableItem p;
+        Map<String, String> profile;
 
         conf = new Configuration();
         log.println("Going to parse" + get().getSoftwareIndexFile());
@@ -64,9 +65,9 @@ public class JobProfiles extends Builder {
             context.put("name", mp.getName());
             context.put("scm", asset.getScm());
 
-            ProfileGit profiles = new ProfileGit(get().getProfileRootDir(), "git-maven");
+            profile = new ScmFactory(asset.getScm()).get().getProfile("git-maven");
             try {
-                for (Map.Entry<String, String> entry : profiles.getProfiles().entrySet()) {
+                for (Map.Entry<String, String> entry : profile.entrySet()) {
 
                     reader = new StringReader(entry.getValue());
                     template = new Template("", reader, conf);
@@ -76,8 +77,6 @@ public class JobProfiles extends Builder {
                     src.close();
 
                 }
-            } catch (GitAPIException e) {
-                throw new JobProfileException(e.getMessage(), e.getCause());
             } catch (TemplateException e) {
                 throw new JobProfileException(e.getMessage(), e.getCause());
             }
