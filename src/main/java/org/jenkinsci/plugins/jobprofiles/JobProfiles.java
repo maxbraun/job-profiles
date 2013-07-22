@@ -37,9 +37,7 @@ public class JobProfiles extends Builder {
     public boolean perform(AbstractBuild build, Launcher launcher, BuildListener listener) throws IOException {
         PrintStream log = listener.getLogger();
         SoftwareIndex index;
-        String pom;
-        MavenProject mp;
-        Map<String, String> context;
+        Map<String, Object> context;
         Writer writer;
         Template template;
         Reader reader;
@@ -55,17 +53,16 @@ public class JobProfiles extends Builder {
         log.println(index.toString());
 
         for (SoftwareAsset asset : index.getAssets()) {
-            context = new HashMap<String, String>();
+            Scm scm = new ScmFactory(asset.getScm()).get();
+            context = new ContextFactory(scm).get().getContext();
             log.println("Creating Job for " + asset.getName());
-            pom = new ScmFactory(asset.getScm()).get().getPom();
             writer = new StringWriter();
 
-            assert !pom.isEmpty();
-            //mp = MavenProcessor.mavenProcessor(pom, new World(), listener, build);
             context.put("name", asset.getName());
             context.put("scm", asset.getScm());
 
-            profile = new ScmFactory(asset.getScm()).get().getProfile("git-maven");
+            //TODO: need a profilefinder
+            profile = new ScmFactory(get().getProfileRootDir()).get().getProfile("git-maven");
             try {
                 for (Map.Entry<String, String> entry : profile.entrySet()) {
 
