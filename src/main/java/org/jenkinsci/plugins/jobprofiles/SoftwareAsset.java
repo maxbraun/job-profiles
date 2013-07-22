@@ -3,11 +3,11 @@ package org.jenkinsci.plugins.jobprofiles;
 import java.io.Serializable;
 
 public interface SoftwareAsset extends Serializable {
-    public String getId();
+    String getId();
 
-    public String getName();
+    String getName();
 
-    public String getCategory();
+    String getCategory();
 
-    public String getScm();
+    String getScm();
 }

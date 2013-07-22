@@ -23,7 +23,6 @@ public class ScmGit implements Scm {
     public String getPom() {
         World world;
         FileNode localPath;
-        Git git;
 
         world = new World();
         try {
@@ -34,7 +33,7 @@ public class ScmGit implements Scm {
         log.debug("Using " + localPath.toString());
 
         try {
-            git = Git.cloneRepository()
+            Git.cloneRepository()
                     .setDirectory(new File(localPath.getAbsolute())).setURI(scm)
                     .call();
             return localPath.findOne("pom.xml").readString();

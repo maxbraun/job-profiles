@@ -14,7 +14,6 @@ import net.oneandone.sushi.fs.World;
 public class Parser {
 
     public static SoftwareIndex parse(String datasource) throws NodeInstantiationException, FileNotFoundException, CreateInputStreamException {
-        SoftwareIndex softwareIndex;
         World world;
 
         world = new World();

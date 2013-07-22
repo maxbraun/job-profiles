@@ -17,7 +17,7 @@ import java.io.IOException;
 
 public class MavenProcessor {
 
-    public static MavenProject MavenProcessor(String pom, World world, TaskListener listener, AbstractBuild build) {
+    public static MavenProject mavenProcessor(String pom, World world, TaskListener listener, AbstractBuild build) {
         MavenEmbedder embedder = null;
         MavenProject mavenProject = null;
         FileNode tmpPom = null;

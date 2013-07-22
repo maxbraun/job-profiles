@@ -5,9 +5,10 @@ import net.oneandone.sushi.fs.World;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+
 public class ScmSVN implements Scm {
 
-    final String scm;
+    private final String scm;
 
     public ScmSVN(final String scm) {
         this.scm = scm;

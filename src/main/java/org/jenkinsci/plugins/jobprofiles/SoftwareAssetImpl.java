@@ -8,8 +8,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @XStreamAlias("asset")
 public class SoftwareAssetImpl implements SoftwareAsset {
-    public String id;
-    public String name;
-    public String category;
-    public String scm;
+    private String id;
+    private String name;
+    private String category;
+    private String scm;
 }

@@ -20,15 +20,15 @@ import org.kohsuke.stapler.StaplerRequest;
 @Setter
 public class JobSetupConfig extends GlobalConfiguration {
 
-    private static final String softwareIndexFileDefault = "svn:https://github.com/maxbraun/job-profiles/trunk/src/main/resources/softreg.xml";
-    private static final String profileRootDirDefault = "https://github.com/maxbraun/job-profiles-examles.git";
+    private static final String SOFTWARE_INDEX_FILE_DEFAULT = "svn:https://github.com/maxbraun/job-profiles/trunk/src/main/resources/softreg.xml";
+    private static final String PROFILE_ROOT_DIR_DEFAULT = "https://github.com/maxbraun/job-profiles-examles.git";
 
     private String softwareIndexFile;
     private String profileRootDir;
 
     public JobSetupConfig() {
-        softwareIndexFile = softwareIndexFileDefault;
-        profileRootDir = profileRootDirDefault;
+        softwareIndexFile = SOFTWARE_INDEX_FILE_DEFAULT;
+        profileRootDir = PROFILE_ROOT_DIR_DEFAULT;
     }
 
     @DataBoundConstructor

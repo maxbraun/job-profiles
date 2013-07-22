@@ -24,8 +24,7 @@ public class ProfileGit {
     @NonNull
     private String profile;
 
-    public HashMap<String, String> getProfiles() throws IOException, GitAPIException {
-        Git git;
+    public Map<String, String> getProfiles() throws IOException, GitAPIException {
         World world;
         world = new World();
         FileNode localPath;
@@ -34,7 +33,7 @@ public class ProfileGit {
 
         localPath = world.getTemp().createTempDirectory();
 
-        git = Git.cloneRepository()
+        Git.cloneRepository()
                 .setDirectory(new File(localPath.getAbsolute())).setURI(rootUri)
                 .call();
 

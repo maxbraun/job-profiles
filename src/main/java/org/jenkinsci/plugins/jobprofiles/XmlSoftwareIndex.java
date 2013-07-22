@@ -17,18 +17,18 @@ import java.util.List;
 public class XmlSoftwareIndex implements SoftwareIndex {
 
     @XStreamImplicit
-    public List<SoftwareAsset> asset = new ArrayList<SoftwareAsset>();
+    private List<SoftwareAsset> asset = new ArrayList<SoftwareAsset>();
 
 
     public List<SoftwareAsset> getAssets() {
         return asset;
     }
 
-    public SoftwareAsset getAsset(Integer Id) {
+    public SoftwareAsset getAsset(Integer id) {
         return null;
     }
 
-    public SoftwareAsset getAsset(String Name) {
+    public SoftwareAsset getAsset(String name) {
         return null;
     }
 

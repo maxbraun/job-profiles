@@ -5,10 +5,10 @@ import java.io.Serializable;
 import java.util.List;
 
 public interface SoftwareIndex extends Serializable {
-    public List<SoftwareAsset> getAssets();
+    List<SoftwareAsset> getAssets();
 
-    public SoftwareAsset getAsset(Integer Id);
+    SoftwareAsset getAsset(Integer id);
 
-    public SoftwareAsset getAsset(String Name);
+    SoftwareAsset getAsset(String name);
 
 }

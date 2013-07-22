@@ -60,7 +60,7 @@ public class JobProfiles extends Builder {
             writer = new StringWriter();
 
             assert !pom.isEmpty();
-            mp = MavenProcessor.MavenProcessor(pom, new World(), listener, build);
+            mp = MavenProcessor.mavenProcessor(pom, new World(), listener, build);
             context.put("name", mp.getName());
             context.put("scm", asset.getScm());
 
@@ -77,9 +77,9 @@ public class JobProfiles extends Builder {
 
                 }
             } catch (GitAPIException e) {
-                e.printStackTrace();
+                throw new JobProfileException(e.getMessage(), e.getCause());
             } catch (TemplateException e) {
-                e.printStackTrace();
+                throw new JobProfileException(e.getMessage(), e.getCause());
             }
 
         }
