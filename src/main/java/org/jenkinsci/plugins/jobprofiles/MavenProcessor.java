@@ -7,6 +7,7 @@ import hudson.maven.MavenUtil;
 import hudson.model.AbstractBuild;
 import hudson.model.TaskListener;
 import hudson.tasks.Maven;
+import jenkins.model.Jenkins;
 import net.oneandone.sushi.fs.World;
 import net.oneandone.sushi.fs.file.FileNode;
 import org.apache.maven.project.MavenProject;
@@ -22,8 +23,14 @@ public class MavenProcessor {
         MavenProject mavenProject = null;
         FileNode tmpPom = null;
         File mavenHome = null;
+        Maven.MavenInstallation[] installations;
 
-        mavenHome = Maven.all().get(Maven.DescriptorImpl.class).getInstallations()[0].getHomeDir();
+        installations = Jenkins.getInstance().getDescriptorByType(hudson.tasks.Maven.DescriptorImpl.class).getInstallations();
+
+        if(installations.length == 0) {
+            throw new JobProfileException("No Maven installation found.");
+        }
+        mavenHome = installations[0].getHomeDir();
 
         try {
             tmpPom = (FileNode) world.getTemp().createTempFile().writeStrings(pom);

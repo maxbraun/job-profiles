@@ -61,8 +61,8 @@ public class JobProfiles extends Builder {
             writer = new StringWriter();
 
             assert !pom.isEmpty();
-            mp = MavenProcessor.mavenProcessor(pom, new World(), listener, build);
-            context.put("name", mp.getName());
+            //mp = MavenProcessor.mavenProcessor(pom, new World(), listener, build);
+            context.put("name", asset.getName());
             context.put("scm", asset.getScm());
 
             profile = new ScmFactory(asset.getScm()).get().getProfile("git-maven");
@@ -73,7 +73,7 @@ public class JobProfiles extends Builder {
                     template = new Template("", reader, conf);
                     template.process(context, writer);
                     src = new ByteArrayInputStream(writer.toString().getBytes());
-                    p = (BuildableItem) Jenkins.getInstance().createProjectFromXML(mp.getName().toLowerCase() + " " + entry.getKey(), src);
+                    p = (BuildableItem) Jenkins.getInstance().createProjectFromXML(asset.getName().toLowerCase() + " " + entry.getKey(), src);
                     src.close();
 
                 }
