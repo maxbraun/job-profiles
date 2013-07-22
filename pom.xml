@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.jenkins-ci.plugins</groupId>
         <artifactId>plugin</artifactId>
-        <version>1.509.1</version>
+        <version>1.509.2</version>
         <!-- which version of Jenkins is this plugin built against? -->
     </parent>
 
@@ -50,24 +50,9 @@
             <version>1.480.3</version>
         </dependency>
         <dependency>
-            <groupId>org.kohsuke.stapler</groupId>
-            <artifactId>stapler</artifactId>
-            <version>1.198</version>
-        </dependency>
-        <dependency>
             <groupId>org.eclipse.jgit</groupId>
             <artifactId>org.eclipse.jgit</artifactId>
             <version>3.0.0.201306101825-r</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jenkins-ci.lib</groupId>
-            <artifactId>lib-jenkins-maven-embedder</artifactId>
-            <version>3.9</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.maven</groupId>
-            <artifactId>maven-core</artifactId>
-            <version>3.0.4</version>
         </dependency>
         <dependency>
             <groupId>org.jenkins-ci.main</groupId>
@@ -100,6 +85,6 @@
           explicitly specifying the latest version here because one we get from the parent POM
           tends to lag behind a bit
         -->
-        <maven-hpi-plugin.version>1.95</maven-hpi-plugin.version>
+        <maven-hpi-plugin.version>1.96</maven-hpi-plugin.version>
     </properties>
 </project>
