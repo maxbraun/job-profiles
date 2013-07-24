@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 @Slf4j
-public class ScmGit implements Scm {
+public class ScmGit extends Scm {
     private final String scm;
     public final FileNode localpath;
     private final Git git;

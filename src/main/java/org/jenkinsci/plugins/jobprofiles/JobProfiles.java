@@ -62,7 +62,7 @@ public class JobProfiles extends Builder {
         profileFinder = new ProfileFinder(get().getProfileRootDir());
 
         for (SoftwareAsset asset : index.getAssets()) {
-            Scm scm = new ScmFactory(asset.getScm()).get();
+            Scm scm = Scm.get(asset.getScm());
             context = new ContextFactory(scm).get().getContext();
             log.println("Creating Job for " + asset.getName());
             writer = new StringWriter();

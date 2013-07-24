@@ -9,12 +9,24 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Map;
 
-public interface Scm {
-    String getPom();
+abstract class Scm {
+    public static Scm get(String uri) {
+        Scm scm;
+        final String gitPattern = "^(.*\\.git)[/]?$";
 
-    Map<String, String> getProfile(String name) throws IOException;
+        if (uri.matches(gitPattern)) {
+            scm = new ScmGit(uri);
+            return scm;
+        }
 
-    List<Node> find(String seachString);
+        return new ScmSVN("svn:" + uri);
+    }
 
-    Node findOne(String seachString);
+    abstract String getPom();
+
+    abstract Map<String, String> getProfile(String name) throws IOException;
+
+    abstract List<Node> find(String seachString);
+
+    abstract Node findOne(String seachString);
 }

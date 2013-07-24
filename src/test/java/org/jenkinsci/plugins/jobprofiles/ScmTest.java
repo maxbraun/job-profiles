@@ -53,7 +53,7 @@ public class ScmTest {
         //gitURLs.add("file://~/path/to/repo.git/");
         gitURLs.add(git);
         for (String gitUrl : gitURLs) {
-            scm = new ScmFactory(gitUrl).get();
+            scm = Scm.get(gitUrl);
             Assert.assertTrue(scm instanceof ScmGit);
         }
     }
@@ -61,7 +61,7 @@ public class ScmTest {
     @Test
     public void getSVNFromScmFactory() throws Exception {
         Scm scm;
-        scm = new ScmFactory(svn).get();
+        scm = Scm.get(svn);
         Assert.assertTrue(scm instanceof ScmSVN);
     }
 
@@ -73,24 +73,24 @@ public class ScmTest {
 
     private void getPom(String scmLocation) {
         Scm scm;
-        scm = new ScmFactory(scmLocation).get();
+        scm = Scm.get(scmLocation);
 
         Assert.assertTrue(scm.getPom().length() > 1);
     }
 
     @Test(expected = JobProfileException.class)
     public void WrongSVNUrl() throws Exception {
-        new ScmFactory(svn + "/").get().getPom();
+        Scm.get(svn + "/").getPom();
     }
 
     @Test(expected = JobProfileException.class)
     public void WrongGitUrl() throws Exception {
-        new ScmFactory("http:ajdlfjlsdjfö.git").get().getPom();
+        Scm.get("http:ajdlfjlsdjfö.git").getPom();
     }
 
     @Test(expected = JobProfileException.class)
     public void GitRepoWithoutPom() throws Exception {
-        new ScmFactory("git@github.com:maxbraun/puppet-phantomjs.git").get().getPom();
+        Scm.get("git@github.com:maxbraun/puppet-phantomjs.git").getPom();
     }
 
     @Test
@@ -105,7 +105,7 @@ public class ScmTest {
 
     private void getProfile(String scmUrl, String profileName) throws Exception {
         Scm scm;
-        scm = new ScmFactory(scmUrl).get();
+        scm = Scm.get(scmUrl);
         Map<String, String> profile;
 
         profile = scm.getProfile(profileName);

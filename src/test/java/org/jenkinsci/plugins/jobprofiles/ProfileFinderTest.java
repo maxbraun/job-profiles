@@ -16,7 +16,7 @@ public class ProfileFinderTest {
     @Test
     public void maven() throws Exception {
         finder = new ProfileFinder(profiles);
-        Assert.assertEquals("maven", finder.setAssetSCM(new ScmFactory(maven).get()).find());
+        Assert.assertEquals("maven", finder.setAssetSCM(Scm.get(maven)).find());
 
 
     }
@@ -24,7 +24,7 @@ public class ProfileFinderTest {
     @Test
     public void composer() throws Exception {
         finder = new ProfileFinder(profiles);
-        Assert.assertEquals("composer", finder.setAssetSCM(new ScmFactory(composer).get()).find());
+        Assert.assertEquals("composer", finder.setAssetSCM(Scm.get(composer)).find());
 
     }
 }

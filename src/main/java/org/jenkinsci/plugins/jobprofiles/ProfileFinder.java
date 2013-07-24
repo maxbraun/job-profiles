@@ -10,7 +10,7 @@ public class ProfileFinder {
     private Scm assetScm;
 
     public ProfileFinder(String profileRootDir) {
-        this.profileRoot = new ScmFactory(profileRootDir).get();
+        this.profileRoot = Scm.get(profileRootDir);
     }
 
     public ProfileFinder setAssetSCM(Scm assetScm) {

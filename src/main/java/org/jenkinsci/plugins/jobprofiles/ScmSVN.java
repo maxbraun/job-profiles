@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ScmSVN implements Scm {
+public class ScmSVN extends Scm {
 
     private final String scm;
     private final World world;
