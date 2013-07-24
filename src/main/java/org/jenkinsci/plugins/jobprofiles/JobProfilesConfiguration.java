@@ -7,8 +7,6 @@ import jenkins.model.GlobalConfiguration;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import net.oneandone.sushi.fs.NodeInstantiationException;
-import net.oneandone.sushi.fs.World;
 import net.sf.json.JSONObject;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
@@ -21,7 +19,7 @@ import java.net.URISyntaxException;
 @Slf4j
 @Getter
 @Setter
-public class JobSetupConfig extends GlobalConfiguration {
+public class JobProfilesConfiguration extends GlobalConfiguration {
 
     private static final String SOFTWARE_INDEX_FILE_DEFAULT = "svn:https://github.com/maxbraun/job-profiles/trunk/src/main/resources/softreg.xml";
     private static final String PROFILE_ROOT_DIR_DEFAULT = "https://github.com/maxbraun/job-profiles-examles.git";
@@ -29,13 +27,13 @@ public class JobSetupConfig extends GlobalConfiguration {
     private String softwareIndexFile;
     private String profileRootDir;
 
-    public JobSetupConfig() {
+    public JobProfilesConfiguration() {
         softwareIndexFile = SOFTWARE_INDEX_FILE_DEFAULT;
         profileRootDir = PROFILE_ROOT_DIR_DEFAULT;
     }
 
     @DataBoundConstructor
-    public JobSetupConfig(String softwareIndexFile, String profileRootDir) {
+    public JobProfilesConfiguration(String softwareIndexFile, String profileRootDir) {
         this.softwareIndexFile = softwareIndexFile;
         this.profileRootDir = profileRootDir;
     }
@@ -48,8 +46,8 @@ public class JobSetupConfig extends GlobalConfiguration {
         return true;
     }
 
-    public static JobSetupConfig get() {
-        return GlobalConfiguration.all().get(JobSetupConfig.class);
+    public static JobProfilesConfiguration get() {
+        return GlobalConfiguration.all().get(JobProfilesConfiguration.class);
     }
 
     @Override

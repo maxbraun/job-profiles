@@ -30,7 +30,7 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Map;
 
-import static org.jenkinsci.plugins.jobprofiles.JobSetupConfig.get;
+import static org.jenkinsci.plugins.jobprofiles.JobProfilesConfiguration.get;
 
 
 public class JobProfiles extends Builder {
@@ -61,7 +61,7 @@ public class JobProfiles extends Builder {
 
         log.println("Going to parse" + get().getSoftwareIndexFile());
 
-        index = Parser.parse(get().getSoftwareIndexFile(), world);
+        index = SoftwareIndex.load(world.validNode(get().getSoftwareIndexFile()));
 
         log.println("Parsed.");
 

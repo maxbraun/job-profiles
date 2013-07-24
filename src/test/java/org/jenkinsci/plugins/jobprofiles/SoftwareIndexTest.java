@@ -14,7 +14,7 @@ public class SoftwareIndexTest {
 
         world = new World();
 
-        foo = Parser.parse("svn:https://github.com/maxbraun/job-profiles/trunk/src/main/resources/softreg.xml", world);
+        foo = SoftwareIndex.load(world.node("svn:https://github.com/maxbraun/job-profiles/trunk/src/main/resources/softreg.xml"));
         SoftwareIndexTest.log.info(foo.toString());
 
     }
