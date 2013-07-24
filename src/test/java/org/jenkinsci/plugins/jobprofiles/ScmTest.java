@@ -11,7 +11,6 @@ import java.util.Map;
 public class ScmTest {
 
     private final String svn = "https://pustefix.svn.sourceforge.net/svnroot/pustefix/trunk";
-    ;
     private final String git = "https://github.com/mlhartme/sushi.git";
     private final World world = new World();
 
