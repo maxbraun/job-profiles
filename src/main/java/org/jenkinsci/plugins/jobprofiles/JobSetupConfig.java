@@ -14,6 +14,9 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
 @Extension
 @Slf4j
 @Getter
@@ -55,20 +58,11 @@ public class JobSetupConfig extends GlobalConfiguration {
     }
 
     public FormValidation doCheckValidUri(@QueryParameter String value) {
-        World world;
-
-        world = new World();
         try {
-            world.validNode(value);
-            return FormValidation.ok();
-        } catch (NodeInstantiationException e) {
-            log.info("could not validate {}, cause {}", value, e);
-            return FormValidation.error("Validation failed");
-        } catch (IllegalStateException e) {
-            log.info("could not validate {}, cause {}", value, e);
-            return FormValidation.error("Validation failed. Try it with file://");
+            new URI(value);
+        } catch (URISyntaxException e) {
+            return FormValidation.error("Validation failed.");
         }
+        return FormValidation.ok();
     }
-
-
 }
