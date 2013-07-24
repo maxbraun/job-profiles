@@ -13,11 +13,7 @@ import net.oneandone.sushi.fs.World;
 @Slf4j
 public class Parser {
 
-    public static SoftwareIndex parse(String datasource) throws NodeInstantiationException, FileNotFoundException, CreateInputStreamException {
-        World world;
-
-        world = new World();
-
+    public static SoftwareIndex parse(String datasource, World world) throws NodeInstantiationException, FileNotFoundException, CreateInputStreamException {
         XStream2 xstream;
         Node datasourceURI;
 

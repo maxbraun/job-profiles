@@ -14,6 +14,7 @@ import hudson.model.View;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 import jenkins.model.Jenkins;
+import net.oneandone.sushi.fs.World;
 import net.sf.json.JSONObject;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.StaplerRequest;
@@ -53,17 +54,23 @@ public class JobProfiles extends Builder {
         Map<String, String> profile;
         ProfileFinder profileFinder;
         String name;
+        World world;
 
+        world = new World();
         conf = new Configuration();
+
         log.println("Going to parse" + get().getSoftwareIndexFile());
-        index = Parser.parse(get().getSoftwareIndexFile());
+
+        index = Parser.parse(get().getSoftwareIndexFile(), world);
+
         log.println("Parsed.");
-        log.println(index.toString());
-        profileFinder = new ProfileFinder(get().getProfileRootDir());
+
+        profileFinder = new ProfileFinder(get().getProfileRootDir(), world);
 
         for (SoftwareAsset asset : index.getAssets()) {
-            Scm scm = Scm.get(asset.getScm());
-            context = Context.get(scm).getContext();
+
+            Scm scm = Scm.get(asset.getScm(), world);
+            context = Context.get(scm, world).getContext();
             log.println("Creating Job for " + asset.getName());
             writer = new StringWriter();
 

@@ -23,8 +23,8 @@ public class ScmGit extends Scm {
     private final Git git;
     private final World world;
 
-    public ScmGit(String scm) {
-        this.world = new World();
+    public ScmGit(String scm, World world) {
+        this.world = world;
         this.scm = scm;
         try {
             this.localpath = world.getTemp().createTempDirectory();

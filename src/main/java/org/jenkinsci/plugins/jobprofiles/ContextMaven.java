@@ -26,8 +26,10 @@ import java.util.logging.Logger;
 public class ContextMaven extends Context {
     private Map<String, Object> context;
     private final Scm scm;
+    private World world;
 
-    public ContextMaven(Scm scm) {
+    public ContextMaven(Scm scm, World world) {
+        this.world = world;
         this.scm = scm;
         this.context = new HashMap<String, Object>();
     }
@@ -46,7 +48,6 @@ public class ContextMaven extends Context {
     }
 
     private MavenProject getMavenProject(String pomContent) {
-        World world;
         MavenEmbedder embedder = null;
         MavenProject mavenProject = null;
         FileNode tmpPom = null;
@@ -61,7 +62,6 @@ public class ContextMaven extends Context {
         }
 
         mavenHome = installations[0].getHomeDir();
-        world = new World();
         listener = new LogTaskListener(Logger.getLogger(ContextMaven.class.toString()), Level.ALL);
 
         try {

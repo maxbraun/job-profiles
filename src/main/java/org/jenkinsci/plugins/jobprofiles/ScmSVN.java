@@ -14,9 +14,9 @@ public class ScmSVN extends Scm {
     private final String scm;
     private final World world;
 
-    public ScmSVN(final String scm) {
+    public ScmSVN(final String scm, World world) {
         this.scm = scm;
-        world = new World();
+        this.world = world;
     }
 
 

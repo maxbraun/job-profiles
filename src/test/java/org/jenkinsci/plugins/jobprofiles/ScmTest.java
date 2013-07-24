@@ -1,8 +1,10 @@
 package org.jenkinsci.plugins.jobprofiles;
 
+import net.oneandone.sushi.fs.World;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import sun.plugin2.message.OverlayWindowMoveMessage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,14 +12,10 @@ import java.util.Map;
 
 public class ScmTest {
 
-    private String svn;
-    private String git;
-
-    @Before
-    public void init() throws Exception {
-        svn = "https://pustefix.svn.sourceforge.net/svnroot/pustefix/trunk";
-        git = "https://github.com/mlhartme/sushi.git";
-    }
+    private final String svn = "https://pustefix.svn.sourceforge.net/svnroot/pustefix/trunk";
+    ;
+    private final String git = "https://github.com/mlhartme/sushi.git";
+    private final World world = new World();
 
     @Test
     public void getGitFromScmFactory() throws Exception {
@@ -53,7 +51,7 @@ public class ScmTest {
         //gitURLs.add("file://~/path/to/repo.git/");
         gitURLs.add(git);
         for (String gitUrl : gitURLs) {
-            scm = Scm.get(gitUrl);
+            scm = Scm.get(gitUrl, world);
             Assert.assertTrue(scm instanceof ScmGit);
         }
     }
@@ -61,7 +59,7 @@ public class ScmTest {
     @Test
     public void getSVNFromScmFactory() throws Exception {
         Scm scm;
-        scm = Scm.get(svn);
+        scm = Scm.get(svn, world);
         Assert.assertTrue(scm instanceof ScmSVN);
     }
 
@@ -73,24 +71,24 @@ public class ScmTest {
 
     private void getPom(String scmLocation) {
         Scm scm;
-        scm = Scm.get(scmLocation);
+        scm = Scm.get(scmLocation, world);
 
         Assert.assertTrue(scm.getPom().length() > 1);
     }
 
     @Test(expected = JobProfileException.class)
     public void WrongSVNUrl() throws Exception {
-        Scm.get(svn + "/").getPom();
+        Scm.get(svn + "/", world).getPom();
     }
 
     @Test(expected = JobProfileException.class)
     public void WrongGitUrl() throws Exception {
-        Scm.get("http:ajdlfjlsdjfö.git").getPom();
+        Scm.get("http:ajdlfjlsdjfö.git", world).getPom();
     }
 
     @Test(expected = JobProfileException.class)
     public void GitRepoWithoutPom() throws Exception {
-        Scm.get("git@github.com:maxbraun/puppet-phantomjs.git").getPom();
+        Scm.get("git@github.com:maxbraun/puppet-phantomjs.git", world).getPom();
     }
 
     @Test
@@ -105,7 +103,7 @@ public class ScmTest {
 
     private void getProfile(String scmUrl, String profileName) throws Exception {
         Scm scm;
-        scm = Scm.get(scmUrl);
+        scm = Scm.get(scmUrl, world);
         Map<String, String> profile;
 
         profile = scm.getProfile(profileName);

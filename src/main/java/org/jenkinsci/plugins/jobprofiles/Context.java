@@ -1,5 +1,7 @@
 package org.jenkinsci.plugins.jobprofiles;
 
+import net.oneandone.sushi.fs.World;
+
 import java.util.Map;
 
 public abstract class Context {
@@ -7,7 +9,7 @@ public abstract class Context {
 
     abstract void createContext();
 
-    public static Context get(Scm scm) {
-        return new ContextMaven(scm);
+    public static Context get(Scm scm, World world) {
+        return new ContextMaven(scm, world);
     }
 }

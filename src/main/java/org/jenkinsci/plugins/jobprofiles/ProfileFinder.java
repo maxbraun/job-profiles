@@ -1,6 +1,8 @@
 package org.jenkinsci.plugins.jobprofiles;
 
 
+import net.oneandone.sushi.fs.World;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -9,8 +11,8 @@ public class ProfileFinder {
     private final Scm profileRoot;
     private Scm assetScm;
 
-    public ProfileFinder(String profileRootDir) {
-        this.profileRoot = Scm.get(profileRootDir);
+    public ProfileFinder(String profileRootDir, World world) {
+        this.profileRoot = Scm.get(profileRootDir, world);
     }
 
     public ProfileFinder setAssetSCM(Scm assetScm) {
