@@ -6,21 +6,22 @@ import net.oneandone.sushi.fs.*;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ScmSVN implements Scm {
 
     private final String scm;
+    private final World world;
 
     public ScmSVN(final String scm) {
         this.scm = scm;
+        world = new World();
     }
 
 
     public String getPom() {
-        World world;
 
-        world = new World();
 
         try {
             return world.node(scm).findOne("pom.xml").toString();
@@ -32,10 +33,7 @@ public class ScmSVN implements Scm {
     }
 
     public Map<String, String> getProfile(String name) {
-        World world;
         Map<String, String> profiles;
-
-        world = new World();
         profiles = new HashMap<String, String>();
         try {
             for (Node file : world.node(scm).join(name).list()) {
@@ -50,6 +48,31 @@ public class ScmSVN implements Scm {
             throw new JobProfileException(e.getMessage(), e.getCause());
         } catch (NodeInstantiationException e) {
             throw new JobProfileException(e.getMessage(), e.getCause());
+        }
+    }
+
+    public List<Node> find(String seachString) {
+        try {
+            return world.node(scm).find(seachString);
+        } catch (URISyntaxException e) {
+            return null;
+        } catch (NodeInstantiationException e) {
+            return null;
+        } catch (IOException e) {
+            return null;
+        }
+
+    }
+
+    public Node findOne(String seachString) {
+        try {
+            return world.node(scm).findOne(seachString);
+        } catch (URISyntaxException e) {
+            return null;
+        } catch (NodeInstantiationException e) {
+            return null;
+        } catch (IOException e) {
+            return null;
         }
     }
 }
