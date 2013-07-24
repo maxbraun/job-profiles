@@ -1,3 +1,4 @@
 target
 .idea
 work
+.sonar-ide.properties
