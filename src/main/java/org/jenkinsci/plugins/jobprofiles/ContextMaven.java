@@ -23,7 +23,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @Slf4j
-public class ContextMaven implements Context {
+public class ContextMaven extends Context {
     private Map<String, Object> context;
     private final Scm scm;
 

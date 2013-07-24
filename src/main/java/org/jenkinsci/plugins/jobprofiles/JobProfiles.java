@@ -63,7 +63,7 @@ public class JobProfiles extends Builder {
 
         for (SoftwareAsset asset : index.getAssets()) {
             Scm scm = Scm.get(asset.getScm());
-            context = new ContextFactory(scm).get().getContext();
+            context = Context.get(scm).getContext();
             log.println("Creating Job for " + asset.getName());
             writer = new StringWriter();
 

@@ -2,8 +2,12 @@ package org.jenkinsci.plugins.jobprofiles;
 
 import java.util.Map;
 
-public interface Context {
-    Map<String, Object> getContext();
+public abstract class Context {
+    abstract Map<String, Object> getContext();
 
-    void createContext();
+    abstract void createContext();
+
+    public static Context get(Scm scm) {
+        return new ContextMaven(scm);
+    }
 }
