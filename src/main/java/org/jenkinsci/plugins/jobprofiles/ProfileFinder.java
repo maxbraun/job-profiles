@@ -21,7 +21,7 @@ public class ProfileFinder {
     }
 
 
-    public String find() {
+    public String find() throws IOException {
         Map<String, String> buildSystems;
 
         buildSystems = new HashMap<String, String>();

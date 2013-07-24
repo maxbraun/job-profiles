@@ -3,31 +3,29 @@ package org.jenkinsci.plugins.jobprofiles;
 
 import net.oneandone.sushi.fs.Node;
 import net.oneandone.sushi.fs.World;
-import net.oneandone.sushi.fs.file.FileNode;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Map;
 
-abstract class Scm {
+public abstract class Scm {
     public static Scm get(String uri, World world) {
         Scm scm;
         final String gitPattern = "^(.*\\.git)[/]?$";
 
         if (uri.matches(gitPattern)) {
-            scm = new ScmGit(uri, world);
+            scm = ScmGit.create(world, uri);
             return scm;
         }
 
-        return new ScmSVN("svn:" + uri, world);
+        return ScmNode.create(world, "svn:" + uri);
     }
 
-    abstract String getPom();
+    public abstract String getPom();
 
-    abstract Map<String, String> getProfile(String name) throws IOException;
+    public abstract Map<String, String> getProfile(String name) throws IOException;
 
-    abstract List<Node> find(String seachString);
+    public abstract List<Node> find(String seachString) throws IOException;
 
-    abstract Node findOne(String seachString);
+    public abstract Node findOne(String seachString) throws IOException;
 }

@@ -1,13 +1,15 @@
 package org.jenkinsci.plugins.jobprofiles;
 
-import java.io.Serializable;
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-public interface SoftwareAsset extends Serializable {
-    String getId();
-
-    String getName();
-
-    String getCategory();
-
-    String getScm();
+@Data
+@NoArgsConstructor
+@XStreamAlias("asset")
+public class SoftwareAsset {
+    private String id;
+    private String name;
+    private String category;
+    private String scm;
 }

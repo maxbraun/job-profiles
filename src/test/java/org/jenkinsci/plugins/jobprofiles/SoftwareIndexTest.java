@@ -6,7 +6,7 @@ import org.junit.Test;
 
 
 @Slf4j
-public class XmlSoftwareIndexTest {
+public class SoftwareIndexTest {
     @Test
     public void getAssets() throws Exception {
         World world;
@@ -15,7 +15,7 @@ public class XmlSoftwareIndexTest {
         world = new World();
 
         foo = Parser.parse("svn:https://github.com/maxbraun/job-profiles/trunk/src/main/resources/softreg.xml", world);
-        log.info(foo.toString());
+        SoftwareIndexTest.log.info(foo.toString());
 
     }
 

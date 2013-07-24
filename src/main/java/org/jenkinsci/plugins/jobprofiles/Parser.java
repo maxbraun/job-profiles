@@ -21,8 +21,8 @@ public class Parser {
         xstream = new XStream2(new DomDriver());
 
         xstream.autodetectAnnotations(true);
-        xstream.alias("asset", SoftwareAssetImpl.class);
-        xstream.alias("assets", XmlSoftwareIndex.class);
+        xstream.alias("asset", SoftwareAsset.class);
+        xstream.alias("assets", SoftwareIndex.class);
         return (SoftwareIndex) xstream.fromXML(datasourceURI.createInputStream());
     }
 }

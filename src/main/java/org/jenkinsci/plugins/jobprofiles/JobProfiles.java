@@ -70,7 +70,7 @@ public class JobProfiles extends Builder {
         for (SoftwareAsset asset : index.getAssets()) {
 
             Scm scm = Scm.get(asset.getScm(), world);
-            context = Context.get(scm, world).getContext();
+            context = Context.get(scm, world);
             log.println("Creating Job for " + asset.getName());
             writer = new StringWriter();
 
@@ -101,9 +101,9 @@ public class JobProfiles extends Builder {
 
                 }
             } catch (TemplateException e) {
-                throw new JobProfileException(e.getMessage(), e.getCause());
+                throw new JobProfileException(e.getMessage(), e);
             } catch (ServletException e) {
-                throw new JobProfileException(e.getMessage(), e.getCause());
+                throw new JobProfileException(e.getMessage(), e);
             }
         }
         return true;

@@ -57,7 +57,7 @@ public class ScmTest {
     public void getSVNFromScmFactory() throws Exception {
         Scm scm;
         scm = Scm.get(svn, world);
-        Assert.assertTrue(scm instanceof ScmSVN);
+        Assert.assertTrue(scm instanceof ScmNode);
     }
 
     @Test
