@@ -2,9 +2,7 @@ package org.jenkinsci.plugins.jobprofiles;
 
 import net.oneandone.sushi.fs.World;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
-import sun.plugin2.message.OverlayWindowMoveMessage;
 
 import java.util.ArrayList;
 import java.util.List;
