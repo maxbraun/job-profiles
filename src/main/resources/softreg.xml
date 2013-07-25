@@ -1,15 +1,21 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <assets>
-  <asset>
-    <id>235</id>
-    <name>sushi</name>
-    <scm>https://github.com/mlhartme/sushi.git</scm>
-    <category>Library</category>
-  </asset>
-  <asset>
-    <id>545</id>
-    <name>prerelease</name>
-    <scm>https://github.com/mlhartme/maven-prerelease-plugin.git</scm>
-    <category>Maven Plugins</category>
-  </asset>
+    <asset>
+        <id>235</id>
+        <name>Sushi</name>
+        <scm>https://github.com/mlhartme/sushi.git</scm>
+        <category>Library</category>
+    </asset>
+    <asset>
+        <id>545</id>
+        <name>Prerelease</name>
+        <scm>https://github.com/mlhartme/maven-prerelease-plugin.git</scm>
+        <category>Maven Plugins</category>
+    </asset>
+    <asset>
+        <id>123</id>
+        <name>stubbles-core</name>
+        <scm>https://github.com/stubbles/stubbles-core.git</scm>
+        <category>PHP</category>
+    </asset>
 </assets>
