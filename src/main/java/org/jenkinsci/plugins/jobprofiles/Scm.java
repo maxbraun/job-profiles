@@ -5,6 +5,7 @@ import net.oneandone.sushi.fs.Node;
 import net.oneandone.sushi.fs.World;
 
 import java.io.IOException;
+import java.io.PrintStream;
 import java.util.List;
 import java.util.Map;
 
@@ -21,9 +22,9 @@ public abstract class Scm {
         return ScmNode.create(world, "svn:" + uri);
     }
 
-    public abstract String getPom();
+    public abstract String getPom() throws IOException;
 
-    public abstract Map<String, String> getProfile(String name) throws IOException;
+    public abstract Map<String, String> getProfile(String name, PrintStream log) throws IOException;
 
     public abstract List<Node> find(String seachString) throws IOException;
 

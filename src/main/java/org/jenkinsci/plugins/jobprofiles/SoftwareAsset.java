@@ -12,4 +12,5 @@ public class SoftwareAsset {
     private String name;
     private String category;
     private String scm;
+    private String type;
 }

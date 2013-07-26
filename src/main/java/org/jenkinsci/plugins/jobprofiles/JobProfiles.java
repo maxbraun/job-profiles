@@ -5,29 +5,18 @@ import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import hudson.Extension;
 import hudson.Launcher;
-import hudson.model.AbstractBuild;
-import hudson.model.AbstractProject;
-import hudson.model.BuildListener;
-import hudson.model.BuildableItem;
-import hudson.model.ListView;
-import hudson.model.View;
+import hudson.model.*;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 import jenkins.model.Jenkins;
 import net.oneandone.sushi.fs.World;
 import net.sf.json.JSONObject;
+import org.apache.maven.project.MavenProject;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.StaplerRequest;
 
 import javax.servlet.ServletException;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintStream;
-import java.io.Reader;
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.io.Writer;
+import java.io.*;
 import java.util.Map;
 
 import static org.jenkinsci.plugins.jobprofiles.JobProfilesConfiguration.get;
@@ -59,31 +48,40 @@ public class JobProfiles extends Builder {
         world = new World();
         conf = new Configuration();
 
-        log.println("Going to parse" + get().getSoftwareIndexFile());
+        log.println("Going to parse " + get().getSoftwareIndexFile());
 
         index = SoftwareIndex.load(world.validNode(get().getSoftwareIndexFile()));
 
         log.println("Parsed.");
 
+        log.println("Downloading Profiles");
         profileFinder = new ProfileFinder(get().getProfileRootDir(), world);
 
         for (SoftwareAsset asset : index.getAssets()) {
 
             Scm scm = Scm.get(asset.getScm(), world);
-            context = Context.get(scm, world);
             log.println("Creating Job for " + asset.getName());
             writer = new StringWriter();
 
+            context = Context.get(scm, world);
             context.put("name", asset.getName());
             context.put("scm", asset.getScm());
+            asset.setType(profileFinder.setAssetSCM(scm).find());
 
-            //TODO: need a extended profilefinder
-            profile = profileFinder.setAssetSCM(scm).getProfile();
+            profile = profileFinder.getProfile(log);
+
+            if (context.containsKey("mavenproject")) {
+                MavenProject project = (MavenProject) context.get("mavenproject");
+                if (project.getProperties() != null && project.getProperties().getProperty("jenkins.profile") != null) {
+                    profile = profileFinder.getProfile(project.getProperties().getProperty("jenkins.profile"), log);
+                }
+            }
+
             try {
                 for (Map.Entry<String, String> entry : profile.entrySet()) {
-                    name = asset.getName().toLowerCase() + "_" + entry.getKey().replace(".xml", "");
+                    name = "generated_" + asset.getName().toLowerCase() + "_" + entry.getKey().replace(".xml", "");
                     reader = new StringReader(entry.getValue());
-                    template = new Template("", reader, conf);
+                    template = new Template(name, reader, conf);
                     template.process(context, writer);
                     src = new ByteArrayInputStream(writer.toString().getBytes());
                     p = (BuildableItem) Jenkins.getInstance()

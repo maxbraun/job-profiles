@@ -1,9 +1,12 @@
 package org.jenkinsci.plugins.jobprofiles;
 
 
-import net.oneandone.sushi.fs.*;
+import net.oneandone.sushi.fs.Node;
+import net.oneandone.sushi.fs.NodeInstantiationException;
+import net.oneandone.sushi.fs.World;
 
 import java.io.IOException;
+import java.io.PrintStream;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.List;
@@ -36,7 +39,7 @@ public class ScmNode extends Scm {
         }
     }
 
-    public Map<String, String> getProfile(String name) throws IOException{
+    public Map<String, String> getProfile(String name, PrintStream log) throws IOException {
         Map<String, String> profiles;
         profiles = new HashMap<String, String>();
 

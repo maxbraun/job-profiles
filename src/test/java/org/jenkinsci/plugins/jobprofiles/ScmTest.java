@@ -4,6 +4,8 @@ import net.oneandone.sushi.fs.World;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.io.IOException;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -66,7 +68,7 @@ public class ScmTest {
         getPom(git);
     }
 
-    private void getPom(String scmLocation) {
+    private void getPom(String scmLocation) throws IOException {
         Scm scm;
         scm = Scm.get(scmLocation, world);
 
@@ -103,7 +105,7 @@ public class ScmTest {
         scm = Scm.get(scmUrl, world);
         Map<String, String> profile;
 
-        profile = scm.getProfile(profileName);
+        profile = scm.getProfile(profileName, new PrintStream(System.out));
 
         Assert.assertTrue(profile.size() >= 1);
     }

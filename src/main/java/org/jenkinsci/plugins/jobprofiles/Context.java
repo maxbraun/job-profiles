@@ -20,16 +20,20 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Context {
-    public static Map<String, Object> get(Scm scm, World world) {
+    public static Map<String, Object> get(Scm scm, World world) throws IOException {
         return getMavenContext(world, scm);
     }
 
-    public static Map<String, Object> getMavenContext(World world, Scm scm) {
+    public static Map<String, Object> getMavenContext(World world, Scm scm) throws IOException {
         Map<String, Object> context;
+        String pom;
+        MavenProject project;
 
         context = new HashMap<String, Object>();
-        MavenProject project;
-        project = getMavenProject(scm.getPom(), world);
+        pom = scm.getPom();
+
+        if (pom == null) return context;
+        project = getMavenProject(pom, world);
         context.put("mavenproject", project);
         return context;
     }

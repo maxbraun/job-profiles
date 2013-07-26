@@ -2,6 +2,7 @@ package org.jenkinsci.plugins.jobprofiles;
 
 
 import lombok.extern.slf4j.Slf4j;
+import net.oneandone.sushi.fs.FileNotFoundException;
 import net.oneandone.sushi.fs.Node;
 import net.oneandone.sushi.fs.NodeInstantiationException;
 import net.oneandone.sushi.fs.World;
@@ -11,6 +12,7 @@ import org.eclipse.jgit.api.errors.GitAPIException;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,24 +43,26 @@ public class ScmGit extends Scm {
         this.localpath = localpath;
     }
 
-    public String getPom() {
+    public String getPom() throws IOException {
         try {
-
             return localpath.findOne("pom.xml").readString();
-
-        } catch (IOException e) {
-            throw new JobProfileException(e.getMessage(), e);
+        } catch (FileNotFoundException e) {
+            return null;
         }
 
     }
 
-
-    public Map<String, String> getProfile(String name) throws IOException {
+    public Map<String, String> getProfile(String name, PrintStream log) throws IOException {
         HashMap<String, String> profileMap;
         Node theProfile;
 
         profileMap = new HashMap<String, String>();
-        theProfile = localpath.findOne(name);
+        try {
+            theProfile = localpath.findOne(name);
+        } catch (FileNotFoundException e) {
+            log.println(String.format("[Error] Profile %s not found. I'll going to continue with next Asset", name));
+            return profileMap;
+        }
 
         for (Node profileNode : theProfile.list()) {
 
