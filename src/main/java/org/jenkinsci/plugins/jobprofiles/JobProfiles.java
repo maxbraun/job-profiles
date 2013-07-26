@@ -11,7 +11,6 @@ import hudson.tasks.Builder;
 import jenkins.model.Jenkins;
 import net.oneandone.sushi.fs.World;
 import net.sf.json.JSONObject;
-import org.apache.maven.project.MavenProject;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.StaplerRequest;
 
@@ -41,7 +40,7 @@ public class JobProfiles extends Builder {
         InputStream src;
         BuildableItem p;
         Map<String, String> profile;
-        ProfileFinder profileFinder;
+        ProfileManager profileManager;
         String name;
         World world;
 
@@ -55,7 +54,7 @@ public class JobProfiles extends Builder {
         log.println("Parsed.");
 
         log.println("Downloading Profiles");
-        profileFinder = new ProfileFinder(get().getProfileRootDir(), world);
+        profileManager = new ProfileManager(world, log, get().getProfileRootDir());
 
         for (SoftwareAsset asset : index.getAssets()) {
 
@@ -66,16 +65,9 @@ public class JobProfiles extends Builder {
             context = Context.get(scm, world);
             context.put("name", asset.getName());
             context.put("scm", asset.getScm());
-            asset.setType(profileFinder.setAssetSCM(scm).find());
+            //asset.setType(profileFinder.setAssetSCM(scm).findBuildSystem());
 
-            profile = profileFinder.getProfile(log);
-
-            if (context.containsKey("mavenproject")) {
-                MavenProject project = (MavenProject) context.get("mavenproject");
-                if (project.getProperties() != null && project.getProperties().getProperty("jenkins.profile") != null) {
-                    profile = profileFinder.getProfile(project.getProperties().getProperty("jenkins.profile"), log);
-                }
-            }
+            profile = profileManager.discover(scm, null).getProfile();
 
             try {
                 for (Map.Entry<String, String> entry : profile.entrySet()) {

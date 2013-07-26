@@ -24,6 +24,10 @@ public abstract class Scm {
 
     public abstract String getPom() throws IOException;
 
+    public boolean profileExists(String name, PrintStream log) throws IOException {
+        return getProfile(name, log) != null;
+    }
+
     public abstract Map<String, String> getProfile(String name, PrintStream log) throws IOException;
 
     public abstract List<Node> find(String seachString) throws IOException;

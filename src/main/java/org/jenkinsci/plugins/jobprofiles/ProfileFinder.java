@@ -1,28 +1,40 @@
 package org.jenkinsci.plugins.jobprofiles;
 
-
+import jenkins.model.Jenkins;
 import net.oneandone.sushi.fs.World;
+import org.apache.maven.project.MavenProject;
 
 import java.io.IOException;
 import java.io.PrintStream;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class ProfileFinder {
-    private final Scm profileRoot;
-    private Scm assetScm;
 
-    public ProfileFinder(String profileRootDir, World world) {
-        this.profileRoot = Scm.get(profileRootDir, world);
+
+    public static ProfileFinder find(World world, PrintStream log, Scm projectScm, Scm profileScm, String forcedProfile) throws IOException {
+        ProfileFinder finder;
+
+        finder = new ProfileFinder(profileScm);
+
+        finder.addPossibleProfile(findBuildSystem(projectScm));
+        if (finder.possibleProfiles.get(finder.possibleProfiles.size() - 1).equals("maven") && Jenkins.getInstance() != null) {
+            finder.addPossibleProfile(findMavenProperty(Context.getMavenProject(projectScm.getPom(), world)));
+        }
+        finder.addPossibleProfile(findJenkinsFile(projectScm));
+        finder.addPossibleProfile(forcedProfile);
+        return finder;
     }
 
-    public ProfileFinder setAssetSCM(Scm assetScm) {
-        this.assetScm = assetScm;
-        return this;
+    public static String findJenkinsFile(Scm scm) throws IOException {
+        Properties properties;
+        if (scm.findOne(JENKINS_FILE) != null) {
+            properties = scm.findOne(JENKINS_FILE).readProperties();
+            return properties.getProperty("profile");
+        }
+        return null;
     }
 
-
-    public String find() throws IOException {
+    public static String findBuildSystem(Scm scm) throws IOException {
         Map<String, String> buildSystems;
 
         buildSystems = new HashMap<String, String>();
@@ -30,25 +42,38 @@ public class ProfileFinder {
         buildSystems.put("maven", "pom.xml");
         buildSystems.put("composer", "composer.json");
 
-        for (Map.Entry system : buildSystems.entrySet()) {
-            if (assetScm.findOne(system.getValue().toString()) != null) {
-                return system.getKey().toString();
+        for (Map.Entry<String, String> system : buildSystems.entrySet()) {
+            if (scm.findOne(system.getValue()) != null) {
+                return system.getKey();
             }
         }
-
         return null;
     }
 
 
-    public Map<String, String> getProfile(PrintStream log) throws IOException {
-        String scm;
-
-        scm = assetScm.getClass().getSimpleName().replace("Scm", "");
-        return profileRoot.getProfile(String.format("%s-%s", scm, find()).toLowerCase(), log);
+    private static String findMavenProperty(MavenProject project) throws IOException {
+        if (project.getProperties() != null) {
+            return project.getProperties().getProperty("jenkins.profile");
+        }
+        return null;
     }
 
-    public Map<String, String> getProfile(String name, PrintStream log) throws IOException {
-        return profileRoot.getProfile(name, log);
+    private final static String STANDARD = "standard";
+    private final static String JENKINS_FILE = ".jenkins";
+    public final Scm profileRoot;
+
+    public List<String> possibleProfiles;
+
+    public ProfileFinder(Scm scm) {
+        this.profileRoot = scm;
+        this.possibleProfiles = new LinkedList<String>();
+        this.possibleProfiles.add(STANDARD);
+    }
+
+    public void addPossibleProfile(String profile) {
+        if (profile != null && !profile.isEmpty()) {
+            possibleProfiles.add(profile);
+        }
     }
 
 

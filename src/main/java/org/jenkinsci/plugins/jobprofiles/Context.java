@@ -38,7 +38,7 @@ public class Context {
         return context;
     }
 
-    private static MavenProject getMavenProject(String pomContent, World world) {
+    public static MavenProject getMavenProject(String pomContent, World world) {
         MavenEmbedder embedder;
         MavenProject mavenProject;
         FileNode tmpPom;

@@ -92,12 +92,12 @@ public class ScmTest {
 
     @Test
     public void GitProfile() throws Exception {
-        getProfile("https://github.com/maxbraun/job-profiles-examles.git", "git-maven");
+        getProfile("https://github.com/maxbraun/job-profiles-examles.git", "maven");
     }
 
     @Test
     public void SvnProfile() throws Exception {
-        getProfile("https://github.com/maxbraun/job-profiles-examles/trunk", "git-maven");
+        getProfile("https://github.com/maxbraun/job-profiles-examles/trunk", "maven");
     }
 
     private void getProfile(String scmUrl, String profileName) throws Exception {

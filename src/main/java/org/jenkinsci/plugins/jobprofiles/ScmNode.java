@@ -1,9 +1,7 @@
 package org.jenkinsci.plugins.jobprofiles;
 
 
-import net.oneandone.sushi.fs.Node;
-import net.oneandone.sushi.fs.NodeInstantiationException;
-import net.oneandone.sushi.fs.World;
+import net.oneandone.sushi.fs.*;
 
 import java.io.IOException;
 import java.io.PrintStream;
@@ -39,22 +37,35 @@ public class ScmNode extends Scm {
         }
     }
 
-    public Map<String, String> getProfile(String name, PrintStream log) throws IOException {
+    public Map<String, String> getProfile(String name, PrintStream log) {
         Map<String, String> profiles;
         profiles = new HashMap<String, String>();
-
-        for (Node file : root.join(name).list()) {
-            profiles.put(file.getName(), file.toString());
+        try {
+            for (Node file : root.join(name).list()) {
+                profiles.put(file.getName(), file.toString());
+            }
+        } catch (ListException e) {
+            throw new JobProfileException(e);
+        } catch (DirectoryNotFoundException e) {
+            return null;
         }
 
         return profiles;
     }
 
     public List<Node> find(String seachString) throws IOException {
-        return root.find(seachString);
+        try {
+            return root.find(seachString);
+        } catch (FileNotFoundException e) {
+            return null;
+        }
     }
 
     public Node findOne(String seachString) throws IOException {
-        return root.findOne(seachString);
+        try {
+            return root.findOne(seachString);
+        } catch (FileNotFoundException e) {
+            return null;
+        }
     }
 }
