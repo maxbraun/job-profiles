@@ -9,8 +9,9 @@ import lombok.NoArgsConstructor;
 @XStreamAlias("asset")
 public class SoftwareAsset {
     private String id;
-    private String name;
+    private String artifactId;
+    private String groupId;
     private String category;
-    private String scm;
+    private String trunk;
     private String type;
 }

@@ -58,7 +58,7 @@ public class ProfileFinder {
         return null;
     }
 
-    private final static String STANDARD = "standard";
+    private final static String STANDARD = "implicit";
     private final static String JENKINS_FILE = ".jenkins";
     public final Scm profileRoot;
 

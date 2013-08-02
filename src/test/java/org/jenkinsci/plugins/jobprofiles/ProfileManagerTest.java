@@ -34,7 +34,7 @@ public class ProfileManagerTest {
     @Test
     public void standard() throws Exception {
         manager = new ProfileManager(world, new PrintStream(System.out), profiles);
-        Assert.assertEquals("standard", manager.discover(Scm.get(profiles, world), null).find());
+        Assert.assertEquals("implicit", manager.discover(Scm.get(profiles, world), null).find());
     }
 
     @Test

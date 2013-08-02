@@ -18,7 +18,7 @@ import java.util.List;
 @Slf4j
 @ToString
 @NoArgsConstructor
-@XStreamAlias("assets")
+@XStreamAlias("registry")
 public class SoftwareIndex {
 
     public static SoftwareIndex load(Node index) throws IOException {
@@ -30,7 +30,12 @@ public class SoftwareIndex {
 
         xstream.autodetectAnnotations(true);
         xstream.alias("asset", SoftwareAsset.class);
+        xstream.alias("registry", SoftwareIndex.class);
         xstream.alias("assets", SoftwareIndex.class);
+        xstream.aliasField("name", SoftwareAsset.class, "artifactId");
+        xstream.aliasField("artifact-id", SoftwareAsset.class, "artifactId");
+        xstream.aliasField("group-id", SoftwareAsset.class, "groupId");
+        xstream.aliasField("scm", SoftwareAsset.class, "trunk");
         src = index.createInputStream();
         result = (SoftwareIndex) xstream.fromXML(src);
         src.close();

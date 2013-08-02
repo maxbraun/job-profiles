@@ -3,8 +3,7 @@
   <f:section title="Job Profile Setup">
 
     <f:entry title="Software Index">
-      <f:textbox name="softwareIndexFile" value="${instance.softwareIndexFile}"
-                 checkUrl="'${rootURL}/descriptorByName/org.jenkinsci.plugins.jobprofiles.JobProfilesConfiguration/doCheckValidUri?value='+this.value" />
+      <f:textbox name="softwareIndexFile" value="${instance.softwareIndexFile}" />
       <f:textbox name="profileRootDir" value="${instance.profileRootDir}" />
     </f:entry>
 

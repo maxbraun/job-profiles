@@ -31,7 +31,7 @@ public class ScmNode extends Scm {
 
     public String getPom() {
         try {
-            return root.findOne("pom.xml").toString();
+            return root.findOne("pom.xml").readString();
         } catch (IOException e) {
             throw new JobProfileException(e.getMessage(), e);
         }
@@ -42,12 +42,14 @@ public class ScmNode extends Scm {
         profiles = new HashMap<String, String>();
         try {
             for (Node file : root.join(name).list()) {
-                profiles.put(file.getName(), file.toString());
+                profiles.put(file.getName(), file.readString());
             }
         } catch (ListException e) {
             throw new JobProfileException(e);
         } catch (DirectoryNotFoundException e) {
             return null;
+        } catch (IOException e) {
+            throw new JobProfileException(e);
         }
 
         return profiles;

@@ -16,6 +16,7 @@ import org.kohsuke.stapler.StaplerRequest;
 
 import javax.servlet.ServletException;
 import java.io.*;
+import java.util.Date;
 import java.util.Map;
 
 import static org.jenkinsci.plugins.jobprofiles.JobProfilesConfiguration.get;
@@ -58,20 +59,21 @@ public class JobProfiles extends Builder {
 
         for (SoftwareAsset asset : index.getAssets()) {
 
-            Scm scm = Scm.get(asset.getScm(), world);
-            log.println("Creating Job for " + asset.getName());
+            Scm scm = Scm.get(asset.getTrunk(), world);
+            log.println("Creating Job for " + asset.getArtifactId());
             writer = new StringWriter();
 
             context = Context.get(scm, world);
-            context.put("name", asset.getName());
-            context.put("scm", asset.getScm());
+            context.put("name", asset.getArtifactId());
+            context.put("scm", asset.getTrunk());
+            context.put("version", "foo");
             //asset.setType(profileFinder.setAssetSCM(scm).findBuildSystem());
 
             profile = profileManager.discover(scm, null).getProfile();
 
             try {
                 for (Map.Entry<String, String> entry : profile.entrySet()) {
-                    name = "generated_" + asset.getName().toLowerCase() + "_" + entry.getKey().replace(".xml", "");
+                    name = "generated_" + asset.getArtifactId().toLowerCase() + "_" + entry.getKey().replace(".xml", "");
                     reader = new StringReader(entry.getValue());
                     template = new Template(name, reader, conf);
                     template.process(context, writer);
