@@ -16,6 +16,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -26,8 +27,8 @@ public class Context {
 
     public static Map<String, Object> getMavenContext(World world, Scm scm) throws IOException {
         Map<String, Object> context;
-        String pom;
         MavenProject project;
+        String pom;
 
         context = new HashMap<String, Object>();
         pom = scm.getPom();
@@ -35,8 +36,15 @@ public class Context {
         if (pom == null) return context;
         project = getMavenProject(pom, world);
         context.put("mavenproject", project);
+
+        for (Map.Entry entry: project.getProperties().entrySet()) {
+                context.put(entry.getKey().toString().replace(".", "_"), entry.getValue());
+        }
+
         return context;
     }
+
+
 
     public static MavenProject getMavenProject(String pomContent, World world) {
         MavenEmbedder embedder;
