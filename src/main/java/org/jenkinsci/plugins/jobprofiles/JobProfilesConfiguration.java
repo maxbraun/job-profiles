@@ -21,7 +21,7 @@ import java.net.URISyntaxException;
 @Setter
 public class JobProfilesConfiguration extends GlobalConfiguration {
 
-    private static final String SOFTWARE_INDEX_FILE_DEFAULT = "svn:https://svn.1and1.org/svn/PFX/devel/ypcache/trunk/src/ypcache.xml";
+     private static final String SOFTWARE_INDEX_FILE_DEFAULT = "svn:https://svn.1and1.org/svn/PFX/devel/ypcache/trunk/src/ypcache.xml";
     //"svn:https://github.com/maxbraun/job-profiles/trunk/src/main/resources/softreg.xml";
     private static final String PROFILE_ROOT_DIR_DEFAULT = "https://svn.1and1.org/svn/PFX/devel/jenkins/marvin/branches/newWorld/src/main/resources/profiles";
     //"https://github.com/maxbraun/job-profiles-examles.git";
