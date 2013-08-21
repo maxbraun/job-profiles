@@ -37,13 +37,12 @@ public class Context {
         project = getMavenProject(pom, world);
         context.put("mavenproject", project);
 
-        for (Map.Entry entry: project.getProperties().entrySet()) {
-                context.put(entry.getKey().toString().replace(".", "_"), entry.getValue());
+        for (Map.Entry entry : project.getProperties().entrySet()) {
+            context.put(entry.getKey().toString().replace(".", "_"), entry.getValue());
         }
 
         return context;
     }
-
 
 
     public static MavenProject getMavenProject(String pomContent, World world) {

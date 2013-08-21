@@ -12,7 +12,7 @@ import org.kohsuke.stapler.DataBoundConstructor;
 
 @Getter
 @Setter
-public class JobProfileProperties  extends JobProperty<AbstractProject<?,?>> {
+public class JobProfileProperties extends JobProperty<AbstractProject<?, ?>> {
 
     private final String id;
     private final String lastModified;

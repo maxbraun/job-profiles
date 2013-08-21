@@ -68,7 +68,6 @@ public class JobProfiles extends Builder {
             context.put("scm", asset.getTrunk());
             context.put("version", "");
             context.put("asset", asset);
-
             context.put("now", new Date(build.getTimeInMillis()).toString());
             //asset.setType(profileFinder.setAssetSCM(scm).findBuildSystem());
 
@@ -78,7 +77,7 @@ public class JobProfiles extends Builder {
                     writer = new StringWriter();
                     key = "user_" + asset.getGroupId() + "_" + asset.getArtifactId().toLowerCase();
                     if (entry.getKey().equals("build.xml")) {
-                        name = key + "_" + entry.getKey().replace (".xml", "");
+                        name = key + "_" + entry.getKey().replace(".xml", "");
                     } else {
                         name = key;
                     }
@@ -95,7 +94,7 @@ public class JobProfiles extends Builder {
                     src.close();
 
                     removeJobFromViews(name, log);
-                    
+
                     if (Jenkins.getInstance().getView(asset.getCategory()) == null) {
                         View view = new ListView(asset.getCategory());
                         Jenkins.getInstance().addView(view);
