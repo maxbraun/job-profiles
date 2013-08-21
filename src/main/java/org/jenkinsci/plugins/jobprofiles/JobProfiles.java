@@ -13,6 +13,7 @@ import net.oneandone.sushi.fs.World;
 import net.sf.json.JSONObject;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.StaplerRequest;
+import org.tmatesoft.svn.core.SVNAuthenticationException;
 
 import javax.servlet.ServletException;
 import java.io.*;
@@ -42,7 +43,7 @@ public class JobProfiles extends Builder {
         BuildableItem p;
         Map<String, String> profile;
         ProfileManager profileManager;
-        String name;
+        String name, key;
         World world;
 
         world = new World();
@@ -61,28 +62,37 @@ public class JobProfiles extends Builder {
 
             Scm scm = Scm.get(asset.getTrunk(), world);
             log.println("Creating Job for " + asset.getArtifactId());
-            writer = new StringWriter();
 
             context = Context.get(scm, world);
             context.put("name", asset.getArtifactId());
             context.put("scm", asset.getTrunk());
-            context.put("version", "foo");
+            context.put("version", "Last_modified: " + new Date(build.getStartTimeInMillis()) + ",Yellow_Page_ID: " + asset.getId());
             //asset.setType(profileFinder.setAssetSCM(scm).findBuildSystem());
 
-            profile = profileManager.discover(scm, null).getProfile();
-
+            profile = profileManager.discover(scm, null).getProfile(log);
             try {
                 for (Map.Entry<String, String> entry : profile.entrySet()) {
-                    name = "generated_" + asset.getArtifactId().toLowerCase() + "_" + entry.getKey().replace(".xml", "");
+                    writer = new StringWriter();
+                    key = "user_" + asset.getGroupId() + "_" + asset.getArtifactId().toLowerCase();
+                    if (entry.getKey().equals("build.xml")) {
+                        name = key + "_" + entry.getKey().replace (".xml", "");
+                    } else {
+                        name = key;
+                    }
+                    context.put("id", key);
                     reader = new StringReader(entry.getValue());
                     template = new Template(name, reader, conf);
                     template.process(context, writer);
+
+                    if (writer.toString().length() == 0) continue;
+
                     src = new ByteArrayInputStream(writer.toString().getBytes());
                     p = (BuildableItem) Jenkins.getInstance()
                             .createProjectFromXML(name, src);
                     src.close();
 
-
+                    removeJobFromViews(name, log);
+                    
                     if (Jenkins.getInstance().getView(asset.getCategory()) == null) {
                         View view = new ListView(asset.getCategory());
                         Jenkins.getInstance().addView(view);
@@ -99,6 +109,13 @@ public class JobProfiles extends Builder {
             }
         }
         return true;
+    }
+
+    public static void removeJobFromViews(String jobId, PrintStream log) {
+        for (View view : Jenkins.getInstance().getViews()) {
+            view.onJobRenamed(null, jobId, null);
+        }
+
     }
 
     @Override
