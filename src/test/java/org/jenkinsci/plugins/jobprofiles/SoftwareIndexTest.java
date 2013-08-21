@@ -16,9 +16,6 @@ public class SoftwareIndexTest {
 
         foo = SoftwareIndex.load(world.node("svn:https://github.com/maxbraun/job-profiles/trunk/src/main/resources/softreg.xml"));
         SoftwareIndexTest.log.info(foo.toString());
-
-        log.info(SoftwareIndex.load(world.node("svn:https://svn.1and1.org/svn/PFX/devel/ypcache/trunk/src/ypcache.xml")).toString());
-
     }
 
 

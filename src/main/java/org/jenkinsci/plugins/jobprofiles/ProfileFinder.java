@@ -22,6 +22,7 @@ public class ProfileFinder {
         }
         finder.addPossibleProfile(findJenkinsFile(projectScm));
         finder.addPossibleProfile(forcedProfile);
+
         return finder;
     }
 

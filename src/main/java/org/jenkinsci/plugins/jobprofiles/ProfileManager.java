@@ -28,9 +28,10 @@ public class ProfileManager {
         return finder.possibleProfiles.get(finder.possibleProfiles.size() - 1);
     }
 
-    public Map<String, String> getProfile() throws IOException {
+    public Map<String, String> getProfile(PrintStream log) throws IOException {
         for (String profile : Lists.reverse(finder.possibleProfiles)) {
             if (finder.profileRoot.profileExists(profile, log)) {
+                log.println("Using profile " + profile);
                 return finder.profileRoot.getProfile(profile, log);
             }
         }
