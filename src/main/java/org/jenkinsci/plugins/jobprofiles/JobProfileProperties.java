@@ -16,11 +16,13 @@ public class JobProfileProperties extends JobProperty<AbstractProject<?, ?>> {
 
     private final String id;
     private final String lastModified;
+    private final String usedProfile;
 
     @DataBoundConstructor
-    public JobProfileProperties(String id, String lastModified) {
+    public JobProfileProperties(String id, String lastModified, String usedProfile) {
         this.id = id;
         this.lastModified = lastModified;
+        this.usedProfile = usedProfile;
     }
 
     @Extension

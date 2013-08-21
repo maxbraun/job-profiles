@@ -12,6 +12,7 @@ public class ProfileManager {
     private final PrintStream log;
     private World world;
     private ProfileFinder finder;
+    public String profile;
 
     public ProfileManager(World world, PrintStream log, String profileRoot) {
         this.profileScm = Scm.get(profileRoot, world);
@@ -28,10 +29,10 @@ public class ProfileManager {
         return finder.possibleProfiles.get(finder.possibleProfiles.size() - 1);
     }
 
-    public Map<String, String> getProfile(PrintStream log) throws IOException {
+    public Map<String, String> getProfile() throws IOException {
         for (String profile : Lists.reverse(finder.possibleProfiles)) {
             if (finder.profileRoot.profileExists(profile, log)) {
-                log.println("Using profile " + profile);
+                this.profile = profile;
                 return finder.profileRoot.getProfile(profile, log);
             }
         }

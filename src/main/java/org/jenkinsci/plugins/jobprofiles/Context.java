@@ -21,11 +21,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Context {
-    public static Map<String, Object> get(Scm scm, World world) throws IOException {
-        return getMavenContext(world, scm);
+    public static Map<String, Object> get(SoftwareAsset asset, Scm scm, World world) throws IOException {
+        return getMavenContext(world, scm, asset);
     }
 
-    public static Map<String, Object> getMavenContext(World world, Scm scm) throws IOException {
+    public static Map<String, Object> getMavenContext(World world, Scm scm, SoftwareAsset asset) throws IOException {
         Map<String, Object> context;
         MavenProject project;
         String pom;
@@ -35,8 +35,14 @@ public class Context {
 
         if (pom == null) return context;
         project = getMavenProject(pom, world);
-        context.put("mavenproject", project);
 
+        asset.setGroupId(project.getGroupId());
+        asset.setArtifactId(project.getArtifactId());
+        asset.setCategory(asset.getCategory() == null ? "No Category" : asset.getCategory());
+        asset.setId(asset.getId() == null ? "Freestyle" : asset.getId());
+        context.put("mavenproject", project);
+        context.put("name", project.getArtifactId());
+        context.put("asset", asset);
         for (Map.Entry entry : project.getProperties().entrySet()) {
             context.put(entry.getKey().toString().replace(".", "_"), entry.getValue());
         }

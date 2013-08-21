@@ -5,6 +5,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamImplicit;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 import hudson.util.XStream2;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
-@ToString
+@Data
 @NoArgsConstructor
 @XStreamAlias("registry")
 public class SoftwareIndex {
@@ -43,7 +44,7 @@ public class SoftwareIndex {
     }
 
     @XStreamImplicit
-    private List<SoftwareAsset> asset = new ArrayList<SoftwareAsset>();
+    public List<SoftwareAsset> asset = new ArrayList<SoftwareAsset>();
 
 
     public List<SoftwareAsset> getAssets() {

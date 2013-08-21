@@ -5,10 +5,13 @@ import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import hudson.Extension;
 import hudson.Launcher;
+import hudson.Util;
 import hudson.model.*;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 import jenkins.model.Jenkins;
+import lombok.Getter;
+import lombok.Setter;
 import net.oneandone.sushi.fs.World;
 import net.sf.json.JSONObject;
 import org.kohsuke.stapler.DataBoundConstructor;
@@ -17,17 +20,25 @@ import org.tmatesoft.svn.core.SVNAuthenticationException;
 
 import javax.servlet.ServletException;
 import java.io.*;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Map;
 
+import static jenkins.model.GlobalConfiguration.all;
 import static org.jenkinsci.plugins.jobprofiles.JobProfilesConfiguration.get;
 
 
+@Getter@Setter
 public class JobProfiles extends Builder {
 
+    private final String forcedSCM;
+    private final String forcedProfile;
 
     @DataBoundConstructor
-    public JobProfiles() {
+    public JobProfiles(String forcedSCM, String forcedProfile) {
+        this.forcedSCM = forcedSCM;
+        this.forcedProfile = forcedProfile;
     }
 
     @Override
@@ -39,21 +50,41 @@ public class JobProfiles extends Builder {
         Template template;
         Reader reader;
         Configuration conf;
-        InputStream src;
+        InputStream     src;
         BuildableItem p;
         Map<String, String> profile;
         ProfileManager profileManager;
-        String name, key;
+        String name, key, forcedProfile;
         World world;
 
         world = new World();
         conf = new Configuration();
 
-        log.println("Going to parse " + get().getSoftwareIndexFile());
+        forcedProfile = null;
 
-        index = SoftwareIndex.load(world.validNode(get().getSoftwareIndexFile()));
+        if (!Util.replaceMacro(forcedSCM, build.getBuildVariableResolver()).isEmpty()) {
+            SoftwareAsset asset;
 
-        log.println("Parsed.");
+            asset = new SoftwareAsset();
+            asset.setTrunk(Util.replaceMacro(forcedSCM, build.getBuildVariableResolver()));
+            index = new SoftwareIndex();
+            index.asset.add(asset);
+
+
+        }else {
+
+            log.println("Going to parse " + get().getSoftwareIndexFile());
+            index = SoftwareIndex.load(world.validNode(get().getSoftwareIndexFile()));
+            log.println("Parsed.");
+        }
+
+        if(!Util.replaceMacro(this.forcedProfile, build.getBuildVariableResolver()).isEmpty()) {
+
+            forcedProfile = Util.replaceMacro(this.forcedProfile, build.getBuildVariableResolver());
+            log.println("Using a forced Profile: " + forcedProfile);
+
+        }
+
 
         log.println("Downloading Profiles");
         profileManager = new ProfileManager(world, log, get().getProfileRootDir());
@@ -61,21 +92,24 @@ public class JobProfiles extends Builder {
         for (SoftwareAsset asset : index.getAssets()) {
 
             Scm scm = Scm.get(asset.getTrunk(), world);
-            log.println("Creating Job for " + asset.getArtifactId());
 
-            context = Context.get(scm, world);
-            context.put("name", asset.getArtifactId());
+            context = Context.get(asset, scm, world);
+
             context.put("scm", asset.getTrunk());
             context.put("version", "");
-            context.put("asset", asset);
             context.put("now", new Date(build.getTimeInMillis()).toString());
             //asset.setType(profileFinder.setAssetSCM(scm).findBuildSystem());
 
-            profile = profileManager.discover(scm, null).getProfile(log);
+            profile = profileManager.discover(scm, forcedProfile).getProfile();
+
+            context.put("usedProfile", profileManager.profile);
+            log.println("Creating Jobs for " + context.get("name") + " | Profile: " + context.get("usedProfile"));
             try {
                 for (Map.Entry<String, String> entry : profile.entrySet()) {
                     writer = new StringWriter();
+                    asset = (SoftwareAsset) context.get("asset");
                     key = "user_" + asset.getGroupId() + "_" + asset.getArtifactId().toLowerCase();
+
                     if (entry.getKey().equals("build.xml")) {
                         name = key + "_" + entry.getKey().replace(".xml", "");
                     } else {

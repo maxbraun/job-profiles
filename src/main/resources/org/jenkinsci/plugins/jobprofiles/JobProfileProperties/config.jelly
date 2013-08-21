@@ -5,6 +5,9 @@
         <f:entry title="Id" field="id">
             ${instance.id}
         </f:entry>
+        <f:entry title="Profile used" field="usedProfile">
+            ${instance.usedProfile}
+        </f:entry>
         <f:entry title="Last Modified" field="lastModified">
             ${instance.lastModified}
         </f:entry>
