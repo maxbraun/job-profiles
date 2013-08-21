@@ -3,27 +3,28 @@ package org.jenkinsci.plugins.jobprofiles;
 
 import hudson.Extension;
 import hudson.model.AbstractProject;
-import hudson.tasks.BuildWrapper;
-import hudson.tasks.BuildWrapperDescriptor;
+import hudson.model.JobProperty;
+import hudson.model.JobPropertyDescriptor;
+import lombok.Getter;
+import lombok.Setter;
 import org.kohsuke.stapler.DataBoundConstructor;
 
-import java.util.Map;
 
-public class JobProfileProperties  extends BuildWrapper{
-    public final Map<String, String> properties;
+@Getter
+@Setter
+public class JobProfileProperties  extends JobProperty<AbstractProject<?,?>> {
+
+    private final String id;
+    private final String lastModified;
 
     @DataBoundConstructor
-    public JobProfileProperties(Map<String, String> properties) {
-        this.properties = properties;
+    public JobProfileProperties(String id, String lastModified) {
+        this.id = id;
+        this.lastModified = lastModified;
     }
 
     @Extension
-    public static class DescriptorImpl extends BuildWrapperDescriptor {
-        @Override
-        public boolean isApplicable(AbstractProject<?, ?> item) {
-            return true;
-        }
-
+    public static class DescriptorImpl extends JobPropertyDescriptor {
         @Override
         public String getDisplayName() {
             return "Job Profile Informations";

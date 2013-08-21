@@ -1,9 +1,13 @@
 <j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout"
          xmlns:t="/lib/hudson" xmlns:f="/lib/form">
-  <f:section title="Job Profile Informations">
-
-      <j:forEach var="prop" items="${properties}">
-          ${e.key}: ${e.value} <br />
-      </j:forEach>
-  </f:section>
+  <j:if test="${instance.Id!=null}">
+    <f:section title="Job Profile Informations">
+        <f:entry title="Id" field="Id">
+            ${instance.ypId}
+        </f:entry>
+        <f:entry title="Last Modified" field="lastModified">
+            ${instance.lastModified}
+        </f:entry>
+     </f:section>
+  </j:if>
 </j:jelly>

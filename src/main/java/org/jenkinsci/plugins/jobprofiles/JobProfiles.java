@@ -66,7 +66,10 @@ public class JobProfiles extends Builder {
             context = Context.get(scm, world);
             context.put("name", asset.getArtifactId());
             context.put("scm", asset.getTrunk());
-            context.put("version", "Last_modified: " + new Date(build.getStartTimeInMillis()) + ",Yellow_Page_ID: " + asset.getId());
+            context.put("version", "");
+            context.put("asset", asset);
+
+            context.put("now", new Date(build.getTimeInMillis()).toString());
             //asset.setType(profileFinder.setAssetSCM(scm).findBuildSystem());
 
             profile = profileManager.discover(scm, null).getProfile(log);
