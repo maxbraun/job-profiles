@@ -16,20 +16,16 @@ import net.oneandone.sushi.fs.World;
 import net.sf.json.JSONObject;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.StaplerRequest;
-import org.tmatesoft.svn.core.SVNAuthenticationException;
 
 import javax.servlet.ServletException;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.Map;
+import java.util.*;
 
-import static jenkins.model.GlobalConfiguration.all;
 import static org.jenkinsci.plugins.jobprofiles.JobProfilesConfiguration.get;
 
 
-@Getter@Setter
+@Getter
+@Setter
 public class JobProfiles extends Builder {
 
     private final String forcedSCM;
@@ -45,20 +41,12 @@ public class JobProfiles extends Builder {
     public boolean perform(AbstractBuild build, Launcher launcher, BuildListener listener) throws IOException {
         PrintStream log = listener.getLogger();
         SoftwareIndex index;
-        Map<String, Object> context;
-        Writer writer;
-        Template template;
-        Reader reader;
-        Configuration conf;
-        InputStream     src;
-        BuildableItem p;
-        Map<String, String> profile;
         ProfileManager profileManager;
-        String name, key, forcedProfile;
+        String forcedProfile;
         World world;
+        Set<Job> jobs;
 
         world = new World();
-        conf = new Configuration();
 
         forcedProfile = null;
 
@@ -71,14 +59,14 @@ public class JobProfiles extends Builder {
             index.asset.add(asset);
 
 
-        }else {
+        } else {
 
             log.println("Going to parse " + get().getSoftwareIndexFile());
             index = SoftwareIndex.load(world.validNode(get().getSoftwareIndexFile()));
             log.println("Parsed.");
         }
 
-        if(!Util.replaceMacro(this.forcedProfile, build.getBuildVariableResolver()).isEmpty()) {
+        if (!Util.replaceMacro(this.forcedProfile, build.getBuildVariableResolver()).isEmpty()) {
 
             forcedProfile = Util.replaceMacro(this.forcedProfile, build.getBuildVariableResolver());
             log.println("Using a forced Profile: " + forcedProfile);
@@ -89,69 +77,41 @@ public class JobProfiles extends Builder {
         log.println("Downloading Profiles");
         profileManager = new ProfileManager(world, log, get().getProfileRootDir());
 
-        for (SoftwareAsset asset : index.getAssets()) {
+        jobs = createJobs(log, index, profileManager, forcedProfile, world);
 
-            Scm scm = Scm.get(asset.getTrunk(), world);
-
-            context = Context.get(asset, scm, world);
-
-            context.put("scm", asset.getTrunk());
-            context.put("version", "");
-            context.put("now", new Date(build.getTimeInMillis()).toString());
-            //asset.setType(profileFinder.setAssetSCM(scm).findBuildSystem());
-
-            profile = profileManager.discover(scm, forcedProfile).getProfile();
-
-            context.put("usedProfile", profileManager.profile);
-            log.println("Creating Jobs for " + context.get("name") + " | Profile: " + context.get("usedProfile"));
-            try {
-                for (Map.Entry<String, String> entry : profile.entrySet()) {
-                    writer = new StringWriter();
-                    asset = (SoftwareAsset) context.get("asset");
-                    key = "user_" + asset.getGroupId() + "_" + asset.getArtifactId().toLowerCase();
-
-                    if (entry.getKey().equals("build.xml")) {
-                        name = key + "_" + entry.getKey().replace(".xml", "");
-                    } else {
-                        name = key;
-                    }
-                    context.put("id", key);
-                    reader = new StringReader(entry.getValue());
-                    template = new Template(name, reader, conf);
-                    template.process(context, writer);
-
-                    if (writer.toString().length() == 0) continue;
-
-                    src = new ByteArrayInputStream(writer.toString().getBytes());
-                    p = (BuildableItem) Jenkins.getInstance()
-                            .createProjectFromXML(name, src);
-                    src.close();
-
-                    removeJobFromViews(name, log);
-
-                    if (Jenkins.getInstance().getView(asset.getCategory()) == null) {
-                        View view = new ListView(asset.getCategory());
-                        Jenkins.getInstance().addView(view);
-                    }
-
-                    ListView view = (ListView) Jenkins.getInstance().getView(asset.getCategory());
-                    view.doAddJobToView(name);
-
-                }
-            } catch (TemplateException e) {
-                throw new JobProfileException(e.getMessage(), e);
-            } catch (ServletException e) {
-                throw new JobProfileException(e.getMessage(), e);
+        try {
+            for (Job job: jobs) {
+                job.sendParsedTemplatesToInstance();
+                job.manageViews();
             }
+        } catch (ServletException e) {
+            throw new JobProfileException(e);
         }
         return true;
     }
 
-    public static void removeJobFromViews(String jobId, PrintStream log) {
-        for (View view : Jenkins.getInstance().getViews()) {
-            view.onJobRenamed(null, jobId, null);
-        }
+    public static Set<Job> createJobs(PrintStream log, SoftwareIndex index, ProfileManager profileManager, String forcedProfile, World world)
+            throws IOException {
+        Set<Job> jobs;
+        Job currentJob;
 
+        jobs = new HashSet<Job>();
+
+        for (SoftwareAsset asset : index.getAssets()) {
+            currentJob = Job.Job(asset, world);
+
+            profileManager.discover(currentJob.getScm(), forcedProfile).getProfile();
+
+            currentJob.setUsedProfile(profileManager.profile);
+            try {
+                currentJob.createParsedTemplates(log, profileManager.getProfile());
+                jobs.add(currentJob);
+            } catch (TemplateException e) {
+                throw new JobProfileException(e.getMessage(), e);
+            }
+            jobs.add(currentJob);
+        }
+        return jobs;
     }
 
     @Override

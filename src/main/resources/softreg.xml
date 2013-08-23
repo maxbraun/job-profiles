@@ -12,10 +12,4 @@
         <scm>https://github.com/mlhartme/maven-prerelease-plugin.git</scm>
         <category>Maven Plugins</category>
     </asset>
-    <asset>
-        <id>123</id>
-        <name>stubbles-core</name>
-        <scm>https://github.com/stubbles/stubbles-core.git</scm>
-        <category>PHP</category>
-    </asset>
 </assets>

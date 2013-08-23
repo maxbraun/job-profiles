@@ -1,6 +1,7 @@
 package org.jenkinsci.plugins.jobprofiles;
 
 
+import lombok.ToString;
 import net.oneandone.sushi.fs.*;
 
 import java.io.IOException;
@@ -10,11 +11,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@ToString
 public class ScmNode extends Scm {
+    private static String remote;
 
     public static Scm create(World world, String scm) {
+        remote = scm;
         try {
-            return new ScmNode(world.node(scm));
+            return new ScmNode(world.node("svn:" + remote));
         } catch (URISyntaxException e) {
             throw new JobProfileException(e.getMessage(), e);
         } catch (NodeInstantiationException e) {
@@ -69,5 +73,10 @@ public class ScmNode extends Scm {
         } catch (FileNotFoundException e) {
             return null;
         }
+    }
+
+    @Override
+    public String getRemote() {
+        return remote;
     }
 }

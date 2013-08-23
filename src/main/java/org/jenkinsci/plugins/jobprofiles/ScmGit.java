@@ -1,6 +1,7 @@
 package org.jenkinsci.plugins.jobprofiles;
 
 
+import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import net.oneandone.sushi.fs.FileNotFoundException;
 import net.oneandone.sushi.fs.Node;
@@ -17,16 +18,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@ToString
 @Slf4j
 public class ScmGit extends Scm {
+    private static String remote;
 
     public static Scm create(World world, String uri) {
+        remote = uri;
         FileNode localpath;
         try {
             localpath = world.getTemp().createTempDirectory();
             Git.cloneRepository()
                     .setDirectory(new File(localpath.getAbsolute()))
-                    .setURI(uri)
+                    .setURI(remote)
                     .call();
             return new ScmGit(localpath);
         } catch (GitAPIException e) {
@@ -95,5 +99,10 @@ public class ScmGit extends Scm {
         } catch (IOException e) {
             return null;
         }
+    }
+
+    @Override
+    public String getRemote() {
+        return remote;
     }
 }

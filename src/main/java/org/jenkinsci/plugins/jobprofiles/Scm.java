@@ -19,7 +19,7 @@ public abstract class Scm {
             return scm;
         }
 
-        return ScmNode.create(world, "svn:" + uri);
+        return ScmNode.create(world, uri);
     }
 
     public abstract String getPom() throws IOException;
@@ -33,4 +33,6 @@ public abstract class Scm {
     public abstract List<Node> find(String seachString) throws IOException;
 
     public abstract Node findOne(String seachString) throws IOException;
+
+    public abstract String getRemote();
 }

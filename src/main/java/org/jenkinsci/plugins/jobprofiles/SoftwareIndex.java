@@ -51,11 +51,7 @@ public class SoftwareIndex {
         return asset;
     }
 
-    public SoftwareAsset getAsset(Integer id) {
-        return null;
-    }
-
-    public SoftwareAsset getAsset(String name) {
+    public SoftwareAsset getAsset(String scm) {
         return null;
     }
 
