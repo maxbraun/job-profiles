@@ -8,7 +8,9 @@ import hudson.model.ListView;
 import hudson.model.View;
 import jenkins.model.Jenkins;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import net.oneandone.sushi.fs.World;
+import net.oneandone.sushi.util.Strings;
 
 import javax.servlet.ServletException;
 import java.io.*;
@@ -18,6 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Data
+@Slf4j
 public class Job {
     private static final String DELEMITER = "_";
     private static final String PREFIX ="user";
@@ -53,7 +56,7 @@ public class Job {
     }
 
     public static Job Job(SoftwareAsset asset, World world){
-        Scm scm = Scm.get(asset.getTrunk(), world);
+        Scm scm = asset.getTrunk().equals("system") ? null : Scm.get(asset.getTrunk(), world);
         return new Job(asset.getId(), asset.getArtifactId(), asset.getCategory(), scm, new Date(), asset.getGroupId());
     }
 
@@ -87,6 +90,7 @@ public class Job {
             InputStream src;
             BuildableItem job;
             src = new ByteArrayInputStream(template.getValue().getBytes());
+            log.info(src.toString());
             job = (BuildableItem) Jenkins.getInstance()
                     .createProjectFromXML(template.getKey(), src);
             src.close();
@@ -120,7 +124,7 @@ public class Job {
         String key = String.format("%s%s%s%s%s", PREFIX, DELEMITER, getGroupId(), DELEMITER, getName());
 
         if (!templateFileName.equals("build.xml")) {
-            return String.format("%s%s%s", key, DELEMITER, templateFileName.replace(".xml", ""));
+            return String.format("%s%s%s", key, DELEMITER, Strings.removeRight(templateFileName, ".xml"));
         } else {
             return key;
         }
@@ -136,7 +140,7 @@ public class Job {
         context.put("now", now.toString());
         context.put("usedProfile", usedProfile);
         context.put("id", createIdentifier("build.xml"));
-        context.put("scm", scm.getRemote());
+        context.put("scm", scm != null ? scm.getRemote() : "");
         return context;
     }
 

@@ -1,7 +1,5 @@
 package org.jenkinsci.plugins.jobprofiles;
 
-import freemarker.template.Configuration;
-import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import hudson.Extension;
 import hudson.Launcher;
@@ -9,7 +7,6 @@ import hudson.Util;
 import hudson.model.*;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
-import jenkins.model.Jenkins;
 import lombok.Getter;
 import lombok.Setter;
 import net.oneandone.sushi.fs.World;
@@ -52,12 +49,22 @@ public class JobProfiles extends Builder {
 
         if (!Util.replaceMacro(forcedSCM, build.getBuildVariableResolver()).isEmpty()) {
             SoftwareAsset asset;
-
             asset = new SoftwareAsset();
-            asset.setTrunk(Util.replaceMacro(forcedSCM, build.getBuildVariableResolver()));
             index = new SoftwareIndex();
-            index.asset.add(asset);
 
+            if (Util.replaceMacro(forcedSCM, build.getBuildVariableResolver()).equals("system")) {
+
+                asset.setId("system");
+                asset.setArtifactId("system");
+                asset.setCategory("System");
+                asset.setGroupId("system");
+                asset.setTrunk("system");
+
+            } else {
+
+                asset.setTrunk(Util.replaceMacro(forcedSCM, build.getBuildVariableResolver()));
+            }
+            index.asset.add(asset);
 
         } else {
 
@@ -87,6 +94,7 @@ public class JobProfiles extends Builder {
         } catch (ServletException e) {
             throw new JobProfileException(e);
         }
+
         return true;
     }
 
@@ -104,6 +112,7 @@ public class JobProfiles extends Builder {
 
             currentJob.setUsedProfile(profileManager.profile);
             try {
+                Context.add(currentJob, world);
                 currentJob.createParsedTemplates(log, profileManager.getProfile());
                 jobs.add(currentJob);
             } catch (TemplateException e) {

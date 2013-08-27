@@ -16,6 +16,10 @@ public class ProfileFinder {
         ProfileFinder finder;
 
         finder = new ProfileFinder(profileScm);
+        if (forcedProfile != null) {
+            finder.addPossibleProfile(forcedProfile);
+            return finder;
+        }
 
         finder.addPossibleProfile(findBuildSystem(projectScm));
         if (finder.possibleProfiles.get(finder.possibleProfiles.size() - 1).equals("maven") && Jenkins.getInstance() != null) {

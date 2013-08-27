@@ -3,7 +3,6 @@ package org.jenkinsci.plugins.jobprofiles;
 import hudson.maven.MavenEmbedder;
 import hudson.maven.MavenEmbedderException;
 import hudson.maven.MavenUtil;
-import hudson.model.AbstractBuild;
 import hudson.model.TaskListener;
 import hudson.tasks.Maven;
 import hudson.util.LogTaskListener;
@@ -15,49 +14,37 @@ import org.apache.maven.project.ProjectBuildingException;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Context {
-    public static Map<String, Object> get(SoftwareAsset asset, Scm scm, World world, AbstractBuild build) throws IOException {
-        Map<String, Object> context = new HashMap<String, Object>();
-
-        context.put("scm", asset.getTrunk());
-        context.put("version", "");
-        context.put("now", new Date(build.getTimestamp().getTimeInMillis()).toString());
-
-        // do a lookup in the Index…
-        asset.setCategory(asset.getCategory() == null ? "No Category" : asset.getCategory());
-        asset.setId(asset.getId() == null ? "Freestyle" : asset.getId());
-        context.put("category", asset.getCategory() == null ? "No Category" : asset.getCategory());
-        context.put("asset", asset);
-
-        return getMavenContext(context, world, scm);
+    public static void add(Job job, World world) throws IOException {
+        addMavenContext(job, world);
+        addJenkinsContext(job);
     }
 
-    public static Map<String, Object> getMavenContext(Map<String, Object> context, World world, Scm scm) throws IOException {
+    public static void addJenkinsContext(Job job) throws IOException {
+        job.addContext("max_executors", Jenkins.getInstance().getNumExecutors());
+    }
+
+    public static void addMavenContext(Job job, World world) throws IOException {
         MavenProject project;
         String pom;
+        if (job.getScm() == null ) return;
+        pom = job.getScm().getPom();
 
-        pom = scm.getPom();
-
-        if (pom == null) return context;
+        if (pom == null) return;
         project = getMavenProject(pom, world);
 
 
-        context.put("mavenproject", project);
-        context.put("name", project.getArtifactId());
-        context.put("identifier", project.getGroupId());
+        job.addContext("mavenproject", project);
+        job.addContext("name", project.getArtifactId());
+        job.addContext("identifier", project.getGroupId());
 
         for (Map.Entry entry : project.getProperties().entrySet()) {
-            context.put(entry.getKey().toString().replace(".", "_"), entry.getValue());
+            job.addContext(entry.getKey().toString().replace(".", "_"), entry.getValue());
         }
-
-        return context;
     }
 
 
