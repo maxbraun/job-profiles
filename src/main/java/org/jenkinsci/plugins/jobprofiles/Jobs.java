@@ -9,15 +9,15 @@ import java.io.PrintStream;
 import java.util.HashSet;
 import java.util.Set;
 
+import static org.jenkinsci.plugins.jobprofiles.JobProfilesConfiguration.get;
+
 public class Jobs {
     public Jobs() {
     }
 
-    void Jobs(PrintStream log, SoftwareIndex index, String forcedProfile) throws IOException {
-        World world;
+    public static void Jobs(PrintStream log, SoftwareIndex index, String forcedProfile, World world) throws IOException {
         ProfileManager profileManager;
         Set<Job> jobs;
-        world = new World();
         profileManager = new ProfileManager(world, log, JobProfilesConfiguration.get().getProfileRootDir());
 
         jobs = createJobs(log, index, profileManager, forcedProfile, world);
@@ -55,5 +55,42 @@ public class Jobs {
             jobs.add(currentJob);
         }
         return jobs;
+    }
+
+    public static void buildJobs(String forcedSCM, String forcedProfile, PrintStream log, World world) throws IOException {
+        SoftwareIndex index;
+
+        if (!forcedSCM.isEmpty()) {
+            SoftwareAsset asset;
+            asset = new SoftwareAsset();
+            index = new SoftwareIndex();
+
+            if (forcedSCM.equals("system")) {
+
+                asset.setId("system");
+                asset.setArtifactId("system");
+                asset.setCategory("System");
+                asset.setGroupId("system");
+                asset.setTrunk("system");
+
+            } else {
+
+                asset.setTrunk(forcedSCM);
+            }
+            index.asset.add(asset);
+
+        } else {
+
+            log.println("Going to parse " + get().getSoftwareIndexFile());
+            index = SoftwareIndex.load(world.validNode(get().getSoftwareIndexFile()));
+            log.println("Parsed.");
+        }
+
+        if (!forcedProfile.isEmpty()) {
+            log.println("Using a forced Profile: " + forcedProfile);
+        }
+
+
+        Jobs(log, index, forcedProfile, world);
     }
 }

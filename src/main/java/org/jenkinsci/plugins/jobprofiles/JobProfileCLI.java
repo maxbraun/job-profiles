@@ -1,11 +1,17 @@
 package org.jenkinsci.plugins.jobprofiles;
 
-/**
- * Created with IntelliJ IDEA.
- * User: mabraun
- * Date: 29.08.13
- * Time: 16:58
- * To change this template use File | Settings | File Templates.
- */
+
+import hudson.cli.declarative.CLIMethod;
+import lombok.extern.slf4j.Slf4j;
+import org.kohsuke.args4j.Argument;
+
+@Slf4j
 public class JobProfileCLI {
+    @CLIMethod(name = "updateJobs")
+    public static void updateJobs(@Argument(index = 0) String forcedSCM, @Argument(index = 1) String forcedProfile) {
+        log.info(forcedProfile);
+        log.info(forcedSCM);
+    }
+
+
 }
