@@ -73,7 +73,6 @@ public class ScmGit extends Scm {
             profileMap.put(profileNode.getName(), profileNode.readString());
 
         }
-        log.print("Using profile " + name);
         return profileMap;
     }
 

@@ -60,6 +60,9 @@ public class Jobs {
     public static void buildJobs(String forcedSCM, String forcedProfile, PrintStream log, World world) throws IOException {
         SoftwareIndex index;
 
+        forcedSCM = forcedSCM == null ? "" : forcedSCM;
+        forcedProfile = forcedProfile == null ? "" : forcedProfile;
+
         if (!forcedSCM.isEmpty()) {
             SoftwareAsset asset;
             asset = new SoftwareAsset();

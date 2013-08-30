@@ -16,7 +16,7 @@ public class ProfileFinder {
         ProfileFinder finder;
 
         finder = new ProfileFinder(profileScm);
-        if (forcedProfile != null) {
+        if (forcedProfile != null && !forcedProfile.isEmpty()) {
             finder.addPossibleProfile(forcedProfile);
             return finder;
         }

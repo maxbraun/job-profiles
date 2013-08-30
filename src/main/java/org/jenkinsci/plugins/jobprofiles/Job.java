@@ -6,6 +6,7 @@ import freemarker.template.TemplateException;
 import hudson.model.BuildableItem;
 import hudson.model.ListView;
 import hudson.model.View;
+import hudson.util.IOException2;
 import jenkins.model.Jenkins;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -90,9 +91,13 @@ public class Job {
             InputStream src;
             BuildableItem job;
             src = new ByteArrayInputStream(template.getValue().getBytes());
-            log.info(src.toString());
+            try {
             job = (BuildableItem) Jenkins.getInstance()
                     .createProjectFromXML(template.getKey(), src);
+            }catch (IOException2 e) {
+                log.info("could not parse because" + e.getMessage());
+                log.info(template.getValue());
+            }
             src.close();
         }
     }
