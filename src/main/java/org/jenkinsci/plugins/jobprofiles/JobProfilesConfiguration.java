@@ -54,14 +54,14 @@ public class JobProfilesConfiguration extends GlobalConfiguration {
 
     @Override
     public String getDisplayName() {
-        return "Job Profiles";
+        return Messages.JobProfiles_displayName();
     }
 
     public FormValidation doCheckValidUri(@QueryParameter String value) {
         try {
             new URI(value);
         } catch (URISyntaxException e) {
-            return FormValidation.error("Validation failed.");
+            return FormValidation.error(Messages.JobProfilesConfiguration_failed());
         }
         return FormValidation.ok();
     }

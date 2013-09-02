@@ -17,7 +17,7 @@ public class JobProfileCli extends CLICommand {
 
     @Override
     public String getShortDescription() {
-        return "Updates Jenkins Jobs with the Job Profiles Plugin";
+        return Messages.JobProfileCli_shortDescription();
     }
 
     protected int run() throws Exception {

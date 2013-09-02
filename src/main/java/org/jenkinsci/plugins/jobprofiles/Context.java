@@ -59,7 +59,7 @@ public class Context {
         installations = Jenkins.getInstance().getDescriptorByType(hudson.tasks.Maven.DescriptorImpl.class).getInstallations();
 
         if (installations.length == 0) {
-            throw new JobProfileException("No Maven installation found.");
+            throw new JobProfileException(Messages.Context_NoMavenInstallation());
         }
 
         mavenHome = installations[0].getHomeDir();

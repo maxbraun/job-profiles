@@ -29,7 +29,7 @@ public class JobProfileProperties extends JobProperty<AbstractProject<?, ?>> {
     public static class DescriptorImpl extends JobPropertyDescriptor {
         @Override
         public String getDisplayName() {
-            return "Job Profile Informations";
+            return Messages.JobProfileProperties_headline();
         }
     }
 }

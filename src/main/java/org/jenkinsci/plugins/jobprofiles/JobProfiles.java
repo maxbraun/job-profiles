@@ -64,7 +64,7 @@ public class JobProfiles extends Builder {
          * This human readable name is used in the configuration screen.
          */
         public String getDisplayName() {
-            return "Job Updates";
+            return Messages.JobProfiles_displayName();
         }
 
         @Override

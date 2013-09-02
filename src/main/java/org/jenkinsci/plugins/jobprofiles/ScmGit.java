@@ -36,7 +36,7 @@ public class ScmGit extends Scm {
         } catch (GitAPIException e) {
             throw new JobProfileException(e.getMessage(), e);
         } catch (IOException e) {
-            throw new JobProfileException("Could not create temp directory.", e);
+            throw new JobProfileException(Messages.ScmGit_tempDirFailed(), e);
         }
 
     }
@@ -64,7 +64,7 @@ public class ScmGit extends Scm {
         try {
             theProfile = localpath.findOne(name);
         } catch (FileNotFoundException e) {
-            log.println(String.format("[Error] Profile %s not found. I'll going to continue with next Asset", name));
+            log.println(String.format(Messages.ScmGit_ProfileNotFound(), name));
             return profileMap;
         }
 
