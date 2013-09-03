@@ -21,7 +21,7 @@ public class JobTest {
         foo.setTrunk("https://github.com/mlhartme/sushi.git");
         foo.setCategory("Library");
 
-        Job job = Job.Job(foo, new World());
+        Job job = Job.create(foo, new World());
         manager.discover(job.getScm(), null).getProfile();
         job.setUsedProfile(manager.profile);
         job.createParsedTemplates(System.out, manager.getProfile());

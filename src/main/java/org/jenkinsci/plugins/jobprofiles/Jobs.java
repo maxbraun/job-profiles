@@ -15,48 +15,6 @@ public class Jobs {
     public Jobs() {
     }
 
-    public static void Jobs(PrintStream log, SoftwareIndex index, String forcedProfile, World world) throws IOException {
-        ProfileManager profileManager;
-        Set<Job> jobs;
-        profileManager = new ProfileManager(world, log, JobProfilesConfiguration.get().getProfileRootDir());
-
-        jobs = createJobs(log, index, profileManager, forcedProfile, world);
-
-        try {
-            for (Job job : jobs) {
-                job.sendParsedTemplatesToInstance();
-                job.manageViews();
-            }
-        } catch (ServletException e) {
-            throw new JobProfileException(e);
-        }
-    }
-
-    public static Set<Job> createJobs(PrintStream log, SoftwareIndex index, ProfileManager profileManager, String forcedProfile, World world)
-            throws IOException {
-        Set<Job> jobs;
-        Job currentJob;
-
-        jobs = new HashSet<Job>();
-
-        for (SoftwareAsset asset : index.getAssets()) {
-            currentJob = Job.Job(asset, world);
-
-            profileManager.discover(currentJob.getScm(), forcedProfile).getProfile();
-
-            currentJob.setUsedProfile(profileManager.profile);
-            try {
-                Context.add(currentJob, world);
-                currentJob.createParsedTemplates(log, profileManager.getProfile());
-                jobs.add(currentJob);
-            } catch (TemplateException e) {
-                throw new JobProfileException(e.getMessage(), e);
-            }
-            jobs.add(currentJob);
-        }
-        return jobs;
-    }
-
     public static void buildJobs(String forcedSCM, String forcedProfile, PrintStream log, World world) throws IOException {
         SoftwareIndex index;
 
@@ -94,6 +52,49 @@ public class Jobs {
         }
 
 
-        Jobs(log, index, forcedProfile, world);
+        sendJobsToJenkins(log, index, forcedProfile, world);
     }
+    
+    private static void sendJobsToJenkins(PrintStream log, SoftwareIndex index, String forcedProfile, World world) throws IOException {
+        ProfileManager profileManager;
+        Set<Job> jobs;
+        profileManager = new ProfileManager(world, log, JobProfilesConfiguration.get().getProfileRootDir());
+
+        jobs = parseAllTemplates(log, index, profileManager, forcedProfile, world);
+
+        try {
+            for (Job job : jobs) {
+                job.sendParsedTemplatesToInstance();
+                job.manageViews();
+            }
+        } catch (ServletException e) {
+            throw new JobProfileException(e);
+        }
+    }
+
+    private static Set<Job> parseAllTemplates(PrintStream log, SoftwareIndex index, ProfileManager profileManager, String forcedProfile, World world)
+            throws IOException {
+        Set<Job> jobs;
+        Job currentJob;
+
+        jobs = new HashSet<Job>();
+
+        for (SoftwareAsset asset : index.getAssets()) {
+            currentJob = Job.create(asset, world);
+
+            profileManager.discover(currentJob.getScm(), forcedProfile).getProfile();
+
+            currentJob.setUsedProfile(profileManager.profile);
+            try {
+                Context.add(currentJob, world);
+                currentJob.createParsedTemplates(log, profileManager.getProfile());
+                jobs.add(currentJob);
+            } catch (TemplateException e) {
+                throw new JobProfileException(e.getMessage(), e);
+            }
+            jobs.add(currentJob);
+        }
+        return jobs;
+    }
+
 }

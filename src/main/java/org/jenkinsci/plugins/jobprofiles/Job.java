@@ -56,7 +56,7 @@ public class Job {
         return templateContextAdditions == null ? new HashMap<String, Object>() : templateContextAdditions;
     }
 
-    public static Job Job(SoftwareAsset asset, World world){
+    public static Job create(SoftwareAsset asset, World world){
         Scm scm = asset.getTrunk().equals("system") ? null : Scm.get(asset.getTrunk(), world);
         return new Job(asset.getId(), asset.getArtifactId(), asset.getCategory(), scm, new Date(), asset.getGroupId());
     }
