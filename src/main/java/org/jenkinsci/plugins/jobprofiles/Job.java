@@ -39,7 +39,7 @@ public class Job {
     private final Scm scm;
     private final Date now;
     private final String groupId;
-    private String usedProfile;
+    private Profile profile;
     /**
      * Key i need to identify against jenkins
      */
@@ -62,7 +62,7 @@ public class Job {
     }
 
 
-    public void createParsedTemplates(PrintStream log, Map<String, String> profile) throws IOException, TemplateException {
+    public void parseProfile(PrintStream log) throws IOException, TemplateException {
         Map<String,String> xmls;
         Writer writer;
         Reader reader;
@@ -71,9 +71,9 @@ public class Job {
 
         xmls = new HashMap<String, String>();
 
-        log.println(String.format("Creating Jobs for %s | Profile: %s ", name, this.usedProfile));
+        log.println(String.format("Creating Jobs for %s | Profile: %s ", name, this.profile.getName()));
 
-        for (Map.Entry<String, String> entry : profile.entrySet()) {
+        for (Map.Entry<String, String> entry : profile.getXmls().entrySet()) {
             writer = new StringWriter();
 
             reader = new StringReader(entry.getValue());
@@ -86,7 +86,7 @@ public class Job {
         parsedTemplates = xmls;
     }
 
-    public void sendParsedTemplatesToInstance() throws IOException {
+    public void sendJobsToJenkins() throws IOException {
         for (Map.Entry<String, String> template : parsedTemplates.entrySet()) {
             InputStream src;
             BuildableItem job;
@@ -143,7 +143,7 @@ public class Job {
         context.put("name", name);
         context.put("indexId", indexId);
         context.put("now", now.toString());
-        context.put("usedProfile", usedProfile);
+        context.put("usedProfile", profile.getName());
         context.put("id", createIdentifier("build.xml"));
         context.put("scm", scm != null ? scm.getRemote() : "");
         return context;

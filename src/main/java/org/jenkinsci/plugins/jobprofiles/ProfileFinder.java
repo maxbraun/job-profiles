@@ -5,14 +5,15 @@ import net.oneandone.sushi.fs.World;
 import org.apache.maven.project.MavenProject;
 
 import java.io.IOException;
-import java.io.PrintStream;
 import java.util.*;
 
-
+/**
+ * Heuristic to find a Profile
+ */
 public class ProfileFinder {
 
 
-    public static ProfileFinder find(World world, PrintStream log, Scm projectScm, Scm profileScm, String forcedProfile) throws IOException {
+    public static ProfileFinder find(World world, Scm projectScm, Scm profileScm, String forcedProfile) throws IOException {
         ProfileFinder finder;
 
         finder = new ProfileFinder(profileScm);
@@ -23,7 +24,7 @@ public class ProfileFinder {
 
         finder.addPossibleProfile(findBuildSystem(projectScm));
         if (finder.possibleProfiles.get(finder.possibleProfiles.size() - 1).equals("maven") && Jenkins.getInstance() != null) {
-            finder.addPossibleProfile(findMavenProperty(Context.getMavenProject(projectScm.getPom(), world)));
+            finder.addPossibleProfile(findMavenProperty(ContextBuilder.getMavenProject(projectScm.getPom(), world)));
         }
         finder.addPossibleProfile(findJenkinsFile(projectScm));
         finder.addPossibleProfile(forcedProfile);

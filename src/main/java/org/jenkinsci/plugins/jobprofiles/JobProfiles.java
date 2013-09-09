@@ -5,7 +5,6 @@ import hudson.Launcher;
 import hudson.Util;
 import hudson.model.*;
 import hudson.tasks.BuildStepDescriptor;
-import hudson.tasks.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import net.oneandone.sushi.fs.World;
@@ -18,11 +17,11 @@ import java.io.*;
 
 @Getter
 @Setter
-public class JobProfiles extends Builder {
+public class JobProfiles extends hudson.tasks.Builder {
 
     private String forcedSCM;
     private String forcedProfile;
-    private final Jobs jobs = new Jobs();
+    private final JobBuilder builder = new JobBuilder();
 
     @DataBoundConstructor
     public JobProfiles(String forcedSCM, String forcedProfile) {
@@ -40,7 +39,7 @@ public class JobProfiles extends Builder {
         forcedSCM = Util.replaceMacro(forcedSCM, build.getBuildVariableResolver());
         forcedProfile = Util.replaceMacro(this.forcedProfile, build.getBuildVariableResolver());
 
-        Jobs.buildJobs(forcedSCM, forcedProfile, log, world);
+        JobBuilder.buildJobs(forcedSCM, forcedProfile, log, world);
 
         return true;
     }
@@ -52,7 +51,7 @@ public class JobProfiles extends Builder {
 
 
     @Extension // This indicates to Jenkins that this is an implementation of an extension point.
-    public static final class DescriptorImpl extends BuildStepDescriptor<Builder> {
+    public static final class DescriptorImpl extends BuildStepDescriptor<hudson.tasks.Builder> {
 
 
         public boolean isApplicable(Class<? extends AbstractProject> aClass) {

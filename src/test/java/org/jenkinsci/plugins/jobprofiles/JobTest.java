@@ -22,9 +22,9 @@ public class JobTest {
         foo.setCategory("Library");
 
         Job job = Job.create(foo, new World());
-        manager.discover(job.getScm(), null).getProfile();
-        job.setUsedProfile(manager.profile);
-        job.createParsedTemplates(System.out, manager.getProfile());
+        Profile profile = manager.getProfileForScm(job.getScm(), null);
+        job.setProfile(profile);
+        job.parseProfile(System.out);
         log.info(job.toString());
 
     }

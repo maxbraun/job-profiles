@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class Context {
+public class ContextBuilder {
     public static void add(Job job, World world) throws IOException {
         addMavenContext(job, world);
         addJenkinsContext(job);
@@ -63,7 +63,7 @@ public class Context {
         }
 
         mavenHome = installations[0].getHomeDir();
-        listener = new LogTaskListener(Logger.getLogger(Context.class.toString()), Level.ALL);
+        listener = new LogTaskListener(Logger.getLogger(ContextBuilder.class.toString()), Level.ALL);
 
         try {
             tmpPom = (FileNode) world.getTemp().createTempFile().writeStrings(pomContent);

@@ -11,8 +11,8 @@ import java.util.Set;
 
 import static org.jenkinsci.plugins.jobprofiles.JobProfilesConfiguration.get;
 
-public class Jobs {
-    public Jobs() {
+public class JobBuilder {
+    public JobBuilder() {
     }
 
     public static void buildJobs(String forcedSCM, String forcedProfile, PrintStream log, World world) throws IOException {
@@ -64,7 +64,7 @@ public class Jobs {
 
         try {
             for (Job job : jobs) {
-                job.sendParsedTemplatesToInstance();
+                job.sendJobsToJenkins();
                 job.manageViews();
             }
         } catch (ServletException e) {
@@ -76,18 +76,19 @@ public class Jobs {
             throws IOException {
         Set<Job> jobs;
         Job currentJob;
+        Profile currentProfile;
 
         jobs = new HashSet<Job>();
 
         for (SoftwareAsset asset : index.getAssets()) {
             currentJob = Job.create(asset, world);
 
-            profileManager.discover(currentJob.getScm(), forcedProfile).getProfile();
+            currentProfile = profileManager.getProfileForScm(currentJob.getScm(), forcedProfile);
 
-            currentJob.setUsedProfile(profileManager.profile);
+            currentJob.setProfile(currentProfile);
             try {
-                Context.add(currentJob, world);
-                currentJob.createParsedTemplates(log, profileManager.getProfile());
+                ContextBuilder.add(currentJob, world);
+                currentJob.parseProfile(log);
                 jobs.add(currentJob);
             } catch (TemplateException e) {
                 throw new JobProfileException(e.getMessage(), e);

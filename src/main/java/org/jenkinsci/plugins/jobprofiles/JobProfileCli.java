@@ -21,7 +21,7 @@ public class JobProfileCli extends CLICommand {
     }
 
     protected int run() throws Exception {
-        Jobs.buildJobs(forcedSCM, forcedProfile, stdout, new World());
+        JobBuilder.buildJobs(forcedSCM, forcedProfile, stdout, new World());
         return 0;
     }
 
