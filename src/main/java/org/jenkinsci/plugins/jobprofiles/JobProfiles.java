@@ -5,6 +5,7 @@ import hudson.Launcher;
 import hudson.Util;
 import hudson.model.*;
 import hudson.tasks.BuildStepDescriptor;
+import jenkins.model.Jenkins;
 import lombok.Getter;
 import lombok.Setter;
 import net.oneandone.sushi.fs.World;
@@ -13,6 +14,7 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.StaplerRequest;
 
 import java.io.*;
+import java.util.Map;
 
 
 @Getter

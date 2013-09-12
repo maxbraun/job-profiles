@@ -54,7 +54,7 @@ public class JobBuilder {
 
         sendJobsToJenkins(log, index, forcedProfile, world);
     }
-    
+
     private static void sendJobsToJenkins(PrintStream log, SoftwareIndex index, String forcedProfile, World world) throws IOException {
         ProfileManager profileManager;
         Set<Job> jobs;
