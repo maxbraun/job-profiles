@@ -126,7 +126,7 @@ public class Job {
     }
 
     private String createIdentifier(String templateFileName) {
-        String key = String.format("%s%s%s%s", getGroupId(), DELEMITER, getName());
+        String key = String.format("%s%s%s", getGroupId(), DELEMITER, getName());
 
         if (!templateFileName.equals("build.xml")) {
             return String.format("%s%s%s", key, DELEMITER, Strings.removeRight(templateFileName, ".xml"));
