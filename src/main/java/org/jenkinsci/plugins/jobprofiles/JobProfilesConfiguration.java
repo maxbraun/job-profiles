@@ -21,15 +21,10 @@ import java.net.URISyntaxException;
 @Setter
 public class JobProfilesConfiguration extends GlobalConfiguration {
 
-    private static final String SOFTWARE_INDEX_FILE_DEFAULT = "svn:https://github.com/maxbraun/job-profiles/trunk/src/main/resources/softreg.xml";
-    private static final String PROFILE_ROOT_DIR_DEFAULT = "https://github.com/maxbraun/job-profiles-examles.git";
-
     private String softwareIndexFile;
     private String profileRootDir;
 
     public JobProfilesConfiguration() {
-        softwareIndexFile = softwareIndexFile == null ? SOFTWARE_INDEX_FILE_DEFAULT : softwareIndexFile;
-        profileRootDir = profileRootDir == null ? PROFILE_ROOT_DIR_DEFAULT : profileRootDir;
     }
 
     @DataBoundConstructor
