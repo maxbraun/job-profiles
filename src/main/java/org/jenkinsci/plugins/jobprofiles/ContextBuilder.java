@@ -19,9 +19,15 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class ContextBuilder {
-    public static void add(Job job, World world) throws IOException {
+    public static void add(Job job, World world, SoftwareAsset asset) throws IOException {
         addMavenContext(job, world);
         addJenkinsContext(job);
+        addSoftwareAssetContext(job, asset);
+    }
+
+    public static void addSoftwareAssetContext(Job job, SoftwareAsset asset) {
+        job.addContext("name", asset.getArtifactId());
+        job.addContext("identifier", asset.getGroupId());
     }
 
     public static void addJenkinsContext(Job job) throws IOException {
@@ -39,8 +45,6 @@ public class ContextBuilder {
 
 
         job.addContext("mavenproject", project);
-        job.addContext("name", project.getArtifactId());
-        job.addContext("identifier", project.getGroupId());
 
         for (Map.Entry entry : project.getProperties().entrySet()) {
             job.addContext(entry.getKey().toString().replace(".", "_"), entry.getValue());

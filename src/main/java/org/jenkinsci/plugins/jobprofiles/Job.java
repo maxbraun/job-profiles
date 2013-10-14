@@ -4,6 +4,7 @@ import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import hudson.model.BuildableItem;
+import hudson.model.Failure;
 import hudson.model.ListView;
 import hudson.model.View;
 import hudson.util.IOException2;
@@ -14,8 +15,14 @@ import net.oneandone.sushi.fs.World;
 import net.oneandone.sushi.util.Strings;
 
 import javax.servlet.ServletException;
-import java.io.*;
-import java.util.Collections;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintStream;
+import java.io.Reader;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -116,13 +123,22 @@ public class Job {
     }
 
     private static void addJobToView(String jobId, String viewName) throws IOException, ServletException {
-        if (Jenkins.getInstance().getView(viewName) == null) {
-            View view = new ListView(viewName);
-            Jenkins.getInstance().addView(view);
-        }
+        if (viewName != null && jobId != null) {
+            try {
 
-        ListView view = (ListView) Jenkins.getInstance().getView(viewName);
-        view.doAddJobToView(jobId);
+            if (Jenkins.getInstance().getView(viewName) == null) {
+                View view = new ListView(viewName);
+                Jenkins.getInstance().addView(view);
+            }
+
+            ListView view = (ListView) Jenkins.getInstance().getView(viewName);
+            view.doAddJobToView(jobId);
+            } catch (Failure e) {
+                Job.log.error("Something went wront with asset {} in category {}. {}", jobId, viewName, e);
+            }
+        } else {
+            Job.log.error("Something went wront with asset {} in category {}", jobId, viewName);
+        }
     }
 
     private String createIdentifier(String templateFileName) {

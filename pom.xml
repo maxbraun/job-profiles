@@ -9,7 +9,7 @@
     </parent>
 
     <artifactId>job-profiles</artifactId>
-    <version>0.1.0-SNAPSHOT</version>
+    <version>1.0.0-SNAPSHOT</version>
     <packaging>hpi</packaging>
 
     <dependencies>
@@ -74,6 +74,24 @@
             <url>http://repo.jenkins-ci.org/public/</url>
         </pluginRepository>
     </pluginRepositories>
+
+
+  <distributionManagement>
+    <repository>
+      <id>1und1-releases</id>
+      <url>http://mavenrepo.united.domain:8081/nexus/content/repositories/1und1-stable</url>
+    </repository>
+    <snapshotRepository>
+      <id>1und1-snapshots</id>
+      <url>http://mavenrepo.united.domain:8081/nexus/content/repositories/1und1-snapshots</url>
+    </snapshotRepository>
+    <site>
+      <id>ivar</id>
+      <!-- URL for this pom, not for derived projects! -->
+      <url>dav:http://ivar.pustemanager64.schlund.de/webdav/sites/wsd/${project.groupId}/${project.artifactId}
+      </url>
+    </site>
+  </distributionManagement>
 
     <properties>
         <!--

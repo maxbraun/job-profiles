@@ -36,6 +36,8 @@ public class ScmNode extends Scm {
     public String getPom() {
         try {
             return root.findOne("pom.xml").readString();
+        } catch ( FileNotFoundException e) {
+            return null;
         } catch (IOException e) {
             throw new JobProfileException(e.getMessage(), e);
         }

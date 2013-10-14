@@ -87,7 +87,7 @@ public class JobBuilder {
 
             currentJob.setProfile(currentProfile);
             try {
-                ContextBuilder.add(currentJob, world);
+                ContextBuilder.add(currentJob, world, asset);
                 currentJob.parseProfile(log);
                 jobs.add(currentJob);
             } catch (TemplateException e) {

@@ -25,6 +25,7 @@ public class JobProfilesConfiguration extends GlobalConfiguration {
     private String profileRootDir;
 
     public JobProfilesConfiguration() {
+        load();
     }
 
     @DataBoundConstructor
