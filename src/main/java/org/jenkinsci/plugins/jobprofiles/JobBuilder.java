@@ -36,7 +36,7 @@ public class JobBuilder {
 
             } else {
 
-                asset.setTrunk(forcedSCM);
+                asset = SoftwareAsset.fromSCM(forcedSCM, world);
             }
             index.asset.add(asset);
 
