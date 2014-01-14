@@ -1,22 +1,25 @@
 package org.jenkinsci.plugins.jobprofiles;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.Map;
+import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import org.apache.maven.project.MavenProject;
+import org.apache.maven.project.ProjectBuildingException;
+
 import hudson.maven.MavenEmbedder;
 import hudson.maven.MavenEmbedderException;
 import hudson.maven.MavenUtil;
 import hudson.model.TaskListener;
+import hudson.slaves.EnvironmentVariablesNodeProperty;
 import hudson.tasks.Maven;
 import hudson.util.LogTaskListener;
 import jenkins.model.Jenkins;
 import net.oneandone.sushi.fs.World;
 import net.oneandone.sushi.fs.file.FileNode;
-import org.apache.maven.project.MavenProject;
-import org.apache.maven.project.ProjectBuildingException;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class ContextBuilder {
     public static void add(Job job, World world, SoftwareAsset asset) throws IOException {
@@ -37,10 +40,12 @@ public class ContextBuilder {
     public static void addMavenContext(Job job, World world) throws IOException {
         MavenProject project;
         String pom;
-        if (job.getScm() == null ) return;
+        if (job.getScm() == null)
+            return;
         pom = job.getScm().getPom();
 
-        if (pom == null) return;
+        if (pom == null)
+            return;
         project = getMavenProject(pom, world);
 
 
@@ -68,16 +73,10 @@ public class ContextBuilder {
 
         mavenHome = installations[0].getHomeDir();
         listener = new LogTaskListener(Logger.getLogger(ContextBuilder.class.toString()), Level.ALL);
-
         try {
             tmpPom = (FileNode) world.getTemp().createTempFile().writeStrings(pomContent);
-        } catch (IOException e) {
-            throw new JobProfileException(e.getMessage(), e.getCause());
-        }
-
-        try {
             assert tmpPom != null;
-            embedder = MavenUtil.createEmbedder(listener, mavenHome, null);
+            embedder = MavenUtil.createEmbedder(listener, mavenHome, null, getEnvironmentVariables());
             mavenProject = embedder.readProject(new File(tmpPom.toString()));
         } catch (MavenEmbedderException e) {
             throw new JobProfileException(e.getMessage(), e);
@@ -88,6 +87,22 @@ public class ContextBuilder {
         }
         assert mavenProject != null;
         return mavenProject;
+    }
+
+    private static Properties getEnvironmentVariables() {
+        Properties properties;
+        EnvironmentVariablesNodeProperty environmentVariablesNodeProperty;
+
+        properties = new Properties();
+        environmentVariablesNodeProperty = Jenkins.getInstance().getGlobalNodeProperties().get(EnvironmentVariablesNodeProperty.class);
+
+        if (environmentVariablesNodeProperty != null) {
+            for (Map.Entry<String, String> entry : environmentVariablesNodeProperty.getEnvVars().entrySet()) {
+                properties.setProperty(entry.getKey(), entry.getValue());
+            }
+        }
+
+        return properties;
     }
 
 }

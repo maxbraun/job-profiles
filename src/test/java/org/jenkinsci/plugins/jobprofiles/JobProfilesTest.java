@@ -1,11 +1,12 @@
 package org.jenkinsci.plugins.jobprofiles;
 
-import hudson.model.FreeStyleProject;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.jvnet.hudson.test.JenkinsRule;
+
+import hudson.model.FreeStyleProject;
+import lombok.extern.slf4j.Slf4j;
 
 
 @Slf4j
@@ -25,7 +26,6 @@ public class JobProfilesTest {
 
         project.getBuildersList().add(new JobProfiles("system", "system"));
         j.buildAndAssertSuccess(project);
-
 
 
     }
