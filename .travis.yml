@@ -10,5 +10,4 @@ addons:
     project:
       name: "maxbraun/job-profiles"
     notification_email: me+github@max-braun.com
-    build_command: "mvn clean install -B"
     branch_pattern: master
