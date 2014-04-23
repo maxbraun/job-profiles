@@ -1,12 +1,16 @@
 language: java
-script: "mvn clean install -B"
 env:
   global:
-   - secure: "MGrYW4n/wiys4F/8G5ZwmSSZk11nz6zROT0mG2a1v6YUe/0opWIesFQGvVAV+NbiAvJ8nJ22DmuOIyH/H5FIQDlr1rILB1eUOYXp6Lvvm2+gO25dR7XkJLDFwemJSyH67alXJpwH8oTZakaQbltX/k+KarVHBX8olESnDDmq0oY="
+   # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
+   #   via the "travis encrypt" command using the project repo's public key
+   - secure: "lZNS+HBhP6zEi/d1UQfWEBRP3kZW5PPhRVC58Ak2+2vdOKpk4Z74G4oaQvA26RHEpaPwDTkXVakRoU86aL2WPiGBTeBv4O1lDxMB2JwYNbwrA61huESNbH7o3Y+CdBYLDc6YBB+zqN/yi4g01TFAIy14mjqPV12bcweWq/OkHHY="
 
 addons:
   coverity_scan:
     project:
       name: "maxbraun/job-profiles"
+      description: "Your project description here"
     notification_email: me+github@max-braun.com
+    build_command_prepend:
+    build_command: "mvn clean install -B"
     branch_pattern: master
