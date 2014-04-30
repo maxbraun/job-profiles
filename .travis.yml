@@ -11,6 +11,6 @@ addons:
       name: "maxbraun/job-profiles"
       description: "A Jenkins plugin which enables jenkins to generate job from templates automatically"
     notification_email: me+github@max-braun.com
-    build_command_prepend:
-    build_command: "mvn clean install -B"
+    build_command_prepend: "mvn clean install -DskipTests -B -V"
+    build_command: "mvn package -V -B"
     branch_pattern: master
