@@ -1,16 +1,1 @@
 language: java
-env:
-  global:
-   # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
-   #   via the "travis encrypt" command using the project repo's public key
-   - secure: "lZNS+HBhP6zEi/d1UQfWEBRP3kZW5PPhRVC58Ak2+2vdOKpk4Z74G4oaQvA26RHEpaPwDTkXVakRoU86aL2WPiGBTeBv4O1lDxMB2JwYNbwrA61huESNbH7o3Y+CdBYLDc6YBB+zqN/yi4g01TFAIy14mjqPV12bcweWq/OkHHY="
-
-addons:
-  coverity_scan:
-    project:
-      name: "maxbraun/job-profiles"
-      description: "A Jenkins plugin which enables jenkins to generate job from templates automatically"
-    notification_email: me+github@max-braun.com
-    build_command_prepend: "mvn clean install -DskipTests -B -V"
-    build_command: "mvn package -V -B"
-    branch_pattern: master
