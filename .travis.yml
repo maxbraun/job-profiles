@@ -1,1 +1,27 @@
 language: java
+jdk:
+  - oraclejdk8
+  - oraclejdk7
+  - openjdk7
+  
+notifications:
+  email:
+    - code@max-braun.com
+  on_success: always
+  on_failure: always
+  
+install:
+  - mvn package
+  - mvn javadoc:javadoc
+
+addons:
+  coverity_scan:
+    project:
+      name: "maxbraun/job-profiles"
+      description: "Your project description here"
+    notification_email: code@max-braun.com
+    build_command_prepend: "cov-configure --java"
+    build_command: "cov-build --dir cov-int mvn clean compile"
+    branch_pattern: master
+    
+    
