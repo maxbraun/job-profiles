@@ -2,10 +2,9 @@ package com.github.maxbraun.jobprofiles;
 
 import org.junit.Test;
 
-import lombok.extern.slf4j.Slf4j;
 import net.oneandone.sushi.fs.World;
 
-@Slf4j
+
 public class JobTest {
     @Test
     public void testAddContext() throws Exception {
@@ -26,7 +25,6 @@ public class JobTest {
         Profile profile = manager.getProfileForScm(job.getScm(), null);
         job.setProfile(profile);
         job.parseProfile(System.out);
-        log.info(job.toString());
 
     }
 

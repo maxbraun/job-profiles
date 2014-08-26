@@ -1,5 +1,5 @@
 package com.github.maxbraun.jobprofiles;
-import static org.jenkinsci.plugins.jobprofiles.JobProfilesConfiguration.get;
+import static com.github.maxbraun.jobprofiles.JobProfilesConfiguration.get;
 
 import java.io.IOException;
 import java.io.PrintStream;
@@ -58,7 +58,7 @@ public class JobBuilder {
     private static void sendJobsToJenkins(PrintStream log, SoftwareIndex index, String forcedProfile, World world) throws IOException {
         ProfileManager profileManager;
         Set<Job> jobs;
-        profileManager = new ProfileManager(world, log, JobProfilesConfiguration.get().getProfileRootDir());
+        profileManager = new ProfileManager(world, log, get().getProfileRootDir());
 
         jobs = parseAllTemplates(log, index, profileManager, forcedProfile, world);
 

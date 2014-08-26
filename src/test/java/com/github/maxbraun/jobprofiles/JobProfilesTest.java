@@ -1,16 +1,13 @@
 package com.github.maxbraun.jobprofiles;
 
-import org.jenkinsci.plugins.jobprofiles.JobProfiles;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.jvnet.hudson.test.JenkinsRule;
 
 import hudson.model.FreeStyleProject;
-import lombok.extern.slf4j.Slf4j;
 
 
-@Slf4j
 public class JobProfilesTest {
     @Rule
     public JenkinsRule j = new JenkinsRule();
