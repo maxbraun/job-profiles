@@ -1,9 +1,9 @@
 package org.jenkinsci.plugins.jobprofiles;
 
 
-import lombok.Data;
-
 import java.util.Map;
+
+import lombok.Data;
 
 @Data
 public class Profile {

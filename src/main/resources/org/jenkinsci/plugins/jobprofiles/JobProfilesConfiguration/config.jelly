@@ -1,10 +1,10 @@
-<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout"
-         xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+<j:jelly xmlns:j="jelly:core"
+         xmlns:f="/lib/form">
   <f:section title="Job Profile Setup">
 
     <f:entry title="Software Index">
-      <f:textbox name="softwareIndexFile" value="${instance.softwareIndexFile}" />
-      <f:textbox name="profileRootDir" value="${instance.profileRootDir}" />
+      <f:textbox name="softwareIndexFile" value="${instance.softwareIndexFile}"/>
+      <f:textbox name="profileRootDir" value="${instance.profileRootDir}"/>
     </f:entry>
 
   </f:section>

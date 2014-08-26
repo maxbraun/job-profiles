@@ -22,6 +22,8 @@ import net.oneandone.sushi.fs.Node;
 @XStreamAlias("registry")
 public class SoftwareIndex {
 
+    @XStreamImplicit
+    public List<SoftwareAsset> asset = new ArrayList<SoftwareAsset>();
     public static SoftwareIndex load(Node index) throws IOException {
         XStream2 xstream;
         InputStream src;
@@ -42,11 +44,6 @@ public class SoftwareIndex {
         src.close();
         return result;
     }
-
-    @XStreamImplicit
-    public List<SoftwareAsset> asset = new ArrayList<SoftwareAsset>();
-
-
     public List<SoftwareAsset> getAssets() {
         return asset;
     }

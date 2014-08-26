@@ -40,12 +40,14 @@ public class ContextBuilder {
     public static void addMavenContext(Job job, World world) throws IOException {
         MavenProject project;
         String pom;
-        if (job.getScm() == null)
+        if (job.getScm() == null) {
             return;
+        }
         pom = job.getScm().getPom();
 
-        if (pom == null)
+        if (pom == null) {
             return;
+        }
         project = getMavenProject(pom, world);
 
 

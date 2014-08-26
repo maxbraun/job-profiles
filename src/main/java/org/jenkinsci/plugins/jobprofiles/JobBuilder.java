@@ -1,15 +1,16 @@
 package org.jenkinsci.plugins.jobprofiles;
 
-import freemarker.template.TemplateException;
-import net.oneandone.sushi.fs.World;
+import static org.jenkinsci.plugins.jobprofiles.JobProfilesConfiguration.get;
 
-import javax.servlet.ServletException;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.HashSet;
 import java.util.Set;
 
-import static org.jenkinsci.plugins.jobprofiles.JobProfilesConfiguration.get;
+import javax.servlet.ServletException;
+
+import freemarker.template.TemplateException;
+import net.oneandone.sushi.fs.World;
 
 public class JobBuilder {
     public JobBuilder() {
@@ -73,7 +74,7 @@ public class JobBuilder {
     }
 
     private static Set<Job> parseAllTemplates(PrintStream log, SoftwareIndex index, ProfileManager profileManager, String forcedProfile, World world)
-            throws IOException {
+      throws IOException {
         Set<Job> jobs;
         Job currentJob;
         Profile currentProfile;

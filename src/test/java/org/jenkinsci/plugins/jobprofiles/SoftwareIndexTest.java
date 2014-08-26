@@ -1,8 +1,9 @@
 package org.jenkinsci.plugins.jobprofiles;
 
+import org.junit.Test;
+
 import lombok.extern.slf4j.Slf4j;
 import net.oneandone.sushi.fs.World;
-import org.junit.Test;
 
 
 @Slf4j

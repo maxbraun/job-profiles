@@ -1,13 +1,14 @@
 package org.jenkinsci.plugins.jobprofiles;
 
 
+import org.kohsuke.stapler.DataBoundConstructor;
+
 import hudson.Extension;
 import hudson.model.AbstractProject;
 import hudson.model.JobProperty;
 import hudson.model.JobPropertyDescriptor;
 import lombok.Getter;
 import lombok.Setter;
-import org.kohsuke.stapler.DataBoundConstructor;
 
 
 @Getter

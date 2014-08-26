@@ -15,9 +15,9 @@ import net.oneandone.sushi.fs.World;
 public class ProfileManager {
     private final Scm profileScm;
     private final PrintStream log;
+    public Map<String, Profile> profileList;
     private World world;
     private ProfileFinder finder;
-    public Map<String, Profile> profileList;
 
     public ProfileManager(World world, PrintStream log, String profileRoot) {
         this.profileScm = Scm.create(profileRoot, world);

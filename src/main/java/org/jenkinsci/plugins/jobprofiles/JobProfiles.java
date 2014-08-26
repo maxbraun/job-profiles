@@ -1,29 +1,31 @@
 package org.jenkinsci.plugins.jobprofiles;
 
+import java.io.IOException;
+import java.io.PrintStream;
+
+import org.kohsuke.stapler.DataBoundConstructor;
+import org.kohsuke.stapler.StaplerRequest;
+
 import hudson.Extension;
 import hudson.Launcher;
 import hudson.Util;
-import hudson.model.*;
+import hudson.model.AbstractBuild;
+import hudson.model.AbstractProject;
+import hudson.model.BuildListener;
 import hudson.tasks.BuildStepDescriptor;
-import jenkins.model.Jenkins;
 import lombok.Getter;
 import lombok.Setter;
 import net.oneandone.sushi.fs.World;
 import net.sf.json.JSONObject;
-import org.kohsuke.stapler.DataBoundConstructor;
-import org.kohsuke.stapler.StaplerRequest;
-
-import java.io.*;
-import java.util.Map;
 
 
 @Getter
 @Setter
 public class JobProfiles extends hudson.tasks.Builder {
 
+    private final JobBuilder builder = new JobBuilder();
     private String forcedSCM;
     private String forcedProfile;
-    private final JobBuilder builder = new JobBuilder();
 
     @DataBoundConstructor
     public JobProfiles(String forcedSCM, String forcedProfile) {

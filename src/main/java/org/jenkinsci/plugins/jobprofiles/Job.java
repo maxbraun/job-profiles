@@ -47,31 +47,49 @@ public class Job {
     private final Scm scm;
     private final Date now;
     private final String groupId;
+    protected Map<String, String> parsedTemplates;
     private Profile profile;
     /**
      * Key i need to identify against jenkins
      */
     private String key;
-    protected Map<String, String> parsedTemplates;
     private Map<String, Object> templateContextAdditions;
+    public static Job create(SoftwareAsset asset, World world) {
+        Scm scm = asset.getTrunk().equals("system") ? null : Scm.create(asset.getTrunk(), world);
+        return new Job(asset.getId(), asset.getArtifactId(), asset.getCategory(), scm, new Date(), asset.getGroupId());
+    }
+    private static void removeJobFromViews(String jobId) {
+        for (View view : Jenkins.getInstance().getViews()) {
+            view.onJobRenamed(null, jobId, null);
+        }
+    }
+    private static void addJobToView(String jobId, String viewName) throws IOException, ServletException {
+        if (viewName != null && jobId != null) {
+            try {
 
+                if (Jenkins.getInstance().getView(viewName) == null) {
+                    View view = new ListView(viewName);
+                    Jenkins.getInstance().addView(view);
+                }
+
+                ListView view = (ListView) Jenkins.getInstance().getView(viewName);
+                view.doAddJobToView(jobId);
+            } catch (Failure e) {
+                Job.log.error("Something went wrong with asset {} in category {}. {}", jobId, viewName, e);
+            }
+        } else {
+            Job.log.error("Something went wrong with asset {} in category {}", jobId, viewName);
+        }
+    }
     public void addContext(String key, Object value) {
         if (templateContextAdditions == null) {
             templateContextAdditions = new HashMap<String, Object>();
         }
         templateContextAdditions.put(key, value);
     }
-
     private Map<String, Object> getTemplateContextAdditions() {
         return templateContextAdditions == null ? new HashMap<String, Object>() : templateContextAdditions;
     }
-
-    public static Job create(SoftwareAsset asset, World world) {
-        Scm scm = asset.getTrunk().equals("system") ? null : Scm.create(asset.getTrunk(), world);
-        return new Job(asset.getId(), asset.getArtifactId(), asset.getCategory(), scm, new Date(), asset.getGroupId());
-    }
-
-
     public void parseProfile(PrintStream log) throws IOException, TemplateException {
         Map<String, String> xmls;
         Writer writer;
@@ -97,7 +115,6 @@ public class Job {
         }
         parsedTemplates = xmls;
     }
-
     public void sendJobsToJenkins() throws IOException {
         for (Map.Entry<String, String> template : parsedTemplates.entrySet()) {
             InputStream src;
@@ -113,39 +130,12 @@ public class Job {
             src.close();
         }
     }
-
     public void manageViews() throws IOException, ServletException {
         for (Map.Entry<String, String> template : parsedTemplates.entrySet()) {
             removeJobFromViews(template.getKey());
             addJobToView(template.getKey(), category);
         }
     }
-
-    private static void removeJobFromViews(String jobId) {
-        for (View view : Jenkins.getInstance().getViews()) {
-            view.onJobRenamed(null, jobId, null);
-        }
-    }
-
-    private static void addJobToView(String jobId, String viewName) throws IOException, ServletException {
-        if (viewName != null && jobId != null) {
-            try {
-
-                if (Jenkins.getInstance().getView(viewName) == null) {
-                    View view = new ListView(viewName);
-                    Jenkins.getInstance().addView(view);
-                }
-
-                ListView view = (ListView) Jenkins.getInstance().getView(viewName);
-                view.doAddJobToView(jobId);
-            } catch (Failure e) {
-                Job.log.error("Something went wrong with asset {} in category {}. {}", jobId, viewName, e);
-            }
-        } else {
-            Job.log.error("Something went wrong with asset {} in category {}", jobId, viewName);
-        }
-    }
-
     private String createIdentifier(String templateFileName) {
         String key = String.format("%s%s%s", getGroupId(), DELEMITER, getName());
 

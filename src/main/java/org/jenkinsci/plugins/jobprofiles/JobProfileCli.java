@@ -1,10 +1,11 @@
 package org.jenkinsci.plugins.jobprofiles;
 
 
+import org.kohsuke.args4j.Argument;
+
 import hudson.Extension;
 import hudson.cli.CLICommand;
 import net.oneandone.sushi.fs.World;
-import org.kohsuke.args4j.Argument;
 
 @Extension
 public class JobProfileCli extends CLICommand {

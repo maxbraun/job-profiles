@@ -19,7 +19,11 @@ import net.oneandone.sushi.fs.World;
 @ToString
 public class Scm {
     private static String remote;
+    private Node root;
 
+    public Scm(Node root) {
+        this.root = root;
+    }
     public static Scm create(String scm, World world) {
         remote = scm;
         try {
@@ -30,14 +34,6 @@ public class Scm {
             throw new JobProfileException(e.getMessage(), e);
         }
     }
-
-    private Node root;
-
-    public Scm(Node root) {
-        this.root = root;
-    }
-
-
     public String getPom() {
         try {
             return root.findOne("pom.xml").readString();
