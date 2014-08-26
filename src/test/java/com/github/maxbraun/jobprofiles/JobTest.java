@@ -1,4 +1,4 @@
-package org.jenkinsci.plugins.jobprofiles;
+package com.github.maxbraun.jobprofiles;
 
 import org.junit.Test;
 

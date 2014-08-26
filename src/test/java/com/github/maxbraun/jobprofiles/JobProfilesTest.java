@@ -1,5 +1,6 @@
-package org.jenkinsci.plugins.jobprofiles;
+package com.github.maxbraun.jobprofiles;
 
+import org.jenkinsci.plugins.jobprofiles.JobProfiles;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;

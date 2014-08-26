@@ -1,5 +1,4 @@
-package org.jenkinsci.plugins.jobprofiles;
-
+package com.github.maxbraun.jobprofiles;
 
 public class JobProfileException extends RuntimeException {
     public JobProfileException() {

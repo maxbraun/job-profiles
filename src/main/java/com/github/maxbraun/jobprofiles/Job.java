@@ -1,4 +1,4 @@
-package org.jenkinsci.plugins.jobprofiles;
+package com.github.maxbraun.jobprofiles;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -30,7 +30,8 @@ import net.oneandone.sushi.util.Strings;
 
 public class Job {
     private static final String DELEMITER = "_";
-    private static final String PREFIX = "user";private static final Logger log = org.slf4j.LoggerFactory.getLogger(Job.class);
+    private static final String PREFIX = "user";
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(Job.class);
 
     /**
      * softwareindex ID
@@ -167,33 +168,46 @@ public class Job {
         return context;
     }
 
-public String getIndexId() {
+    public String getIndexId() {
         return this.indexId;
-    }public String getName() {
+    }
+    public String getName() {
         return this.name;
-    }public String getCategory() {
+    }
+    public String getCategory() {
         return this.category;
-    }public Scm getScm() {
+    }
+    public Scm getScm() {
         return this.scm;
-    }public Date getNow() {
+    }
+    public Date getNow() {
         return this.now;
-    }public String getGroupId() {
+    }
+    public String getGroupId() {
         return this.groupId;
-    }public Map<String, String> getParsedTemplates() {
+    }
+    public Map<String, String> getParsedTemplates() {
         return this.parsedTemplates;
-    }public Profile getProfile() {
+    }
+    public Profile getProfile() {
         return this.profile;
-    }public String getKey() {
+    }
+    public String getKey() {
         return this.key;
-    }public void setParsedTemplates(Map<String, String> parsedTemplates) {
+    }
+    public void setParsedTemplates(Map<String, String> parsedTemplates) {
         this.parsedTemplates = parsedTemplates;
-    }public void setProfile(Profile profile) {
+    }
+    public void setProfile(Profile profile) {
         this.profile = profile;
-    }public void setKey(String key) {
+    }
+    public void setKey(String key) {
         this.key = key;
-    }public void setTemplateContextAdditions(Map<String, Object> templateContextAdditions) {
+    }
+    public void setTemplateContextAdditions(Map<String, Object> templateContextAdditions) {
         this.templateContextAdditions = templateContextAdditions;
-    }public boolean equals(Object o) {
+    }
+    public boolean equals(Object o) {
         if (o == this) {
             return true;
         }
@@ -255,7 +269,8 @@ public String getIndexId() {
             return false;
         }
         return true;
-    }public int hashCode() {
+    }
+    public int hashCode() {
         final int PRIME = 59;
         int result = 1;
         final Object $indexId = this.indexId;
@@ -279,8 +294,11 @@ public String getIndexId() {
         final Object $templateContextAdditions = this.getTemplateContextAdditions();
         result = result * PRIME + ($templateContextAdditions == null ? 0 : $templateContextAdditions.hashCode());
         return result;
-    }public boolean canEqual(Object other) {
+    }
+    public boolean canEqual(Object other) {
         return other instanceof Job;
-    }public String toString() {
+    }
+    public String toString() {
         return "org.jenkinsci.plugins.jobprofiles.Job(indexId=" + this.indexId + ", name=" + this.name + ", category=" + this.category + ", scm=" + this.scm + ", now=" + this.now + ", groupId=" + this.groupId + ", parsedTemplates=" + this.parsedTemplates + ", profile=" + this.profile + ", key=" + this.key + ", templateContextAdditions=" + this.getTemplateContextAdditions() + ")";
-    }}
+    }
+}

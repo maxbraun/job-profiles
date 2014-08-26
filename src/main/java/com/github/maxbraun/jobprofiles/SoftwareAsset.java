@@ -1,5 +1,4 @@
-package org.jenkinsci.plugins.jobprofiles;
-
+package com.github.maxbraun.jobprofiles;
 import java.io.IOException;
 
 import org.apache.commons.lang.NotImplementedException;

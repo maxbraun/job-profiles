@@ -1,5 +1,4 @@
-package org.jenkinsci.plugins.jobprofiles;
-
+package com.github.maxbraun.jobprofiles;
 import static org.jenkinsci.plugins.jobprofiles.JobProfilesConfiguration.get;
 
 import java.io.IOException;
@@ -17,7 +16,7 @@ public class JobBuilder {
     }
 
     public static void buildJobs(String forcedSCM, String forcedProfile, PrintStream log, World world) throws IOException {
-        SoftwareIndex index;
+        com.github.maxbraun.jobprofiles.SoftwareIndex index;
 
         forcedSCM = forcedSCM == null ? "" : forcedSCM;
         forcedProfile = forcedProfile == null ? "" : forcedProfile;
