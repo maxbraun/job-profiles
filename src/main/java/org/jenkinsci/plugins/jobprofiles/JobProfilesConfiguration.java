@@ -7,21 +7,17 @@ import java.net.URISyntaxException;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
+import org.slf4j.Logger;
 
 import hudson.Extension;
 import hudson.util.FormValidation;
 import jenkins.model.GlobalConfiguration;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
 import net.sf.json.JSONObject;
 
 @Extension
-@Slf4j
-@Getter
-@Setter
 public class JobProfilesConfiguration extends GlobalConfiguration {
 
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(JobProfilesConfiguration.class);
     private String softwareIndexFile;
     private String profileRootDir;
 
@@ -56,5 +52,17 @@ public class JobProfilesConfiguration extends GlobalConfiguration {
             return FormValidation.error(Messages.JobProfilesConfiguration_failed());
         }
         return FormValidation.ok();
+    }
+    public String getSoftwareIndexFile() {
+        return this.softwareIndexFile;
+    }
+    public void setSoftwareIndexFile(String softwareIndexFile) {
+        this.softwareIndexFile = softwareIndexFile;
+    }
+    public String getProfileRootDir() {
+        return this.profileRootDir;
+    }
+    public void setProfileRootDir(String profileRootDir) {
+        this.profileRootDir = profileRootDir;
     }
 }

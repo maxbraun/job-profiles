@@ -7,12 +7,8 @@ import hudson.Extension;
 import hudson.model.AbstractProject;
 import hudson.model.JobProperty;
 import hudson.model.JobPropertyDescriptor;
-import lombok.Getter;
-import lombok.Setter;
 
 
-@Getter
-@Setter
 public class JobProfileProperties extends JobProperty<AbstractProject<?, ?>> {
 
     private final String id;
@@ -24,6 +20,15 @@ public class JobProfileProperties extends JobProperty<AbstractProject<?, ?>> {
         this.id = id;
         this.lastModified = lastModified;
         this.usedProfile = usedProfile;
+    }
+    public String getId() {
+        return this.id;
+    }
+    public String getLastModified() {
+        return this.lastModified;
+    }
+    public String getUsedProfile() {
+        return this.usedProfile;
     }
 
     @Extension

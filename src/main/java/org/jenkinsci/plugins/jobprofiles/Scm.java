@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import lombok.ToString;
 import net.oneandone.sushi.fs.DirectoryNotFoundException;
 import net.oneandone.sushi.fs.FileNotFoundException;
 import net.oneandone.sushi.fs.ListException;
@@ -16,7 +15,6 @@ import net.oneandone.sushi.fs.Node;
 import net.oneandone.sushi.fs.NodeInstantiationException;
 import net.oneandone.sushi.fs.World;
 
-@ToString
 public class Scm {
     private static String remote;
     private Node root;
@@ -83,5 +81,8 @@ public class Scm {
 
     public String getRemote() {
         return remote;
+    }
+    public String toString() {
+        return "org.jenkinsci.plugins.jobprofiles.Scm(root=" + this.root + ")";
     }
 }

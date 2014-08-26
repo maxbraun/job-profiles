@@ -13,14 +13,10 @@ import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.BuildListener;
 import hudson.tasks.BuildStepDescriptor;
-import lombok.Getter;
-import lombok.Setter;
 import net.oneandone.sushi.fs.World;
 import net.sf.json.JSONObject;
 
 
-@Getter
-@Setter
 public class JobProfiles extends hudson.tasks.Builder {
 
     private final JobBuilder builder = new JobBuilder();
@@ -51,6 +47,21 @@ public class JobProfiles extends hudson.tasks.Builder {
     @Override
     public DescriptorImpl getDescriptor() {
         return (DescriptorImpl) super.getDescriptor();
+    }
+    public JobBuilder getBuilder() {
+        return this.builder;
+    }
+    public String getForcedSCM() {
+        return this.forcedSCM;
+    }
+    public void setForcedSCM(String forcedSCM) {
+        this.forcedSCM = forcedSCM;
+    }
+    public String getForcedProfile() {
+        return this.forcedProfile;
+    }
+    public void setForcedProfile(String forcedProfile) {
+        this.forcedProfile = forcedProfile;
     }
 
 
