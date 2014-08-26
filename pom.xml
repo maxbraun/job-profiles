@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.jenkins-ci.plugins</groupId>
     <artifactId>plugin</artifactId>
-    <version>1.509.2</version>
+    <version>1.565.1</version>
     <!-- which version of Jenkins is this plugin built against? -->
   </parent>
 
@@ -87,12 +87,4 @@
       </url>
     </site>
   </distributionManagement>
-
-  <properties>
-    <!--
-      explicitly specifying the latest version here because one we get from the parent POM
-      tends to lag behind a bit
-    -->
-    <maven-hpi-plugin.version>1.96</maven-hpi-plugin.version>
-  </properties>
 </project>
