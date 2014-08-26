@@ -40,4 +40,17 @@
     </dependency>
   </dependencies>
 
+  <repositories>
+    <repository>
+      <id>jenkins-ci</id>
+      <url>http://repo.jenkins-ci.org/public/</url>
+    </repository>
+  </repositories>
+
+  <pluginRepositories>
+    <pluginRepository>
+      <id>jenkins-ci</id>
+      <url>http://repo.jenkins-ci.org/public/</url>
+    </pluginRepository>
+  </pluginRepositories>
 </project>
