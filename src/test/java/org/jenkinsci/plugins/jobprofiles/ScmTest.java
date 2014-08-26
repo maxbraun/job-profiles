@@ -1,99 +1,37 @@
 package org.jenkinsci.plugins.jobprofiles;
 
-import net.oneandone.sushi.fs.World;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.util.Map;
+
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.io.IOException;
-import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import net.oneandone.sushi.fs.World;
 
 public class ScmTest {
 
     private final String svn = "https://svn.code.sf.net/p/pustefix/code/trunk";
-    private final String git = "https://github.com/mlhartme/sushi.git";
     private final World world = new World();
 
-    @Test
-    public void getGitFromScmFactory() throws Exception {
-        Scm scm;
-        List<String> gitURLs;
-
-        gitURLs = new ArrayList<String>();
-        //gitURLs.add("ssh://user@host.xz:0/path/to/repo.git/");
-        //gitURLs.add("ssh://user@host.xz/path/to/repo.git/");
-        //gitURLs.add("ssh://host.xz:port/path/to/repo.git/");
-        //gitURLs.add("ssh://host.xz/path/to/repo.git/");
-        //gitURLs.add("ssh://user@host.xz/path/to/repo.git/");
-        //gitURLs.add("ssh://host.xz/path/to/repo.git/");
-        //gitURLs.add("ssh://user@host.xz/~user/path/to/repo.git/");
-        //gitURLs.add("ssh://host.xz/~user/path/to/repo.git/");
-        //gitURLs.add("ssh://user@host.xz/~/path/to/repo.git");
-        //gitURLs.add("ssh://host.xz/~/path/to/repo.git");
-        //gitURLs.add("user@host.xz:/path/to/repo.git/");
-        //gitURLs.add("host.xz:/path/to/repo.git/");
-        //gitURLs.add("user@host.xz:~user/path/to/repo.git/");
-        //gitURLs.add("host.xz:~user/path/to/repo.git/");
-        //gitURLs.add("user@host.xz:path/to/repo.git");
-        //gitURLs.add("host.xz:path/to/repo.git");
-        //gitURLs.add("rsync://host.xz/path/to/repo.git/");
-        //gitURLs.add("git://host.xz/path/to/repo.git/");
-        //gitURLs.add("git://host.xz/~user/path/to/repo.git/");
-        //gitURLs.add("http://host.xz/path/to/repo.git/");
-        //gitURLs.add("https://host.xz/path/to/repo.git/");
-        //gitURLs.add("/path/to/repo.git/");
-        //gitURLs.add("path/to/repo.git/");
-        //gitURLs.add("~/path/to/repo.git");
-        //gitURLs.add("file:///path/to/repo.git/");
-        //gitURLs.add("file://~/path/to/repo.git/");
-        gitURLs.add(git);
-        for (String gitUrl : gitURLs) {
-            scm = Scm.get(gitUrl, world);
-            Assert.assertTrue(scm instanceof ScmGit);
-        }
-    }
-
-    @Test
-    public void getSVNFromScmFactory() throws Exception {
-        Scm scm;
-        scm = Scm.get(svn, world);
-        Assert.assertTrue(scm instanceof ScmNode);
-    }
 
     @Test
     public void getPomfromSCMS() throws Exception {
         getPom(svn);
-        getPom(git);
     }
 
     private void getPom(String scmLocation) throws IOException {
         Scm scm;
-        scm = Scm.get(scmLocation, world);
+        scm = Scm.create(scmLocation, world);
 
         Assert.assertTrue(scm.getPom().length() > 1);
     }
 
     @Test(expected = JobProfileException.class)
     public void WrongSVNUrl() throws Exception {
-        Scm.get(svn + "/", world).getPom();
+        Scm.create(svn + "/", world).getPom();
     }
 
-    @Test(expected = JobProfileException.class)
-    public void WrongGitUrl() throws Exception {
-        Scm.get("http:ajdlfjlsdjfö.git", world).getPom();
-    }
-
-    @Test(expected = JobProfileException.class)
-    public void GitRepoWithoutPom() throws Exception {
-        Scm.get("git@github.com:maxbraun/puppet-phantomjs.git", world).getPom();
-    }
-
-    @Test
-    public void GitProfile() throws Exception {
-        getProfile("https://github.com/maxbraun/job-profiles-examles.git", "maven");
-    }
 
     @Test
     public void SvnProfile() throws Exception {
@@ -102,7 +40,7 @@ public class ScmTest {
 
     private void getProfile(String scmUrl, String profileName) throws Exception {
         Scm scm;
-        scm = Scm.get(scmUrl, world);
+        scm = Scm.create(scmUrl, world);
         Map<String, String> profile;
 
         profile = scm.getProfile(profileName, new PrintStream(System.out));
