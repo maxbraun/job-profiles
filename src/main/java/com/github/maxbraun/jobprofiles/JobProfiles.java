@@ -3,7 +3,7 @@ package com.github.maxbraun.jobprofiles;
 import java.io.IOException;
 import java.io.PrintStream;
 
-import org.jenkinsci.plugins.jobprofiles.Messages;
+
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.StaplerRequest;
 

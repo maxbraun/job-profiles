@@ -3,7 +3,6 @@ package com.github.maxbraun.jobprofiles;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-import org.jenkinsci.plugins.jobprofiles.Messages;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;

@@ -1,6 +1,5 @@
 package com.github.maxbraun.jobprofiles;
 
-import org.jenkinsci.plugins.jobprofiles.Messages;
 import org.kohsuke.args4j.Argument;
 
 import hudson.Extension;

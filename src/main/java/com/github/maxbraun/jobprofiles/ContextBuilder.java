@@ -9,7 +9,6 @@ import java.util.logging.Logger;
 
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.project.ProjectBuildingException;
-import org.jenkinsci.plugins.jobprofiles.Messages;
 
 import hudson.maven.MavenEmbedder;
 import hudson.maven.MavenEmbedderException;
