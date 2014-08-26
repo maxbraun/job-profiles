@@ -1,12 +1,13 @@
 package org.jenkinsci.plugins.jobprofiles;
 
-import com.google.common.collect.Lists;
-import net.oneandone.sushi.fs.World;
-
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.Map;
+
+import com.google.common.collect.Lists;
+
+import net.oneandone.sushi.fs.World;
 
 /**
  * Manager Instance, which holds a list of profiles
@@ -19,7 +20,7 @@ public class ProfileManager {
     public Map<String, Profile> profileList;
 
     public ProfileManager(World world, PrintStream log, String profileRoot) {
-        this.profileScm = Scm.get(profileRoot, world);
+        this.profileScm = Scm.create(profileRoot, world);
         this.world = world;
         this.log = log;
         this.profileList = new HashMap<String, Profile>();

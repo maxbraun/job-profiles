@@ -47,6 +47,9 @@ public class Scm {
             throw new JobProfileException(e.getMessage(), e);
         }
     }
+    public boolean profileExists(String name, PrintStream log) throws IOException {
+        return getProfile(name, log) != null;
+    }
 
     public Map<String, String> getProfile(String name, PrintStream log) {
         Map<String, String> profiles;

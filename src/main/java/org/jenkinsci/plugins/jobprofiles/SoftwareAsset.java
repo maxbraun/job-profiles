@@ -1,13 +1,15 @@
 package org.jenkinsci.plugins.jobprofiles;
 
-import com.thoughtworks.xstream.annotations.XStreamAlias;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import net.oneandone.sushi.fs.World;
+import java.io.IOException;
+
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.maven.project.MavenProject;
 
-import java.io.IOException;
+import com.thoughtworks.xstream.annotations.XStreamAlias;
+
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import net.oneandone.sushi.fs.World;
 
 @Data
 @NoArgsConstructor
@@ -21,7 +23,7 @@ public class SoftwareAsset {
     private String type;
 
     public static SoftwareAsset fromSCM(String scmLocation, World world) throws IOException {
-        Scm scm = Scm.get(scmLocation, world);
+        Scm scm = Scm.create(scmLocation, world);
         SoftwareAsset asset;
         asset = new SoftwareAsset();
         String artifactId;

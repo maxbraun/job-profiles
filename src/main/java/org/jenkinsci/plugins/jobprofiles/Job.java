@@ -1,5 +1,19 @@
 package org.jenkinsci.plugins.jobprofiles;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintStream;
+import java.io.Reader;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.io.Writer;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.ServletException;
+
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
@@ -14,24 +28,11 @@ import lombok.extern.slf4j.Slf4j;
 import net.oneandone.sushi.fs.World;
 import net.oneandone.sushi.util.Strings;
 
-import javax.servlet.ServletException;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintStream;
-import java.io.Reader;
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.io.Writer;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-
 @Data
 @Slf4j
 public class Job {
     private static final String DELEMITER = "_";
-    private static final String PREFIX ="user";
+    private static final String PREFIX = "user";
 
     /**
      * softwareindex ID
@@ -55,7 +56,9 @@ public class Job {
     private Map<String, Object> templateContextAdditions;
 
     public void addContext(String key, Object value) {
-        if ( templateContextAdditions == null) templateContextAdditions = new HashMap<String, Object>();
+        if (templateContextAdditions == null) {
+            templateContextAdditions = new HashMap<String, Object>();
+        }
         templateContextAdditions.put(key, value);
     }
 
@@ -63,14 +66,14 @@ public class Job {
         return templateContextAdditions == null ? new HashMap<String, Object>() : templateContextAdditions;
     }
 
-    public static Job create(SoftwareAsset asset, World world){
-        Scm scm = asset.getTrunk().equals("system") ? null : Scm.get(asset.getTrunk(), world);
+    public static Job create(SoftwareAsset asset, World world) {
+        Scm scm = asset.getTrunk().equals("system") ? null : Scm.create(asset.getTrunk(), world);
         return new Job(asset.getId(), asset.getArtifactId(), asset.getCategory(), scm, new Date(), asset.getGroupId());
     }
 
 
     public void parseProfile(PrintStream log) throws IOException, TemplateException {
-        Map<String,String> xmls;
+        Map<String, String> xmls;
         Writer writer;
         Reader reader;
         Template template;
@@ -87,7 +90,9 @@ public class Job {
             template = new Template(createIdentifier(entry.getKey()), reader, new Configuration());
             template.process(toTemplateContext(), writer);
 
-            if (writer.toString().length() == 0) continue;
+            if (writer.toString().length() == 0) {
+                continue;
+            }
             xmls.put(createIdentifier(entry.getKey()), writer.toString());
         }
         parsedTemplates = xmls;
@@ -99,9 +104,9 @@ public class Job {
             BuildableItem job;
             src = new ByteArrayInputStream(template.getValue().getBytes());
             try {
-            job = (BuildableItem) Jenkins.getInstance()
-                    .createProjectFromXML(template.getKey(), src);
-            }catch (IOException2 e) {
+                job = (BuildableItem) Jenkins.getInstance()
+                  .createProjectFromXML(template.getKey(), src);
+            } catch (IOException2 e) {
                 log.info("could not parse because" + e.getMessage());
                 log.info(template.getValue());
             }
@@ -126,18 +131,18 @@ public class Job {
         if (viewName != null && jobId != null) {
             try {
 
-            if (Jenkins.getInstance().getView(viewName) == null) {
-                View view = new ListView(viewName);
-                Jenkins.getInstance().addView(view);
-            }
+                if (Jenkins.getInstance().getView(viewName) == null) {
+                    View view = new ListView(viewName);
+                    Jenkins.getInstance().addView(view);
+                }
 
-            ListView view = (ListView) Jenkins.getInstance().getView(viewName);
-            view.doAddJobToView(jobId);
+                ListView view = (ListView) Jenkins.getInstance().getView(viewName);
+                view.doAddJobToView(jobId);
             } catch (Failure e) {
-                Job.log.error("Something went wront with asset {} in category {}. {}", jobId, viewName, e);
+                Job.log.error("Something went wrong with asset {} in category {}. {}", jobId, viewName, e);
             }
         } else {
-            Job.log.error("Something went wront with asset {} in category {}", jobId, viewName);
+            Job.log.error("Something went wrong with asset {} in category {}", jobId, viewName);
         }
     }
 
