@@ -106,7 +106,10 @@ public class Job {
 
 
         xmls = new HashMap<String, String>();
-
+        if (this.profile == null) {
+            log.println(String.format("Profile for %s not found.", name));
+            return;
+        }
         log.println(String.format("Creating Jobs for %s | Profile: %s ", name, this.profile.getName()));
 
         for (Map.Entry<String, String> entry : profile.getXmls().entrySet()) {
