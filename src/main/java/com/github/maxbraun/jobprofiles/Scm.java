@@ -22,9 +22,13 @@ public class Scm {
         this.root = root;
     }
     public static Scm create(String scm, World world) {
-        remote = scm;
+        if (!scm.startsWith("svn:")) {
+            remote = "svn:" + scm;
+        } else {
+            remote = scm;
+        }
         try {
-            return new Scm(world.node("svn:" + remote));
+            return new Scm(world.node(remote));
         } catch (URISyntaxException e) {
             throw new JobProfileException(e.getMessage(), e);
         } catch (NodeInstantiationException e) {

@@ -29,8 +29,8 @@ public class ContextBuilder {
     }
 
     public static void addSoftwareAssetContext(Job job, SoftwareAsset asset) {
-        job.addContext("name", asset.getArtifactId());
-        job.addContext("identifier", asset.getGroupId());
+        job.addContext("name", asset.artifactId());
+        job.addContext("identifier", asset.groupId());
     }
 
     public static void addJenkinsContext(Job job) throws IOException {
@@ -40,10 +40,10 @@ public class ContextBuilder {
     public static void addMavenContext(Job job, World world) throws IOException {
         MavenProject project;
         String pom;
-        if (job.getScm() == null) {
+        if (job.scm() == null) {
             return;
         }
-        pom = job.getScm().getPom();
+        pom = job.scm().getPom();
 
         if (pom == null) {
             return;

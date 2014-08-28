@@ -3,6 +3,7 @@ import static com.github.maxbraun.jobprofiles.JobProfilesConfiguration.get;
 
 import java.io.IOException;
 import java.io.PrintStream;
+import java.net.URISyntaxException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -15,7 +16,7 @@ public class JobBuilder {
     public JobBuilder() {
     }
 
-    public static void buildJobs(String forcedSCM, String forcedProfile, PrintStream log, World world) throws IOException {
+    public static void buildJobs(String forcedSCM, String forcedProfile, PrintStream log, World world) throws IOException, URISyntaxException {
         com.github.maxbraun.jobprofiles.SoftwareIndex index;
 
         forcedSCM = forcedSCM == null ? "" : forcedSCM;
@@ -28,22 +29,20 @@ public class JobBuilder {
 
             if (forcedSCM.equals("system")) {
 
-                asset.setId("system");
                 asset.setArtifactId("system");
                 asset.setCategory("System");
                 asset.setGroupId("system");
-                asset.setTrunk("system");
 
             } else {
 
                 asset = SoftwareAsset.fromSCM(forcedSCM, world);
             }
-            index.asset.add(asset);
+            index.add(asset);
 
         } else {
 
             log.println("Going to parse " + get().getSoftwareIndexFile());
-            index = SoftwareIndex.load(world.validNode(get().getSoftwareIndexFile()));
+            index = SoftwareIndex.load(world, log);
             log.println("Parsed.");
         }
 
@@ -80,20 +79,26 @@ public class JobBuilder {
 
         jobs = new HashSet<Job>();
 
-        for (SoftwareAsset asset : index.getAssets()) {
-            currentJob = Job.create(asset, world);
-
-            currentProfile = profileManager.getProfileForScm(currentJob.getScm(), forcedProfile);
-
-            currentJob.setProfile(currentProfile);
+        for (SoftwareAsset asset : index.assets()) {
             try {
+                if (asset.scm() == null) {
+                    log.println(asset.toString() + " has a null value");
+                    continue;
+                }
+                currentJob = Job.create(asset, world);
+
+                currentProfile = profileManager.getProfileForScm(currentJob.scm(), forcedProfile);
+
+                currentJob.setProfile(currentProfile);
                 ContextBuilder.add(currentJob, world, asset);
                 currentJob.parseProfile(log);
                 jobs.add(currentJob);
+            } catch (JobProfileException e) {
+                log.println("Error while generating job for " + asset.artifactId() + "\n" + e.getMessage() + "\n" + e.getCause());
+
             } catch (TemplateException e) {
                 throw new JobProfileException(e.getMessage(), e);
             }
-            jobs.add(currentJob);
         }
         return jobs;
     }

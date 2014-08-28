@@ -2,8 +2,10 @@
          xmlns:f="/lib/form">
   <f:section title="Job Profile Setup">
 
-    <f:entry title="Software Index">
+    <f:entry title="Pommes Index">
       <f:textbox name="softwareIndexFile" value="${instance.softwareIndexFile}"/>
+    </f:entry>
+    <f:entry title="Profile location">
       <f:textbox name="profileRootDir" value="${instance.profileRootDir}"/>
     </f:entry>
 

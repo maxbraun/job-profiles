@@ -38,6 +38,11 @@
       <artifactId>freemarker</artifactId>
       <version>2.3.14</version>
     </dependency>
+    <dependency>
+      <groupId>net.oneandone</groupId>
+      <artifactId>pommes</artifactId>
+      <version>2.2.1</version>
+    </dependency>
   </dependencies>
 
   <repositories>

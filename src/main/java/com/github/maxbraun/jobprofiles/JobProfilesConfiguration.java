@@ -6,7 +6,6 @@ import java.net.URISyntaxException;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
-import org.slf4j.Logger;
 
 import hudson.Extension;
 import hudson.util.FormValidation;
@@ -16,7 +15,6 @@ import net.sf.json.JSONObject;
 @Extension
 public class JobProfilesConfiguration extends GlobalConfiguration {
 
-    private static final Logger log = org.slf4j.LoggerFactory.getLogger(JobProfilesConfiguration.class);
     private String softwareIndexFile;
     private String profileRootDir;
 

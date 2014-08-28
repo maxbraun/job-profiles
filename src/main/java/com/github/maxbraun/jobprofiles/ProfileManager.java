@@ -19,6 +19,9 @@ public class ProfileManager {
     private ProfileFinder finder;
 
     public ProfileManager(World world, PrintStream log, String profileRoot) {
+        if (profileRoot == null) {
+            throw new RuntimeException("ProfileRoot seems not to be configured.");
+        }
         this.profileScm = Scm.create(profileRoot, world);
         this.world = world;
         this.log = log;

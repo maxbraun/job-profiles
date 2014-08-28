@@ -30,13 +30,8 @@ import net.oneandone.sushi.util.Strings;
 
 public class Job {
     private static final String DELEMITER = "_";
-    private static final String PREFIX = "user";
     private static final Logger log = org.slf4j.LoggerFactory.getLogger(Job.class);
 
-    /**
-     * softwareindex ID
-     */
-    private final String indexId;
     /**
      * Name of the artifact
      */
@@ -53,9 +48,8 @@ public class Job {
      */
     private String key;
     private Map<String, Object> templateContextAdditions;
-    @java.beans.ConstructorProperties({"indexId", "name", "category", "scm", "now", "groupId"})
-    public Job(String indexId, String name, String category, Scm scm, Date now, String groupId) {
-        this.indexId = indexId;
+
+    public Job(String name, String category, Scm scm, Date now, String groupId) {
         this.name = name;
         this.category = category;
         this.scm = scm;
@@ -63,8 +57,8 @@ public class Job {
         this.groupId = groupId;
     }
     public static Job create(SoftwareAsset asset, World world) {
-        Scm scm = asset.getTrunk().equals("system") ? null : Scm.create(asset.getTrunk(), world);
-        return new Job(asset.getId(), asset.getArtifactId(), asset.getCategory(), scm, new Date(), asset.getGroupId());
+        Scm scm = asset.scm().equals("system") ? null : Scm.create(asset.scm(), world);
+        return new Job(asset.artifactId(), asset.category(), scm, new Date(), asset.groupId());
     }
     private static void removeJobFromViews(String jobId) {
         for (View view : Jenkins.getInstance().getViews()) {
@@ -148,7 +142,7 @@ public class Job {
         }
     }
     private String createIdentifier(String templateFileName) {
-        String key = String.format("%s%s%s", getGroupId(), DELEMITER, getName());
+        String key = String.format("%s%s%s", groupId(), DELEMITER, name());
 
         if (!templateFileName.equals("build.xml")) {
             return String.format("%s%s%s", key, DELEMITER, Strings.removeRight(templateFileName, ".xml"));
@@ -163,7 +157,6 @@ public class Job {
         context = new HashMap<String, Object>();
         context.putAll(getTemplateContextAdditions());
         context.put("name", name);
-        context.put("indexId", indexId);
         context.put("now", now.toString());
         context.put("usedProfile", profile.getName());
         context.put("id", createIdentifier("build.xml"));
@@ -171,33 +164,31 @@ public class Job {
         return context;
     }
 
-    public String getIndexId() {
-        return this.indexId;
-    }
-    public String getName() {
+    public String name() {
         return this.name;
     }
-    public String getCategory() {
+    public String category() {
         return this.category;
     }
-    public Scm getScm() {
+    public Scm scm() {
         return this.scm;
     }
-    public Date getNow() {
+    public Date now() {
         return this.now;
     }
-    public String getGroupId() {
+    public String groupId() {
         return this.groupId;
     }
-    public Map<String, String> getParsedTemplates() {
+    public Map<String, String> parsedTemplates() {
         return this.parsedTemplates;
     }
-    public Profile getProfile() {
+    public Profile profile() {
         return this.profile;
     }
-    public String getKey() {
+    public String key() {
         return this.key;
     }
+    
     public void setParsedTemplates(Map<String, String> parsedTemplates) {
         this.parsedTemplates = parsedTemplates;
     }
@@ -210,98 +201,6 @@ public class Job {
     public void setTemplateContextAdditions(Map<String, Object> templateContextAdditions) {
         this.templateContextAdditions = templateContextAdditions;
     }
-    public boolean equals(Object o) {
-        if (o == this) {
-            return true;
-        }
-        if (!(o instanceof Job)) {
-            return false;
-        }
-        final Job other = (Job) o;
-        if (!other.canEqual((Object) this)) {
-            return false;
-        }
-        final Object this$indexId = this.indexId;
-        final Object other$indexId = other.indexId;
-        if (this$indexId == null ? other$indexId != null : !this$indexId.equals(other$indexId)) {
-            return false;
-        }
-        final Object this$name = this.name;
-        final Object other$name = other.name;
-        if (this$name == null ? other$name != null : !this$name.equals(other$name)) {
-            return false;
-        }
-        final Object this$category = this.category;
-        final Object other$category = other.category;
-        if (this$category == null ? other$category != null : !this$category.equals(other$category)) {
-            return false;
-        }
-        final Object this$scm = this.scm;
-        final Object other$scm = other.scm;
-        if (this$scm == null ? other$scm != null : !this$scm.equals(other$scm)) {
-            return false;
-        }
-        final Object this$now = this.now;
-        final Object other$now = other.now;
-        if (this$now == null ? other$now != null : !this$now.equals(other$now)) {
-            return false;
-        }
-        final Object this$groupId = this.groupId;
-        final Object other$groupId = other.groupId;
-        if (this$groupId == null ? other$groupId != null : !this$groupId.equals(other$groupId)) {
-            return false;
-        }
-        final Object this$parsedTemplates = this.parsedTemplates;
-        final Object other$parsedTemplates = other.parsedTemplates;
-        if (this$parsedTemplates == null ? other$parsedTemplates != null : !this$parsedTemplates.equals(other$parsedTemplates)) {
-            return false;
-        }
-        final Object this$profile = this.profile;
-        final Object other$profile = other.profile;
-        if (this$profile == null ? other$profile != null : !this$profile.equals(other$profile)) {
-            return false;
-        }
-        final Object this$key = this.key;
-        final Object other$key = other.key;
-        if (this$key == null ? other$key != null : !this$key.equals(other$key)) {
-            return false;
-        }
-        final Object this$templateContextAdditions = this.getTemplateContextAdditions();
-        final Object other$templateContextAdditions = other.getTemplateContextAdditions();
-        if (this$templateContextAdditions == null ? other$templateContextAdditions != null : !this$templateContextAdditions.equals(other$templateContextAdditions)) {
-            return false;
-        }
-        return true;
-    }
-    public int hashCode() {
-        final int PRIME = 59;
-        int result = 1;
-        final Object $indexId = this.indexId;
-        result = result * PRIME + ($indexId == null ? 0 : $indexId.hashCode());
-        final Object $name = this.name;
-        result = result * PRIME + ($name == null ? 0 : $name.hashCode());
-        final Object $category = this.category;
-        result = result * PRIME + ($category == null ? 0 : $category.hashCode());
-        final Object $scm = this.scm;
-        result = result * PRIME + ($scm == null ? 0 : $scm.hashCode());
-        final Object $now = this.now;
-        result = result * PRIME + ($now == null ? 0 : $now.hashCode());
-        final Object $groupId = this.groupId;
-        result = result * PRIME + ($groupId == null ? 0 : $groupId.hashCode());
-        final Object $parsedTemplates = this.parsedTemplates;
-        result = result * PRIME + ($parsedTemplates == null ? 0 : $parsedTemplates.hashCode());
-        final Object $profile = this.profile;
-        result = result * PRIME + ($profile == null ? 0 : $profile.hashCode());
-        final Object $key = this.key;
-        result = result * PRIME + ($key == null ? 0 : $key.hashCode());
-        final Object $templateContextAdditions = this.getTemplateContextAdditions();
-        result = result * PRIME + ($templateContextAdditions == null ? 0 : $templateContextAdditions.hashCode());
-        return result;
-    }
-    public boolean canEqual(Object other) {
-        return other instanceof Job;
-    }
-    public String toString() {
-        return "org.jenkinsci.plugins.jobprofiles.Job(indexId=" + this.indexId + ", name=" + this.name + ", category=" + this.category + ", scm=" + this.scm + ", now=" + this.now + ", groupId=" + this.groupId + ", parsedTemplates=" + this.parsedTemplates + ", profile=" + this.profile + ", key=" + this.key + ", templateContextAdditions=" + this.getTemplateContextAdditions() + ")";
-    }
+
+
 }

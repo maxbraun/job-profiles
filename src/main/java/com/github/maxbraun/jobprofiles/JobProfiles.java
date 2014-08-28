@@ -2,7 +2,7 @@ package com.github.maxbraun.jobprofiles;
 
 import java.io.IOException;
 import java.io.PrintStream;
-
+import java.net.URISyntaxException;
 
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.StaplerRequest;
@@ -40,7 +40,11 @@ public class JobProfiles extends hudson.tasks.Builder {
         forcedSCM = Util.replaceMacro(forcedSCM, build.getBuildVariableResolver());
         forcedProfile = Util.replaceMacro(this.forcedProfile, build.getBuildVariableResolver());
 
-        JobBuilder.buildJobs(forcedSCM, forcedProfile, log, world);
+        try {
+            JobBuilder.buildJobs(forcedSCM, forcedProfile, log, world);
+        } catch (URISyntaxException e) {
+            throw new IOException(e);
+        }
 
         return true;
     }

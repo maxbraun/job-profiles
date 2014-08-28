@@ -15,14 +15,13 @@ public class JobTest {
     public void testJob() throws Exception {
         ProfileManager manager = new ProfileManager(new World(), System.out, "https://github.com/maxbraun/job-profiles-examles/trunk");
         SoftwareAsset foo = new SoftwareAsset();
-        foo.setId("1");
         foo.setArtifactId("sushi");
         foo.setGroupId("net.oneandone.devel");
-        foo.setTrunk("https://github.com/mlhartme/sushi.git");
+        foo.setScm("https://github.com/mlhartme/sushi/");
         foo.setCategory("Library");
 
         Job job = Job.create(foo, new World());
-        Profile profile = manager.getProfileForScm(job.getScm(), null);
+        Profile profile = manager.getProfileForScm(job.scm(), null);
         job.setProfile(profile);
         job.parseProfile(System.out);
 
