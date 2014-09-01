@@ -1,3 +1,7 @@
+env:
+  global:
+   - secure: "Lnfa/I0FiT2KRnCCoggVnnAWjSecqL+0/d8oZydYZHnch4dhgePRQ9LLkbcHSkGVCVtXnYB9Vr2EBD2hqhHYyKTo/dFGQQAnu51GbYbG2davARnbz11/q44b8Tch/+uSfPw0zID/6OQtqe4CHnRTFFxFaztZkpjSnfDp6xw1r9M="
+
 language: java
 
   
@@ -6,3 +10,17 @@ notifications:
     - code@max-braun.com
   on_success: always
   on_failure: always
+  
+install:
+  - mvn package
+  - mvn javadoc:javadoc
+
+addons:
+  coverity_scan:
+    project:
+      name: "maxbraun/job-profiles"
+      description: "Your project description here"
+    notification_email: code@max-braun.com
+    build_command: "mvn clean compile"
+    branch_pattern: master
+    
