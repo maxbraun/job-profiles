@@ -12,6 +12,5 @@ notifications:
   on_failure: always
 
 install:
-  - mvn package
-  - mvn javadoc:javadoc
+  - mvn install -B -q
 
