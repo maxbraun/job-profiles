@@ -10,17 +10,8 @@ notifications:
     - code@max-braun.com
   on_success: always
   on_failure: always
-  
+
 install:
   - mvn package
   - mvn javadoc:javadoc
 
-addons:
-  coverity_scan:
-    project:
-      name: "maxbraun/job-profiles"
-      description: "Your project description here"
-    notification_email: code@max-braun.com
-    build_command: "mvn clean compile"
-    branch_pattern: master
-    
