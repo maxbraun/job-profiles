@@ -12,5 +12,14 @@ notifications:
   on_failure: always
 
 install:
-  - mvn install -B -q
+  - mvn package -B -q
+
+addons:
+  coverity_scan:
+    project:
+      name: "maxbraun/job-profiles"
+      description: "Your project description here"
+    notification_email: code@max-braun.com
+    build_command: "mvn clean compile -B -q"
+    branch_pattern: master
 
