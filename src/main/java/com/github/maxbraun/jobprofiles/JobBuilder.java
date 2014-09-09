@@ -39,7 +39,7 @@ public class JobBuilder {
         } else {
 
             log.println("Going to parse " + get().getSoftwareIndexFile());
-            index = SoftwareIndex.load(world, log);
+            index = SoftwareIndex.load(world.node(JobProfilesConfiguration.get().getSoftwareIndexFile()), log);
             log.println("Parsed.");
         }
 

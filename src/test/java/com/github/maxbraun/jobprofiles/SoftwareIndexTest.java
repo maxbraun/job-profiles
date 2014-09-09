@@ -8,6 +8,7 @@ public class SoftwareIndexTest {
 
     @Test
     public void testLoad() throws Exception {
-        SoftwareIndex.load(new World(), new PrintStream(System.out));
+        SoftwareIndex.load(new World().node("https://raw.githubusercontent.com/maxbraun/job-profiles/master/src/test/resources/index.zip"),
+          new PrintStream(System.out));
     }
 }

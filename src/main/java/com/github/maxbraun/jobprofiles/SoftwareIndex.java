@@ -11,7 +11,7 @@ import org.tmatesoft.svn.core.SVNException;
 
 import net.oneandone.pommes.model.Database;
 import net.oneandone.pommes.model.Pom;
-import net.oneandone.sushi.fs.World;
+import net.oneandone.sushi.fs.Node;
 
 public class SoftwareIndex {
 
@@ -19,11 +19,11 @@ public class SoftwareIndex {
     public SoftwareIndex() {
         assets = new ArrayList<SoftwareAsset>();
     }
-    public static SoftwareIndex load(World world, PrintStream log) throws IOException, URISyntaxException, SVNException {
+    public static SoftwareIndex load(Node pommesGlobal, PrintStream log) throws IOException, URISyntaxException, SVNException {
         SoftwareIndex index;
         Database database;
 
-        database = new Database(world.getTemp().createTempDirectory().join("pommes"), world.node(JobProfilesConfiguration.get().getSoftwareIndexFile()));
+        database = new Database(pommesGlobal.getWorld().getTemp().createTempDirectory().join("pommes"), pommesGlobal);
         //database = Database.load(world);
         database.updateOpt();
         index = new SoftwareIndex();
@@ -35,7 +35,7 @@ public class SoftwareIndex {
                     log.println(pom.toString() + " is currently not supported.");
                     continue;
                 }
-                Scm scm = Scm.create(pom.scm, world);
+                Scm scm = Scm.create(pom.scm, pommesGlobal.getWorld());
                 if (!scm.exists()) {
                     log.println(pom.toString() + " has non existing scm.");
                     continue;

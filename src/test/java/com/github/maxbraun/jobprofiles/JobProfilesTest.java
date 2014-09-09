@@ -14,7 +14,7 @@ public class JobProfilesTest {
 
     @Before
     public void setup() throws Exception {
-        JobProfilesConfiguration.get().setSoftwareIndexFile("svn:https://github.com/maxbraun/job-profiles/trunk/src/main/resources/softreg.xml");
+        JobProfilesConfiguration.get().setSoftwareIndexFile("https://raw.githubusercontent.com/maxbraun/job-profiles/master/src/test/resources/index.zip");
         JobProfilesConfiguration.get().setProfileRootDir("https://github.com/maxbraun/job-profiles-examles/trunk");
         j.configureMaven3();
     }
