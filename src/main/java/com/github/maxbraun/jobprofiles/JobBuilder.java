@@ -9,6 +9,8 @@ import java.util.Set;
 
 import javax.servlet.ServletException;
 
+import org.tmatesoft.svn.core.SVNException;
+
 import freemarker.template.TemplateException;
 import net.oneandone.sushi.fs.World;
 
@@ -16,7 +18,8 @@ public class JobBuilder {
     public JobBuilder() {
     }
 
-    public static void buildJobs(String forcedSCM, String forcedProfile, PrintStream log, World world) throws IOException, URISyntaxException {
+    public static void buildJobs(String forcedSCM, String forcedProfile, PrintStream log, World world)
+      throws IOException, URISyntaxException, SVNException {
         com.github.maxbraun.jobprofiles.SoftwareIndex index;
 
         forcedSCM = forcedSCM == null ? "" : forcedSCM;
@@ -24,17 +27,11 @@ public class JobBuilder {
 
         if (!forcedSCM.isEmpty()) {
             SoftwareAsset asset;
-            asset = new SoftwareAsset();
             index = new SoftwareIndex();
 
             if (forcedSCM.equals("system")) {
-
-                asset.setArtifactId("system");
-                asset.setCategory("System");
-                asset.setGroupId("system");
-
+                asset = new SoftwareAsset("system", "system", "system", "System");
             } else {
-
                 asset = SoftwareAsset.fromSCM(forcedSCM, world);
             }
             index.add(asset);

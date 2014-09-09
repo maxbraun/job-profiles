@@ -27,11 +27,6 @@ public class ScmTest {
         Assert.assertTrue(scm.getPom().length() > 1);
     }
 
-    @Test(expected = JobProfileException.class)
-    public void WrongSVNUrl() throws Exception {
-        Scm.create(svn + "/", world).getPom();
-    }
-
 
     @Test
     public void SvnProfile() throws Exception {

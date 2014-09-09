@@ -6,6 +6,7 @@ import java.net.URISyntaxException;
 
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.StaplerRequest;
+import org.tmatesoft.svn.core.SVNException;
 
 import hudson.Extension;
 import hudson.Launcher;
@@ -43,6 +44,8 @@ public class JobProfiles extends hudson.tasks.Builder {
         try {
             JobBuilder.buildJobs(forcedSCM, forcedProfile, log, world);
         } catch (URISyntaxException e) {
+            throw new IOException(e);
+        } catch (SVNException e) {
             throw new IOException(e);
         }
 

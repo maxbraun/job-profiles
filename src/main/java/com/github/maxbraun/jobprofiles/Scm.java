@@ -3,32 +3,45 @@ package com.github.maxbraun.jobprofiles;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.net.URISyntaxException;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.tmatesoft.svn.core.SVNException;
+import org.tmatesoft.svn.core.wc.SVNRevision;
+
 import net.oneandone.sushi.fs.DirectoryNotFoundException;
+import net.oneandone.sushi.fs.ExistsException;
 import net.oneandone.sushi.fs.FileNotFoundException;
 import net.oneandone.sushi.fs.ListException;
 import net.oneandone.sushi.fs.Node;
 import net.oneandone.sushi.fs.NodeInstantiationException;
 import net.oneandone.sushi.fs.World;
+import net.oneandone.sushi.fs.svn.SvnNode;
+import net.oneandone.sushi.util.Strings;
 
 public class Scm {
-    private static String remote;
-    private Node root;
+    private SvnNode root;
 
-    public Scm(Node root) {
+    public Scm(SvnNode root) {
         this.root = root;
     }
     public static Scm create(String scm, World world) {
-        if (!scm.startsWith("svn:")) {
-            remote = "svn:" + scm;
-        } else {
-            remote = scm;
+        String remote;
+        remote = Strings.removeRightOpt(scm, "/");
+        if (remote.startsWith("scm:")) {
+            remote = Strings.removeLeft(remote, "scm:");
+        }
+        if (!remote.startsWith("svn:")) {
+            remote = "svn:" + remote;
         }
         try {
-            return new Scm(world.node(remote));
+            return new Scm((SvnNode) world.node(remote));
         } catch (URISyntaxException e) {
             throw new JobProfileException(e.getMessage(), e);
         } catch (NodeInstantiationException e) {
@@ -82,9 +95,50 @@ public class Scm {
         }
     }
 
-    public String getRemote() {
-        return remote;
+    public boolean exists() throws ExistsException {
+        return root.exists();
     }
+
+    public boolean active() throws SVNException {
+        Date date;
+        date = root.getRoot().getRepository().info(root.getPath(), SVNRevision.HEAD.getNumber()).getDate();
+        return date.after(Date.from(Instant.now().minus(Duration.ofDays(30))));
+    }
+    public List<Scm> branches() throws ExistsException, DirectoryNotFoundException, ListException {
+        List<Scm> branches;
+        SvnNode node = root.getParent().join("branches");
+
+        if (node.exists()) {
+            branches = new ArrayList<Scm>();
+            for (SvnNode branch : node.list()) {
+                branches.add(new Scm(branch));
+            }
+        } else {
+            branches = Collections.emptyList();
+        }
+        return branches;
+
+    }
+
+    public String category() {
+        String category;
+        if (root.getName().equals("trunk")) {
+            category = root.getParent().getName();
+            if (root.getParent().getParent() != null) {
+                category = root.getParent().getParent().getName();
+            }
+        } else if (root.getParent().getName().equals("branches")) {
+            category = root.getParent().getParent().getParent().getName();
+        } else {
+            category = "cannot categorize";
+        }
+        return category;
+    }
+
+    public String uri() {
+        return root.getURI().toString();
+    }
+
     public String toString() {
         return "org.jenkinsci.plugins.jobprofiles.Scm(root=" + this.root + ")";
     }

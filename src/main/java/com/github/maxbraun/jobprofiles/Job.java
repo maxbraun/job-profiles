@@ -13,15 +13,18 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.ServletException;
+import javax.xml.transform.Source;
+import javax.xml.transform.stream.StreamSource;
 
 import org.slf4j.Logger;
 
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
-import hudson.model.BuildableItem;
+import hudson.model.AbstractItem;
 import hudson.model.Failure;
 import hudson.model.ListView;
+import hudson.model.TopLevelItem;
 import hudson.model.View;
 import hudson.util.IOException2;
 import jenkins.model.Jenkins;
@@ -123,16 +126,23 @@ public class Job {
     public void sendJobsToJenkins() throws IOException {
         for (Map.Entry<String, String> template : parsedTemplates.entrySet()) {
             InputStream src;
-            BuildableItem job;
             src = new ByteArrayInputStream(template.getValue().getBytes());
-            try {
-                job = (BuildableItem) Jenkins.getInstance()
-                  .createProjectFromXML(template.getKey(), src);
-            } catch (IOException2 e) {
-                log.info("could not parse because" + e.getMessage());
-                log.info(template.getValue());
+            TopLevelItem item = Jenkins.getInstance().getItem(template.getKey());
+            if (item == null) {
+
+                try {
+                    Jenkins.getInstance()
+                      .createProjectFromXML(template.getKey(), src);
+                } catch (IOException2 e) {
+                    log.info("could not parse because" + e.getMessage());
+                    log.info(template.getValue());
+                } finally {
+                    src.close();
+                }
+            } else {
+                Source source = new StreamSource(src);
+                ((AbstractItem) item).updateByXml(source);
             }
-            src.close();
         }
     }
     public void manageViews() throws IOException, ServletException {
@@ -160,7 +170,7 @@ public class Job {
         context.put("now", now.toString());
         context.put("usedProfile", profile.getName());
         context.put("id", createIdentifier("build.xml"));
-        context.put("scm", scm != null ? scm.getRemote() : "");
+        context.put("scm", scm != null ? scm.uri() : "");
         return context;
     }
 
@@ -188,7 +198,7 @@ public class Job {
     public String key() {
         return this.key;
     }
-    
+
     public void setParsedTemplates(Map<String, String> parsedTemplates) {
         this.parsedTemplates = parsedTemplates;
     }
