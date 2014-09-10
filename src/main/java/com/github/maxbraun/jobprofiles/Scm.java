@@ -3,15 +3,14 @@ package com.github.maxbraun.jobprofiles;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.net.URISyntaxException;
-import java.time.Duration;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.joda.time.DateTime;
+import org.joda.time.Months;
 import org.tmatesoft.svn.core.SVNException;
 import org.tmatesoft.svn.core.wc.SVNRevision;
 
@@ -100,10 +99,11 @@ public class Scm {
     }
 
     public boolean active() throws SVNException {
-        Date date;
-        date = root.getRoot().getRepository().info(root.getPath(), SVNRevision.HEAD.getNumber()).getDate();
-        return date.after(Date.from(Instant.now().minus(Duration.ofDays(30))));
+        DateTime date;
+        date = new DateTime(root.getRoot().getRepository().info(root.getPath(), SVNRevision.HEAD.getNumber()).getDate().getTime());
+        return date.isAfter(date.minus(Months.ONE));
     }
+
     public List<Scm> branches() throws ExistsException, DirectoryNotFoundException, ListException {
         List<Scm> branches;
         SvnNode node = root.getParent().join("branches");
