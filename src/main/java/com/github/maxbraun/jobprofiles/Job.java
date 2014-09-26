@@ -170,7 +170,7 @@ public class Job {
         context.put("now", now.toString());
         context.put("usedProfile", profile.getName());
         context.put("id", createIdentifier("build.xml"));
-        context.put("scm", scm != null ? scm.uri() : "");
+        context.put("scm", Strings.removeLeftOpt((scm != null ? scm.uri() : ""), "svn:"));
         return context;
     }
 

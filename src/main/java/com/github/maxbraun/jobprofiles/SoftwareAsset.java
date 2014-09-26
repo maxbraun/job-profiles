@@ -6,6 +6,7 @@ import org.apache.maven.project.MavenProject;
 
 import net.oneandone.pommes.model.Pom;
 import net.oneandone.sushi.fs.World;
+import net.oneandone.sushi.util.Strings;
 
 public class SoftwareAsset {
     private String artifactId;
@@ -70,7 +71,7 @@ public class SoftwareAsset {
     }
 
     public String scm() {
-        return this.scm;
+        return Strings.removeLeftOpt(this.scm, "svn:");
     }
 
 

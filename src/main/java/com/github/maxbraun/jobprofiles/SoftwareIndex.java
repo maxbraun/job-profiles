@@ -29,7 +29,7 @@ public class SoftwareIndex {
         index = new SoftwareIndex();
 
 
-        for (Pom pom : database.search("")) {
+        for (Pom pom : database.search("/trunk/")) {
             if (pom.projectUrl() != null && !"".equals(pom.projectUrl())) {
                 if (pom.projectUrl().contains("ssh://git@github.com")) {
                     log.println(pom.toString() + " is currently not supported.");

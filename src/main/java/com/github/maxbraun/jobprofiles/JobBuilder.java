@@ -4,8 +4,6 @@ import static com.github.maxbraun.jobprofiles.JobProfilesConfiguration.get;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.net.URISyntaxException;
-import java.util.HashSet;
-import java.util.Set;
 
 import javax.servlet.ServletException;
 
@@ -53,28 +51,17 @@ public class JobBuilder {
 
     private static void sendJobsToJenkins(PrintStream log, SoftwareIndex index, String forcedProfile, World world) throws IOException {
         ProfileManager profileManager;
-        Set<Job> jobs;
+
         profileManager = new ProfileManager(world, log, get().getProfileRootDir());
 
-        jobs = parseAllTemplates(log, index, profileManager, forcedProfile, world);
-
-        try {
-            for (Job job : jobs) {
-                job.sendJobsToJenkins();
-                job.manageViews();
-            }
-        } catch (ServletException e) {
-            throw new JobProfileException(e);
-        }
+        parseAllTemplates(log, index, profileManager, forcedProfile, world);
     }
 
-    private static Set<Job> parseAllTemplates(PrintStream log, SoftwareIndex index, ProfileManager profileManager, String forcedProfile, World world)
+    private static void parseAllTemplates(PrintStream log, SoftwareIndex index, ProfileManager profileManager, String forcedProfile, World world)
       throws IOException {
-        Set<Job> jobs;
         Job currentJob;
         Profile currentProfile;
 
-        jobs = new HashSet<Job>();
 
         for (SoftwareAsset asset : index.assets()) {
             try {
@@ -89,15 +76,17 @@ public class JobBuilder {
                 currentJob.setProfile(currentProfile);
                 ContextBuilder.add(currentJob, world, asset);
                 currentJob.parseProfile(log);
-                jobs.add(currentJob);
+                currentJob.sendJobsToJenkins();
+                currentJob.manageViews();
             } catch (JobProfileException e) {
                 log.println("Error while generating job for " + asset.artifactId() + "\n" + e.getMessage() + "\n" + e.getCause());
 
             } catch (TemplateException e) {
                 throw new JobProfileException(e.getMessage(), e);
+            } catch (ServletException e) {
+                throw new JobProfileException(e.getMessage(), e);
             }
         }
-        return jobs;
     }
 
 }
