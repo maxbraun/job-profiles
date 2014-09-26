@@ -25,17 +25,17 @@ public class SoftwareIndex {
 
         database = new Database(pommesGlobal.getWorld().getTemp().createTempDirectory().join("pommes"), pommesGlobal);
         //database = Database.load(world);
-        database.updateOpt();
+        database.downloadOpt();
         index = new SoftwareIndex();
 
 
         for (Pom pom : database.search("")) {
-            if (pom.scm != null && !"".equals(pom.scm)) {
-                if (pom.scm.contains("ssh://git@github.com")) {
+            if (pom.projectUrl() != null && !"".equals(pom.projectUrl())) {
+                if (pom.projectUrl().contains("ssh://git@github.com")) {
                     log.println(pom.toString() + " is currently not supported.");
                     continue;
                 }
-                Scm scm = Scm.create(pom.scm, pommesGlobal.getWorld());
+                Scm scm = Scm.create(pom.projectUrl(), pommesGlobal.getWorld());
                 if (!scm.exists()) {
                     log.println(pom.toString() + " has non existing scm.");
                     continue;
