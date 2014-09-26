@@ -128,7 +128,11 @@ public class Scm {
                 category = root.getParent().getParent().getName();
             }
         } else if (root.getParent().getName().equals("branches")) {
-            category = root.getParent().getParent().getParent().getName();
+            if (root.getParent().getParent().getParent() != null) {
+                category = root.getParent().getParent().getParent().getName();
+            } else {
+                category = "uncategorized";
+            }
         } else {
             category = "cannot categorize";
         }
