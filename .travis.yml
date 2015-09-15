@@ -3,7 +3,7 @@ env:
       - secure: "MGrYW4n/wiys4F/8G5ZwmSSZk11nz6zROT0mG2a1v6YUe/0opWIesFQGvVAV+NbiAvJ8nJ22DmuOIyH/H5FIQDlr1rILB1eUOYXp6Lvvm2+gO25dR7XkJLDFwemJSyH67alXJpwH8oTZakaQbltX/k+KarVHBX8olESnDDmq0oY="
 
 language: java
-
+sudo: false
   
 notifications:
   email:
