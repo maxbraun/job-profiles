@@ -59,8 +59,13 @@ public class Job {
         this.now = now;
         this.groupId = groupId;
     }
-    public static Job create(SoftwareAsset asset, World world) {
-        Scm scm = asset.scm().equals("system") ? null : Scm.create(asset.scm(), world);
+    public static Job create(SoftwareAsset asset, World world, PrintStream log) {
+        Scm scm;
+        if (asset.scm().equals("system")) {
+            scm = null;
+        } else {
+            scm = Scm.create(asset.scm(), world, log);
+        }
         return new Job(asset.artifactId(), asset.category(), scm, new Date(), asset.groupId());
     }
     private static void removeJobFromViews(String jobId) {

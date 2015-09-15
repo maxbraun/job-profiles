@@ -2,6 +2,7 @@ package com.github.maxbraun.jobprofiles;
 
 import java.io.IOException;
 import java.io.PrintStream;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.List;
@@ -10,8 +11,19 @@ import java.util.Map;
 import org.joda.time.DateTime;
 import org.joda.time.Months;
 import org.tmatesoft.svn.core.SVNException;
+import org.tmatesoft.svn.core.auth.ISVNAuthenticationManager;
 import org.tmatesoft.svn.core.wc.SVNRevision;
 
+import com.cloudbees.plugins.credentials.CredentialsMatchers;
+import com.cloudbees.plugins.credentials.CredentialsProvider;
+import com.cloudbees.plugins.credentials.common.StandardUsernamePasswordCredentials;
+import com.cloudbees.plugins.credentials.domains.DomainRequirement;
+import com.cloudbees.plugins.credentials.domains.URIRequirementBuilder;
+
+import hudson.model.Item;
+import hudson.scm.CredentialsSVNAuthenticationProviderImpl;
+import hudson.scm.SubversionSCM;
+import hudson.security.ACL;
 import net.oneandone.sushi.fs.DirectoryNotFoundException;
 import net.oneandone.sushi.fs.ExistsException;
 import net.oneandone.sushi.fs.FileNotFoundException;
@@ -19,6 +31,7 @@ import net.oneandone.sushi.fs.ListException;
 import net.oneandone.sushi.fs.Node;
 import net.oneandone.sushi.fs.NodeInstantiationException;
 import net.oneandone.sushi.fs.World;
+import net.oneandone.sushi.fs.svn.SvnFilesystem;
 import net.oneandone.sushi.fs.svn.SvnNode;
 import net.oneandone.sushi.util.Strings;
 
@@ -28,7 +41,7 @@ public class Scm {
     public Scm(SvnNode root) {
         this.root = root;
     }
-    public static Scm create(String scm, World world) {
+    public static Scm create(String scm, World world, PrintStream log) {
         String remote;
         remote = Strings.removeRightOpt(scm, "/");
         if (remote.startsWith("scm:")) {
@@ -38,7 +51,28 @@ public class Scm {
             remote = "svn:" + remote;
         }
         try {
-            return new Scm((SvnNode) world.node(remote));
+            URI remoteUri = new URI(remote);
+
+
+            List<DomainRequirement> domainRequirements = URIRequirementBuilder.fromUri(remote).build();
+            Item item = null;
+            StandardUsernamePasswordCredentials credentials = CredentialsMatchers.firstOrNull(
+              CredentialsProvider.lookupCredentials(StandardUsernamePasswordCredentials.class, item, ACL.SYSTEM, domainRequirements),
+              CredentialsMatchers.always());
+
+
+            SvnFilesystem svnFilesystem = (SvnFilesystem) world.getFilesystem("svn");
+
+            if (credentials == null) {
+                log.append("cannot get credentials for ").append(scm).append(" using none.");
+            } else {
+                ISVNAuthenticationManager svnAuthenticationManager =
+                  SubversionSCM.createSvnAuthenticationManager(new CredentialsSVNAuthenticationProviderImpl(credentials));
+                svnFilesystem.setDefaultAuthenticationManager(svnAuthenticationManager);
+            }
+
+
+            return new Scm(svnFilesystem.node(remoteUri, null));
         } catch (URISyntaxException e) {
             throw new JobProfileException(e.getMessage(), e);
         } catch (NodeInstantiationException e) {

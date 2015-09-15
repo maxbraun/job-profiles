@@ -4,7 +4,7 @@ import java.io.PrintStream;
 import org.junit.Test;
 
 import net.oneandone.sushi.fs.World;
-public class SoftwareIndexTest {
+public class    SoftwareIndexTest {
 
     @Test
     public void testLoad() throws Exception {
