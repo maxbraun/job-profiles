@@ -1,5 +1,6 @@
 package com.github.maxbraun.jobprofiles;
 import java.io.IOException;
+import java.io.PrintStream;
 
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.maven.project.MavenProject;
@@ -35,8 +36,8 @@ public class SoftwareAsset {
 
     }
 
-    public static SoftwareAsset fromSCM(String scmLocation, World world) throws IOException {
-        Scm scm = Scm.create(scmLocation, world);
+    public static SoftwareAsset fromSCM(String scmLocation, World world, PrintStream log) throws IOException {
+        Scm scm = Scm.create(scmLocation, world, log);
         SoftwareAsset asset;
         asset = new SoftwareAsset();
         String artifactId;

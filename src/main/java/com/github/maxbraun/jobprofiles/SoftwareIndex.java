@@ -9,6 +9,8 @@ import java.util.List;
 
 import org.tmatesoft.svn.core.SVNException;
 
+import hudson.ProxyConfiguration;
+import jenkins.model.Jenkins;
 import net.oneandone.pommes.model.Database;
 import net.oneandone.pommes.model.Pom;
 import net.oneandone.sushi.fs.Node;
@@ -23,9 +25,24 @@ public class SoftwareIndex {
         SoftwareIndex index;
         Database database;
 
+
         database = new Database(pommesGlobal.getWorld().getTemp().createTempDirectory().join("pommes"), pommesGlobal);
         //database = Database.load(world);
-        database.downloadOpt();
+        try {
+            database.downloadOpt();
+        }catch (IOException e) {
+            if (System.getProperty("http.proxyPort")  != null ) {
+                throw e;
+            }
+            ProxyConfiguration proxy = Jenkins.getInstance().proxy;
+            log.append("Cannot download Pommes index. Retry with Proxy:"  + proxy.name + ":" + proxy.port);
+            System.setProperty("http.proxyHost", proxy.name);
+            System.setProperty("http.proxyPort", "" + proxy.port);
+            database.downloadOpt();
+
+            System.clearProperty("http.proxyHost");
+            System.clearProperty("http.proxyPort");
+        }
         index = new SoftwareIndex();
 
 
@@ -35,7 +52,7 @@ public class SoftwareIndex {
                     log.println(pom.toString() + " is currently not supported.");
                     continue;
                 }
-                Scm scm = Scm.create(pom.projectUrl(), pommesGlobal.getWorld());
+                Scm scm = Scm.create(pom.projectUrl(), pommesGlobal.getWorld(), log);
                 if (!scm.exists()) {
                     log.println(pom.toString() + " has non existing scm.");
                     continue;

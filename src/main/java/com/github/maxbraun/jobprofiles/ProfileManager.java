@@ -22,7 +22,7 @@ public class ProfileManager {
         if (profileRoot == null) {
             throw new RuntimeException("ProfileRoot seems not to be configured.");
         }
-        this.profileScm = Scm.create(profileRoot, world);
+        this.profileScm = Scm.create(profileRoot, world, log);
         this.world = world;
         this.log = log;
         this.profileList = new HashMap<String, Profile>();

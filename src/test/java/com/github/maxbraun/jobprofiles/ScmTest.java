@@ -22,7 +22,7 @@ public class ScmTest {
 
     private void getPom(String scmLocation) throws IOException {
         Scm scm;
-        scm = Scm.create(scmLocation, world);
+        scm = Scm.create(scmLocation, world, System.out);
 
         Assert.assertTrue(scm.getPom().length() > 1);
     }
@@ -35,7 +35,7 @@ public class ScmTest {
 
     private void getProfile(String scmUrl, String profileName) throws Exception {
         Scm scm;
-        scm = Scm.create(scmUrl, world);
+        scm = Scm.create(scmUrl, world, System.out);
         Map<String, String> profile;
 
         profile = scm.getProfile(profileName, new PrintStream(System.out));

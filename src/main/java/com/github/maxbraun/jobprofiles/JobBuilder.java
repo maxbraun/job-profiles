@@ -30,7 +30,7 @@ public class JobBuilder {
             if (forcedSCM.equals("system")) {
                 asset = new SoftwareAsset("system", "system", "system", "System");
             } else {
-                asset = SoftwareAsset.fromSCM(forcedSCM, world);
+                asset = SoftwareAsset.fromSCM(forcedSCM, world, log);
             }
             index.add(asset);
 
@@ -69,7 +69,7 @@ public class JobBuilder {
                     log.println(asset.toString() + " has a null value");
                     continue;
                 }
-                currentJob = Job.create(asset, world);
+                currentJob = Job.create(asset, world, log);
 
                 currentProfile = profileManager.getProfileForScm(currentJob.scm(), forcedProfile);
 
