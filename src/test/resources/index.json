@@ -1,0 +1,16 @@
+[
+  {
+    "origin": "svn:https://github.com/maxbraun/maven-prerelease-plugin/trunk",
+    "coordinates": {
+      "groupId": "net.oneandone.maven.plugins",
+      "artifactId": "prerelease"
+    }
+  },
+  {
+    "origin": "svn:https://github.com/maxbraun/maven-prerelease-plugin/trunk",
+    "coordinates": {
+      "groupId": "net.oneandone.maven.plugins",
+      "artifactId": "prerelease2"
+    }
+  }
+]
