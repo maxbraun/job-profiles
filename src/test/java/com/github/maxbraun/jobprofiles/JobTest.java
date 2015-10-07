@@ -14,7 +14,7 @@ public class JobTest {
     @Test
     public void testJob() throws Exception {
         ProfileManager manager = new ProfileManager(new World(), System.out, "https://github.com/maxbraun/job-profiles-examles/trunk");
-        SoftwareAsset foo = new SoftwareAsset("net.oneandone.devel", "sushi", "https://github.com/mlhartme/sushi/", "Library");
+        SoftwareAsset foo = new SoftwareAsset("https://github.com/mlhartme/sushi/", new Coordinates("sushi", "net.oneandone.devel"));
 
         Job job = Job.create(foo, new World(), System.out);
         Profile profile = manager.getProfileForScm(job.scm(), null);

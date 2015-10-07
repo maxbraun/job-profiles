@@ -9,10 +9,11 @@ import java.util.List;
 
 import org.tmatesoft.svn.core.SVNException;
 
-import hudson.ProxyConfiguration;
-import jenkins.model.Jenkins;
-import net.oneandone.pommes.model.Database;
-import net.oneandone.pommes.model.Pom;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.type.CollectionType;
+import com.fasterxml.jackson.databind.type.TypeFactory;
+
 import net.oneandone.sushi.fs.Node;
 
 public class SoftwareIndex {
@@ -21,32 +22,41 @@ public class SoftwareIndex {
     public SoftwareIndex() {
         assets = new ArrayList<SoftwareAsset>();
     }
-    public static SoftwareIndex load(Node pommesGlobal, PrintStream log) throws IOException, URISyntaxException, SVNException {
-        SoftwareIndex index;
-        Database database;
+    public static SoftwareIndex load(Node index, PrintStream log) throws IOException, URISyntaxException, SVNException {
 
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        TypeFactory typeFactory = objectMapper.getTypeFactory();
+        CollectionType collectionType = typeFactory.constructCollectionType(
+          List.class, SoftwareAsset.class);
 
+        SoftwareIndex softwareIndex = new SoftwareIndex();
+        softwareIndex.assets =  objectMapper.readValue(index.readString(), collectionType);
+        return softwareIndex;
+    }
+
+    private int size() {
+        return assets.size();
+    }
+    public List<SoftwareAsset> assets() {
+        return Collections.unmodifiableList(assets);
+    }
+
+    public void add(SoftwareAsset asset) {
+        assets.add(asset);
+    }
+
+    /*
         database = new Database(pommesGlobal.getWorld().getTemp().createTempDirectory().join("pommes"), pommesGlobal);
         //database = Database.load(world);
-        try {
-            database.downloadOpt();
-        }catch (IOException e) {
-            if (System.getProperty("http.proxyPort")  != null ) {
-                throw e;
-            }
-            ProxyConfiguration proxy = Jenkins.getInstance().proxy;
-            log.append("Cannot download Pommes index. Retry with Proxy:"  + proxy.name + ":" + proxy.port);
-            System.setProperty("http.proxyHost", proxy.name);
-            System.setProperty("http.proxyPort", "" + proxy.port);
-            database.downloadOpt();
 
-            System.clearProperty("http.proxyHost");
-            System.clearProperty("http.proxyPort");
-        }
+        database.downloadOpt();
+
         index = new SoftwareIndex();
 
+        TermQuery termQuery = new TermQuery(new Term(Database.ORIGIN, "/trunk"));
 
-        for (Pom pom : database.search("/trunk/")) {
+        for (Pom pom : database.query(termQuery)) {
             if (pom.projectUrl() != null && !"".equals(pom.projectUrl())) {
                 if (pom.projectUrl().contains("ssh://git@github.com")) {
                     log.println(pom.toString() + " is currently not supported.");
@@ -67,19 +77,6 @@ public class SoftwareIndex {
         }
 
         log.println(index.size() + " Assets");
-        return index;
-    }
-
-    private int size() {
-        return assets.size();
-    }
-    public List<SoftwareAsset> assets() {
-        return Collections.unmodifiableList(assets);
-    }
-
-    public void add(SoftwareAsset asset) {
-        assets.add(asset);
-    }
-
+        return index;*/
 
 }

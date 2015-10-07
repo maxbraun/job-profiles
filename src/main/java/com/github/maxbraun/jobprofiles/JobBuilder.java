@@ -28,7 +28,7 @@ public class JobBuilder {
             index = new SoftwareIndex();
 
             if (forcedSCM.equals("system")) {
-                asset = new SoftwareAsset("system", "system", "system", "System");
+                asset = new SoftwareAsset("system", new Coordinates("system", "system"));
             } else {
                 asset = SoftwareAsset.fromSCM(forcedSCM, world, log);
             }

@@ -66,7 +66,7 @@ public class Job {
         } else {
             scm = Scm.create(asset.scm(), world, log);
         }
-        return new Job(asset.artifactId(), asset.category(), scm, new Date(), asset.groupId());
+        return new Job(asset.artifactId(), null, scm, new Date(), asset.groupId());
     }
     private static void removeJobFromViews(String jobId) {
         for (View view : Jenkins.getInstance().getViews()) {
@@ -153,7 +153,9 @@ public class Job {
     public void manageViews() throws IOException, ServletException {
         for (Map.Entry<String, String> template : parsedTemplates.entrySet()) {
             removeJobFromViews(template.getKey());
-            addJobToView(template.getKey(), category);
+            if (category() != null) {
+                addJobToView(template.getKey(), category());
+            }
         }
     }
     private String createIdentifier(String templateFileName) {

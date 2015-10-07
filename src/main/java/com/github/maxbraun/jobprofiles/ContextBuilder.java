@@ -31,7 +31,7 @@ public class ContextBuilder {
     public static void addSoftwareAssetContext(Job job, SoftwareAsset asset) {
         job.addContext("name", asset.artifactId());
         job.addContext("identifier", asset.groupId());
-        job.addContext("disabled", !asset.active());
+        job.addContext("disabled", false);
     }
 
     public static void addJenkinsContext(Job job) throws IOException {
