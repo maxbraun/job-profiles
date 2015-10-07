@@ -129,6 +129,9 @@ public class Job {
         parsedTemplates = xmls;
     }
     public void sendJobsToJenkins() throws IOException {
+        if (parsedTemplates == null) {
+            return;
+        }
         for (Map.Entry<String, String> template : parsedTemplates.entrySet()) {
             InputStream src;
             src = new ByteArrayInputStream(template.getValue().getBytes());
