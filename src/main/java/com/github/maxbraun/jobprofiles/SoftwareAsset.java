@@ -21,7 +21,7 @@ public class SoftwareAsset {
         if (scm.getPom() == null) {
             throw new NotImplementedException("Can't read something else then maven projects - currently sorry");
         }
-        MavenProject mavenProject = ContextBuilder.getMavenProject(scm.getPom(), world);
+        MavenProject mavenProject = ContextBuilder.getMavenProject(scm.getPom(), world, log);
         artifactId = mavenProject.getArtifactId();
         if (!scmLocation.endsWith("trunk")) {
             artifactId = mavenProject.getArtifactId() + " " + scmLocation.substring(scmLocation.lastIndexOf('/') + 1);

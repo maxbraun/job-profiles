@@ -38,9 +38,6 @@ import net.oneandone.sushi.util.Strings;
 public class Scm {
     private SvnNode root;
 
-    public Scm(SvnNode root) {
-        this.root = root;
-    }
     public static Scm create(String scm, World world, PrintStream log) {
         String remote;
         remote = Strings.removeRightOpt(scm, "/");
@@ -71,14 +68,25 @@ public class Scm {
                 svnFilesystem.setDefaultAuthenticationManager(svnAuthenticationManager);
             }
 
-
-            return new Scm(svnFilesystem.node(remoteUri, null));
+            SvnNode node = svnFilesystem.node(remoteUri, null);
+            if (node.isFile()) {
+                return new Scm(node.getParent());
+            } else {
+                return new Scm(node);
+            }
         } catch (URISyntaxException e) {
             throw new JobProfileException(e.getMessage(), e);
         } catch (NodeInstantiationException e) {
             throw new JobProfileException(e.getMessage(), e);
+        } catch (ExistsException e) {
+            throw new JobProfileException(e.getMessage(), e);
         }
+
     }
+    public Scm(SvnNode root) {
+        this.root = root;
+    }
+
     public String getPom() {
         try {
             return root.findOne("pom.xml").readString();

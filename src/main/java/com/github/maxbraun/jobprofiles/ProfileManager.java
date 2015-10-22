@@ -28,13 +28,13 @@ public class ProfileManager {
         this.profileList = new HashMap<String, Profile>();
     }
 
-    public Profile getProfileForScm(Scm projectSCM, String forcedProfile) throws IOException {
-        discover(projectSCM, forcedProfile);
+    public Profile getProfileForScm(Scm projectSCM, String forcedProfile, PrintStream log) throws IOException {
+        discover(projectSCM, forcedProfile, log);
         return getProfile();
     }
 
-    private ProfileManager discover(Scm projectSCM, String forcedProfile) throws IOException {
-        finder = ProfileFinder.find(world, projectSCM, this.profileScm, forcedProfile);
+    private ProfileManager discover(Scm projectSCM, String forcedProfile, PrintStream log) throws IOException {
+        finder = ProfileFinder.find(world, projectSCM, this.profileScm, forcedProfile, log);
         return this;
     }
 

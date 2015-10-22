@@ -5,8 +5,6 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.net.URISyntaxException;
 
-import javax.servlet.ServletException;
-
 import org.tmatesoft.svn.core.SVNException;
 
 import freemarker.template.TemplateException;
@@ -71,19 +69,15 @@ public class JobBuilder {
                 }
                 currentJob = Job.create(asset, world, log);
 
-                currentProfile = profileManager.getProfileForScm(currentJob.scm(), forcedProfile);
+                currentProfile = profileManager.getProfileForScm(currentJob.scm(), forcedProfile, log);
 
                 currentJob.setProfile(currentProfile);
-                ContextBuilder.add(currentJob, world, asset);
-                currentJob.parseProfile(log);
-                currentJob.sendJobsToJenkins();
-                currentJob.manageViews();
+                ContextBuilder.add(currentJob, world, asset, log);
+                currentJob.sendToJenkins(log);
             } catch (JobProfileException e) {
                 log.println("Error while generating job for " + asset.artifactId() + "\n" + e.getMessage() + "\n" + e.getCause());
 
             } catch (TemplateException e) {
-                throw new JobProfileException(e.getMessage(), e);
-            } catch (ServletException e) {
                 throw new JobProfileException(e.getMessage(), e);
             }
         }

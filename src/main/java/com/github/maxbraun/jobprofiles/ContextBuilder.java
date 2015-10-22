@@ -2,6 +2,7 @@ package com.github.maxbraun.jobprofiles;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -12,6 +13,7 @@ import org.apache.maven.project.ProjectBuildingException;
 
 import hudson.maven.MavenEmbedder;
 import hudson.maven.MavenEmbedderException;
+import hudson.maven.MavenEmbedderRequest;
 import hudson.maven.MavenUtil;
 import hudson.model.TaskListener;
 import hudson.slaves.EnvironmentVariablesNodeProperty;
@@ -22,8 +24,8 @@ import net.oneandone.sushi.fs.World;
 import net.oneandone.sushi.fs.file.FileNode;
 
 public class ContextBuilder {
-    public static void add(Job job, World world, SoftwareAsset asset) throws IOException {
-        addMavenContext(job, world);
+    public static void add(Job job, World world, SoftwareAsset asset, PrintStream log) throws IOException {
+        addMavenContext(job, world, log);
         addJenkinsContext(job);
         addSoftwareAssetContext(job, asset);
     }
@@ -38,7 +40,7 @@ public class ContextBuilder {
         job.addContext("max_executors", Jenkins.getInstance().getNumExecutors());
     }
 
-    public static void addMavenContext(Job job, World world) throws IOException {
+    public static void addMavenContext(Job job, World world, PrintStream log) throws IOException {
         MavenProject project;
         String pom;
         if (job.scm() == null) {
@@ -49,7 +51,7 @@ public class ContextBuilder {
         if (pom == null) {
             return;
         }
-        project = getMavenProject(pom, world);
+        project = getMavenProject(pom, world, log);
 
 
         job.addContext("mavenproject", project);
@@ -60,7 +62,7 @@ public class ContextBuilder {
     }
 
 
-    public static MavenProject getMavenProject(String pomContent, World world) {
+    public static MavenProject getMavenProject(String pomContent, World world, PrintStream log) {
         MavenEmbedder embedder;
         MavenProject mavenProject;
         FileNode tmpPom;
@@ -73,13 +75,12 @@ public class ContextBuilder {
         if (installations.length == 0) {
             throw new JobProfileException(Messages.Context_NoMavenInstallation());
         }
-
         mavenHome = installations[0].getHomeDir();
         listener = new LogTaskListener(Logger.getLogger(ContextBuilder.class.toString()), Level.ALL);
         try {
             tmpPom = (FileNode) world.getTemp().createTempFile().writeStrings(pomContent);
             assert tmpPom != null;
-            embedder = MavenUtil.createEmbedder(listener, mavenHome, null, getEnvironmentVariables());
+            embedder = MavenUtil.createEmbedder(new MavenEmbedderRequest(listener, mavenHome, null, getEnvironmentVariables(), null, null));
             mavenProject = embedder.readProject(new File(tmpPom.toString()));
         } catch (MavenEmbedderException e) {
             throw new JobProfileException(e.getMessage(), e);

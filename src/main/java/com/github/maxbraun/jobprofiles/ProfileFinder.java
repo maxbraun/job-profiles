@@ -1,5 +1,6 @@
 package com.github.maxbraun.jobprofiles;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -27,7 +28,7 @@ public class ProfileFinder {
         this.possibleProfiles = new LinkedList<String>();
         this.possibleProfiles.add(STANDARD);
     }
-    public static ProfileFinder find(World world, Scm projectScm, Scm profileScm, String forcedProfile) throws IOException {
+    public static ProfileFinder find(World world, Scm projectScm, Scm profileScm, String forcedProfile, PrintStream log) throws IOException {
         ProfileFinder finder;
 
         finder = new ProfileFinder(profileScm);
@@ -38,7 +39,7 @@ public class ProfileFinder {
 
         finder.addPossibleProfile(findBuildSystem(projectScm));
         if (finder.possibleProfiles.get(finder.possibleProfiles.size() - 1).equals("maven") && Jenkins.getInstance() != null) {
-            finder.addPossibleProfile(findMavenProperty(ContextBuilder.getMavenProject(projectScm.getPom(), world)));
+            finder.addPossibleProfile(findMavenProperty(ContextBuilder.getMavenProject(projectScm.getPom(), world, log)));
         }
         finder.addPossibleProfile(findJenkinsFile(projectScm));
         finder.addPossibleProfile(forcedProfile);
