@@ -15,13 +15,13 @@ import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.BuildListener;
 import hudson.tasks.BuildStepDescriptor;
-import net.oneandone.sushi.fs.World;
+import net.oneandone.sushi.fs.svn.SvnNode;
+import net.oneandone.sushi.util.Strings;
 import net.sf.json.JSONObject;
 
 
 public class JobProfiles extends hudson.tasks.Builder {
 
-    private final JobBuilder builder = new JobBuilder();
     private String forcedSCM;
     private String forcedProfile;
 
@@ -34,15 +34,24 @@ public class JobProfiles extends hudson.tasks.Builder {
     @Override
     public boolean perform(AbstractBuild build, Launcher launcher, BuildListener listener) throws IOException {
         PrintStream log = listener.getLogger();
-        World world;
 
-        world = new World();
 
         forcedSCM = Util.replaceMacro(forcedSCM, build.getBuildVariableResolver());
         forcedProfile = Util.replaceMacro(this.forcedProfile, build.getBuildVariableResolver());
 
         try {
-            JobBuilder.buildJobs(forcedSCM, forcedProfile, log, world);
+
+            SoftwareIndex softwareIndex = SoftwareIndex.buildFrom(forcedSCM, log);
+            SvnNode profileRoot = new SvnNodeBuilder(Strings.removeRightOpt(JobProfilesConfiguration.get().getProfileRootDir(), "/")).build();
+            Profiles profiles = Profiles.fromNode(profileRoot);
+            JobsCreator jobsCreator = new JobsCreator(profiles, new MavenProjectResolver(profileRoot.getWorld()), forcedProfile, log);
+
+            for (SoftwareAsset softwareAsset : softwareIndex) {
+                Jobs jobs = jobsCreator.createJobs(softwareAsset);
+
+                jobs.submit(log);
+            }
+
         } catch (URISyntaxException e) {
             throw new IOException(e);
         } catch (SVNException e) {
@@ -55,9 +64,6 @@ public class JobProfiles extends hudson.tasks.Builder {
     @Override
     public DescriptorImpl getDescriptor() {
         return (DescriptorImpl) super.getDescriptor();
-    }
-    public JobBuilder getBuilder() {
-        return this.builder;
     }
     public String getForcedSCM() {
         return this.forcedSCM;

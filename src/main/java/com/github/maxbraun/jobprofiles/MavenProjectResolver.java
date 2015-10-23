@@ -1,8 +1,6 @@
 package com.github.maxbraun.jobprofiles;
-
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -22,53 +20,24 @@ import hudson.util.LogTaskListener;
 import jenkins.model.Jenkins;
 import net.oneandone.sushi.fs.World;
 import net.oneandone.sushi.fs.file.FileNode;
+public class MavenProjectResolver {
 
-public class ContextBuilder {
-    public static void add(Job job, World world, SoftwareAsset asset, PrintStream log) throws IOException {
-        addMavenContext(job, world, log);
-        addJenkinsContext(job);
-        addSoftwareAssetContext(job, asset);
+    private final World world;
+    private final TaskListener listener = new LogTaskListener(Logger.getLogger(JobContextBuilder.class.toString()), Level.ALL);
+
+    public MavenProjectResolver(World world) {
+        this.world = world;
     }
 
-    public static void addSoftwareAssetContext(Job job, SoftwareAsset asset) {
-        job.addContext("name", asset.artifactId());
-        job.addContext("identifier", asset.groupId());
-        job.addContext("disabled", false);
-    }
-
-    public static void addJenkinsContext(Job job) throws IOException {
-        job.addContext("max_executors", Jenkins.getInstance().getNumExecutors());
-    }
-
-    public static void addMavenContext(Job job, World world, PrintStream log) throws IOException {
-        MavenProject project;
-        String pom;
-        if (job.scm() == null) {
-            return;
+    public MavenProject resolveFrom(String pomContent) {
+        if (pomContent == null || pomContent.isEmpty()) {
+            throw new IllegalArgumentException("pomContent is null or empty");
         }
-        pom = job.scm().getPom();
-
-        if (pom == null) {
-            return;
-        }
-        project = getMavenProject(pom, world, log);
-
-
-        job.addContext("mavenproject", project);
-
-        for (Map.Entry entry : project.getProperties().entrySet()) {
-            job.addContext(entry.getKey().toString().replace(".", "_"), entry.getValue());
-        }
-    }
-
-
-    public static MavenProject getMavenProject(String pomContent, World world, PrintStream log) {
         MavenEmbedder embedder;
         MavenProject mavenProject;
         FileNode tmpPom;
         File mavenHome;
         Maven.MavenInstallation[] installations;
-        TaskListener listener;
 
         installations = Jenkins.getInstance().getDescriptorByType(hudson.tasks.Maven.DescriptorImpl.class).getInstallations();
 
@@ -76,7 +45,6 @@ public class ContextBuilder {
             throw new JobProfileException(Messages.Context_NoMavenInstallation());
         }
         mavenHome = installations[0].getHomeDir();
-        listener = new LogTaskListener(Logger.getLogger(ContextBuilder.class.toString()), Level.ALL);
         try {
             tmpPom = (FileNode) world.getTemp().createTempFile().writeStrings(pomContent);
             assert tmpPom != null;
@@ -93,7 +61,7 @@ public class ContextBuilder {
         return mavenProject;
     }
 
-    private static Properties getEnvironmentVariables() {
+    private Properties getEnvironmentVariables() {
         Properties properties;
         EnvironmentVariablesNodeProperty environmentVariablesNodeProperty;
 
@@ -108,5 +76,4 @@ public class ContextBuilder {
 
         return properties;
     }
-
 }

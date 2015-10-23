@@ -1,10 +1,13 @@
 package com.github.maxbraun.jobprofiles;
 
+import static com.github.maxbraun.jobprofiles.JobProfilesConfiguration.get;
+
 import java.io.IOException;
 import java.io.PrintStream;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import org.tmatesoft.svn.core.SVNException;
@@ -15,14 +18,41 @@ import com.fasterxml.jackson.databind.type.CollectionType;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 
 import net.oneandone.sushi.fs.Node;
+import net.oneandone.sushi.fs.World;
+import net.oneandone.sushi.util.Strings;
 
-public class SoftwareIndex {
+public class SoftwareIndex implements Iterable<SoftwareAsset> {
+    public static SoftwareIndex buildFrom(String forcedSCM,  PrintStream log)
+      throws IOException, URISyntaxException, SVNException {
+        SoftwareIndex index;
 
-    private List<SoftwareAsset> assets;
-    public SoftwareIndex() {
-        assets = new ArrayList<SoftwareAsset>();
+        forcedSCM = forcedSCM == null ? "" : forcedSCM;
+
+        if (!forcedSCM.isEmpty()) {
+            SoftwareAsset asset;
+            index = new SoftwareIndex();
+
+            if (forcedSCM.equals("system")) {
+                asset = new SystemSoftwareAsset(JobProfilesConfiguration.get());
+            } else {
+                asset = SoftwareAsset.fromSCM(forcedSCM);
+            }
+            index.add(asset);
+
+        } else {
+
+            log.println("Going to parse " + get().getSoftwareIndexFile());
+            index = SoftwareIndex.load(new World().node(Strings.removeRightOpt(JobProfilesConfiguration.get().getSoftwareIndexFile(), "/")));
+            log.println("Parsed.");
+        }
+
+
+
+        return index;
+
     }
-    public static SoftwareIndex load(Node index, PrintStream log) throws IOException, URISyntaxException, SVNException {
+
+    public static SoftwareIndex load(Node index) throws IOException, URISyntaxException, SVNException {
 
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
@@ -35,6 +65,9 @@ public class SoftwareIndex {
         return softwareIndex;
     }
 
+    private List<SoftwareAsset> assets = new ArrayList<SoftwareAsset>();
+
+
     private int size() {
         return assets.size();
     }
@@ -45,38 +78,9 @@ public class SoftwareIndex {
     public void add(SoftwareAsset asset) {
         assets.add(asset);
     }
-
-    /*
-        database = new Database(pommesGlobal.getWorld().getTemp().createTempDirectory().join("pommes"), pommesGlobal);
-        //database = Database.load(world);
-
-        database.downloadOpt();
-
-        index = new SoftwareIndex();
-
-        TermQuery termQuery = new TermQuery(new Term(Database.ORIGIN, "/trunk"));
-
-        for (Pom pom : database.query(termQuery)) {
-            if (pom.projectUrl() != null && !"".equals(pom.projectUrl())) {
-                if (pom.projectUrl().contains("ssh://git@github.com")) {
-                    log.println(pom.toString() + " is currently not supported.");
-                    continue;
-                }
-                Scm scm = Scm.create(pom.projectUrl(), pommesGlobal.getWorld(), log);
-                if (!scm.exists()) {
-                    log.println(pom.toString() + " has non existing scm.");
-                    continue;
-                }
-                index.add(SoftwareAsset.withPom(pom, scm.active(), scm.category()));
-
-
-            } else {
-                log.println(pom.toString() + " has no scm.");
-            }
-
-        }
-
-        log.println(index.size() + " Assets");
-        return index;*/
+    @Override
+    public Iterator<SoftwareAsset> iterator() {
+        return assets.iterator();
+    }
 
 }

@@ -25,6 +25,7 @@ public class JobProfilesTest {
         project.getBuildersList().add(new JobProfiles("system", "system"));
         j.buildAndAssertSuccess(project);
 
+        j.buildAndAssertSuccess(project);
 
     }
 

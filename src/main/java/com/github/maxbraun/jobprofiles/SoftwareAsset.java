@@ -1,33 +1,33 @@
 package com.github.maxbraun.jobprofiles;
 import java.io.IOException;
-import java.io.PrintStream;
 
 import org.apache.commons.lang.NotImplementedException;
 import org.apache.maven.project.MavenProject;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import net.oneandone.sushi.fs.World;
 import net.oneandone.sushi.util.Strings;
 
 
 public class SoftwareAsset {
 
-    public static SoftwareAsset fromSCM(String scmLocation, World world, PrintStream log) throws IOException {
-        Scm scm = Scm.create(scmLocation, world, log);
+    public static SoftwareAsset fromSCM(String scmLocation) throws IOException {
+        ScmNode scm = new ScmNode(new SvnNodeBuilder(scmLocation).build()) ;
 
         String artifactId;
-        //TODO: I need some kind of a Builder with several Impls for each build system.
         if (scm.getPom() == null) {
             throw new NotImplementedException("Can't read something else then maven projects - currently sorry");
         }
-        MavenProject mavenProject = ContextBuilder.getMavenProject(scm.getPom(), world, log);
+
+        MavenProject mavenProject = new MavenProjectResolver(scm.world()).resolveFrom(scm.getPom());
         artifactId = mavenProject.getArtifactId();
+
         if (!scmLocation.endsWith("trunk")) {
             artifactId = mavenProject.getArtifactId() + " " + scmLocation.substring(scmLocation.lastIndexOf('/') + 1);
         }
 
-        return new SoftwareAsset(scmLocation, new Coordinates(artifactId, mavenProject.getGroupId()));
+        return new SoftwareAsset(scmLocation, new Coordinates(artifactId, mavenProject.getGroupId()), scm);
 
     }
     @JsonProperty
@@ -35,9 +35,13 @@ public class SoftwareAsset {
     @JsonProperty
     private Coordinates coordinates;
 
-    public SoftwareAsset(String origin, Coordinates coordinates) {
+    @JsonIgnore
+    private ScmNode scm;
+
+    public SoftwareAsset(String origin, Coordinates coordinates, ScmNode scmNode) {
         this.origin = origin;
         this.coordinates = coordinates;
+        this.scm = scmNode;
     }
     public SoftwareAsset() {
     }
@@ -50,8 +54,20 @@ public class SoftwareAsset {
         return coordinates.getGroupId();
     }
 
-    public String scm() {
+    public String origin() {
         return Strings.removeLeftOpt(this.origin, "svn:");
+    }
+
+
+    public ScmNode scmNode() {
+        if (origin == null) {
+            return null;
+        }
+
+        if (scm == null) {
+            scm = new ScmNode(new SvnNodeBuilder(origin).build());
+        }
+        return scm;
     }
 
     @Override

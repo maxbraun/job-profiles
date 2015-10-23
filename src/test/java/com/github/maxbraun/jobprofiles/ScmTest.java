@@ -1,8 +1,6 @@
 package com.github.maxbraun.jobprofiles;
 
 import java.io.IOException;
-import java.io.PrintStream;
-import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -21,8 +19,9 @@ public class ScmTest {
     }
 
     private void getPom(String scmLocation) throws IOException {
-        Scm scm;
-        scm = Scm.create(scmLocation, world, System.out);
+        ScmNode scm;
+
+        scm = new ScmNode(new SvnNodeBuilder(scmLocation).build());
 
         Assert.assertTrue(scm.getPom().length() > 1);
     }
@@ -34,12 +33,9 @@ public class ScmTest {
     }
 
     private void getProfile(String scmUrl, String profileName) throws Exception {
-        Scm scm;
-        scm = Scm.create(scmUrl, world, System.out);
-        Map<String, String> profile;
 
-        profile = scm.getProfile(profileName, new PrintStream(System.out));
+        Profiles profiles = Profiles.fromNode(new SvnNodeBuilder(scmUrl).build());
 
-        Assert.assertTrue(profile.size() >= 1);
+        Assert.assertTrue(profiles.size() > 0);
     }
 }
