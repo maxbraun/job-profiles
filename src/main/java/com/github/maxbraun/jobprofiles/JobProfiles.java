@@ -45,12 +45,11 @@ public class JobProfiles extends hudson.tasks.Builder {
             SvnNode profileRoot = new SvnNodeBuilder(Strings.removeRightOpt(JobProfilesConfiguration.get().getProfileRootDir(), "/")).build();
             Profiles profiles = Profiles.fromNode(profileRoot);
             JobsCreator jobsCreator = new JobsCreator(profiles, new MavenProjectResolver(profileRoot.getWorld()), forcedProfile, log);
-
+            Jobs jobs = new Jobs();
             for (SoftwareAsset softwareAsset : softwareIndex) {
-                Jobs jobs = jobsCreator.createJobs(softwareAsset);
-
-                jobs.submit(log);
+                jobs.add(jobsCreator.createJobs(softwareAsset));
             }
+            jobs.submit(log);
 
         } catch (URISyntaxException e) {
             throw new IOException(e);

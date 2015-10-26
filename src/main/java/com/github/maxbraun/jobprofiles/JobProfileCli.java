@@ -21,7 +21,8 @@ public class JobProfileCli extends CLICommand {
         return Messages.JobProfileCli_shortDescription();
     }
 
-    protected int run() throws Exception {
+    protected
+    int run() throws Exception {
         try {
 
             SoftwareIndex softwareIndex = SoftwareIndex.buildFrom(forcedSCM, stdout);

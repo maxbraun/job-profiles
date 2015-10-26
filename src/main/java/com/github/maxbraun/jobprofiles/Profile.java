@@ -16,7 +16,7 @@ public class Profile {
         Profile profile = new Profile(directory.getName());
         for (Node file : directory.list()) {
             if (file.isFile()) {
-                Template template = new Template(file.getName(), file.readString());
+                Template template = new Template(file.getName(), file.readString(), TemplateType.fromExtension(file.getExtension()));
                 profile.addTemplate(template);
             }
         }

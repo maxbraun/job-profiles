@@ -27,6 +27,7 @@ public class PossibleProfiles {
 
     public List<String> of(SoftwareAsset asset, String forcedProfile) throws IOException {
         List<String> possibleProfiles = new ArrayList<String>();
+        possibleProfiles.add(STANDARD);
         if (forcedProfile != null && !forcedProfile.isEmpty()) {
             possibleProfiles.add(forcedProfile);
             return possibleProfiles;

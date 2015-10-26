@@ -35,7 +35,13 @@ public class JobsCreator {
                 return profiles.get(possibleProfile);
             }
         }
-        throw new IllegalArgumentException("No profile found for" + asset);
+        StringBuilder profiles  = new StringBuilder("possibleProfiles {");
+        for (String possibleProfile : possibleProfiles) {
+            profiles.append(possibleProfile).append(',');
+        }
+        profiles.append('}');
+
+        throw new IllegalArgumentException("No profile found for" + asset + profiles + " vs. " + profiles.toString());
     }
 
     private JobContext contextOf(Profile profile, SoftwareAsset asset) {

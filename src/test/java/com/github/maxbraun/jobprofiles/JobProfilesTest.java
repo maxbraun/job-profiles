@@ -36,5 +36,12 @@ public class JobProfilesTest {
         j.buildAndAssertSuccess(project);
     }
 
+    @Test
+    public void ForceJobs() throws Exception {
+        FreeStyleProject project = j.createFreeStyleProject();
+        project.getBuildersList().add(new JobProfiles("", "jobdsl"));
+        j.buildAndAssertSuccess(project);
+    }
+
 
 }

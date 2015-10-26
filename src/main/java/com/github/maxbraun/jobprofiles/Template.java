@@ -15,10 +15,12 @@ public class Template {
 
     private final String name;
     private final String content;
+    private final TemplateType type;
 
-    public Template(String name, String content) {
+    public Template(String name, String content, TemplateType type) {
         this.name = name;
         this.content = content;
+        this.type = type;
     }
     public String name() {
         return name;
@@ -39,7 +41,7 @@ public class Template {
     private String identifierFor(SoftwareAsset asset) {
         String key = String.format("%s%s%s", asset.groupId(), DELEMITER, asset.artifactId());
 
-        if (!name.equals("build.xml")) {
+        if (!name.startsWith("build")) {
             return String.format("%s%s%s", key, DELEMITER, Strings.removeRight(name, ".xml"));
         }
         return key;
@@ -54,6 +56,6 @@ public class Template {
         reader = new StringReader(content);
         freeMarkertemplate = new freemarker.template.Template(identifier, reader, new Configuration());
         freeMarkertemplate.process(context, writer);
-        return new Job(identifier, writer.toString());
+        return new Job(identifier, writer.toString(), type);
     }
 }

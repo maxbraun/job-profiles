@@ -2,6 +2,7 @@ package com.github.maxbraun.jobprofiles;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import net.oneandone.sushi.fs.Node;
 public class Profiles {
@@ -35,5 +36,17 @@ public class Profiles {
 
     public int size(){
         return profiles.size();
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder().append("Profiles{");
+        Set<String> profileNames = profiles.keySet();
+        for (String profileName : profileNames) {
+            stringBuilder.append(profileName).append(",");
+        }
+
+        return stringBuilder.append('}').toString();
+
     }
 }
