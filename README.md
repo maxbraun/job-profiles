@@ -6,7 +6,7 @@ I wrote this Jenkins plugin which enables us to manage all our Jenkins jobs on a
 
 Requirements
 ------------
-1. A list of all your software projects (=assets) you want to manage, with an ID, name, SCM-url, and optionally an category. [Example list](src/main/resources/softreg.xml).
+1. A list of all your software projects (=assets) you want to manage, with an ID, name, SCM-url, and optionally an category. [Example list](src/main/resources/index.json).
 2. Profiles, like in our [example repository](https://github.com/maxbraun/job-profiles-examles). Each profile contains one or more XML-files which representing the Jenkins Job Configuration.
 
 To provide more projectspecific informations we're trying to read / parse projects like maven or composer. 
