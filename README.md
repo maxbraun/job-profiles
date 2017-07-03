@@ -16,3 +16,8 @@ Concept
 Iterate throw the list of projects, find the right profile, parse the profile with the projects informations and send it to jenkins.
 
 [![Build Status](https://travis-ci.org/maxbraun/job-profiles.png?branch=master)](https://travis-ci.org/maxbraun/job-profiles)
+
+
+Deprecation Warning
+------------
+Since there are new options to automate the process of creating a job or update it, like the job-dsl-plugin, this plugin is not needed anymore.
